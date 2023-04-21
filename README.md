@@ -7,6 +7,7 @@ JDK version
  
  Maven version
   - apache-maven-3.9.1 (https://maven.apache.org/download.cgi)
+    - make sure to add to path
 
 TO DO:
   - add a branch for each team member to work on 
