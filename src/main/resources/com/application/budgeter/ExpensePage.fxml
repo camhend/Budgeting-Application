@@ -19,7 +19,7 @@
     <SplitPane dividerPositions="0.5" focusTraversable="true" minHeight="600.0" minWidth="900.0" prefHeight="600.0" prefWidth="900.0" VBox.vgrow="ALWAYS">
       <items>
 
-        <!-- Menu Section-->
+        <!-- Menu Section -->
         <AnchorPane minHeight="600.0" minWidth="220.0" prefHeight="600.0" prefWidth="220.0">
           <children>
             <Label alignment="CENTER" layoutX="80.0" layoutY="20.0" minHeight="30.0" minWidth="60.0" prefHeight="30.0" prefWidth="60.0" style="&#10;" text="Menu" textAlignment="CENTER" textFill="#726d6d" wrapText="false">
