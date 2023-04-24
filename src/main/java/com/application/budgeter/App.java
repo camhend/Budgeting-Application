@@ -21,6 +21,7 @@ import java.io.IOException;
     // push to team
     // read and add fx:id to fxml elements
     // add images to menu buttons
+    // make menu section a single file and use it in each page
 
 
 public class App extends Application {
