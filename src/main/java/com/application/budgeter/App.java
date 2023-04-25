@@ -28,9 +28,10 @@ public class App extends Application {
 
     private static Scene scene;
 
-
     @Override
     public void start(Stage stage) throws IOException {
+
+        loadFXML("Menu.fxml");
 
         scene = new Scene(loadFXML("DashboardPage"), 900, 615);
 
@@ -55,5 +56,4 @@ public class App extends Application {
     public static void main(String[] args) {
         launch();
     }
-
 }

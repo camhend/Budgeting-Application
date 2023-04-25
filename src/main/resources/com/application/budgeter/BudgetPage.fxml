@@ -19,19 +19,12 @@
     <SplitPane dividerPositions="0.5" focusTraversable="true" minHeight="600.0" minWidth="900.0" prefHeight="600.0" prefWidth="900.0" VBox.vgrow="ALWAYS">
       <items>
 
-        <!--Menu Section-->
-        <AnchorPane minHeight="600.0" minWidth="220.0" prefHeight="600.0" prefWidth="220.0">
+        <AnchorPane>
           <children>
-            <Label alignment="CENTER" layoutX="80.0" layoutY="20.0" minHeight="30.0" minWidth="60.0" prefHeight="30.0" prefWidth="60.0" style="&#10;" text="Menu" textAlignment="CENTER" textFill="#726d6d" wrapText="false">
-              <font>
-                <Font size="18.0" fx:id="x1" />
-              </font>
-            </Label>
-                  <Button fx:id="dashboardNavButton" layoutX="73.0" layoutY="130.0" minHeight="25.0" minWidth="75.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" text="Dashboard" onAction="#switchToDashboard"/>
-                  <Button fx:id="expenseNavButton" layoutX="73.0" layoutY="284.0" minHeight="25.0" minWidth="75.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" text="Expenses" onAction="#switchToExpense"/>
-                  <Button fx:id="budgetNavButton" layoutX="73.0" layoutY="438.0" minHeight="25.0" minWidth="75.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" text="Budgeter"/>
+            <fx:include source="@./Menu.fxml" />
           </children>
         </AnchorPane>
+        
 
         <!--Budget Planner Section-->
         <AnchorPane id="Content" minHeight="600.0" minWidth="680.0" prefHeight="600.0" prefWidth="680.0">
