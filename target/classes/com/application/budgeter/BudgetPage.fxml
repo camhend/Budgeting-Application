@@ -13,17 +13,22 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 
 <VBox minHeight="600.0" minWidth="900.0" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.application.budgeter.BudgetController">
   <children>
     <SplitPane dividerPositions="0.5" focusTraversable="true" minHeight="600.0" minWidth="900.0" prefHeight="600.0" prefWidth="900.0" VBox.vgrow="ALWAYS">
       <items>
 
-        <AnchorPane>
-          <children>
-            <fx:include source="@./Menu.fxml" />
-          </children>
-        </AnchorPane>
+        <!-- loading font used in Menu-->
+        <fx:define>
+          <Font fx:id="x1" size="18.0" />
+        </fx:define>
+
+        <!-- Imprting Menu Pane-->
+        <fx:include source="./Menu.fxml" />
         
 
         <!--Budget Planner Section-->

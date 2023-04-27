@@ -8,6 +8,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import javafx.event.ActionEvent;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+
 
 import java.io.IOException;
 
@@ -31,9 +34,8 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 
-        loadFXML("Menu.fxml");
-
         scene = new Scene(loadFXML("DashboardPage"), 900, 615);
+
 
         // set current size to min
         stage.setMinWidth(900);

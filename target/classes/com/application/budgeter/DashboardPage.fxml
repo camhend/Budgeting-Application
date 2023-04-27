@@ -18,57 +18,19 @@
 <?import javafx.scene.image.Image?>
 
 
-<VBox minHeight="600.0" minWidth="900.0" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.application.budgeter.DashboardController">
+<AnchorPane minHeight="600.0" minWidth="900.0" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.application.budgeter.DashboardController">
   <children>
     <SplitPane dividerPositions="0.5" focusTraversable="true" minHeight="600.0" minWidth="900.0" prefHeight="600.0" prefWidth="900.0" VBox.vgrow="ALWAYS">
       <items>
 
-        <!--Menu Section-->
-        <AnchorPane minHeight="600.0" minWidth="220.0" prefHeight="600.0" prefWidth="220.0">
-          <children>
-            <!-- formating -->
-            <Label alignment="CENTER" layoutX="80.0" layoutY="20.0" minHeight="30.0" minWidth="60.0" prefHeight="30.0" prefWidth="60.0" style="&#10;" text="Menu" textAlignment="CENTER" textFill="#726d6d" wrapText="false">
-                <font>
-                <Font size="18.0" fx:id="x1" />
-                </font>
-            </Label>
+        <!-- loading font used in Menu-->
+        <fx:define>
+          <Font fx:id="x1" size="18.0" />
+        </fx:define>
 
-            <!-- dashboard button -->
-            <Button fx:id="dashboardNavButton" layoutX="35.0" layoutY="85.0" minHeight="130.0" minWidth="130.0" mnemonicParsing="false">
-                <graphic>
-                <ImageView fitHeight="130.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="false">
-                    <image>
-                    <Image url="@./images/dashboardButton.jpg" />
-                    </image>
-                </ImageView>
-                </graphic>
-            </Button>
-
-            <!-- Expense button -->
-            <Button fx:id="expenseNavButton" layoutX="35.0" layoutY="260.0" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" onAction="#switchToExpense">
-              <graphic>
-                <ImageView fitHeight="130.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="false">
-                    <image>
-                      <Image url="@./images/expenseButton.jpg" />
-                    </image>
-                </ImageView>
-                </graphic>
-            </Button>
-
-            <!-- Budget button -->
-            <Button fx:id="budgetNavButton" layoutX="35.0" layoutY="435.0" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" onAction="#switchToBudget">
-              <graphic>
-                <ImageView fitHeight="130.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="false">
-                    <image>
-                      <Image url="@./images/budgetButton.jpg" />
-                    </image>
-                </ImageView>
-              </graphic>
-            </Button>
-
-         </children>
-        </AnchorPane>
-
+        <!-- Imprting Menu Pane-->
+        <fx:include source="./Menu.fxml" />
+        
         <!--Dashboard Section-->
         <AnchorPane id="Content" minHeight="600.0" minWidth="680.0" prefHeight="600.0" prefWidth="680.0">
           <children>
@@ -83,4 +45,4 @@
        </items>
     </SplitPane>
   </children>
-</VBox>
+</AnchorPane>

@@ -13,25 +13,22 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 
 <VBox minHeight="600.0" minWidth="900.0" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.application.budgeter.ExpenseController">
   <children>
     <SplitPane dividerPositions="0.5" focusTraversable="true" minHeight="600.0" minWidth="900.0" prefHeight="600.0" prefWidth="900.0" VBox.vgrow="ALWAYS">
       <items>
 
-        <!-- Menu Section -->
-        <AnchorPane minHeight="600.0" minWidth="220.0" prefHeight="600.0" prefWidth="220.0">
-          <children>
-            <Label alignment="CENTER" layoutX="80.0" layoutY="20.0" minHeight="30.0" minWidth="60.0" prefHeight="30.0" prefWidth="60.0" style="&#10;" text="Menu" textAlignment="CENTER" textFill="#726d6d" wrapText="false">
-              <font>
-                <Font size="18.0" fx:id="x1" />
-              </font>
-            </Label>
-                  <Button fx:id="dashboardNavButton" layoutX="73.0" layoutY="130.0" minHeight="25.0" minWidth="75.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" text="Dashboard" onAction="#switchToDashboard"/>
-                  <Button fx:id="expenseNavButton" layoutX="73.0" layoutY="284.0" minHeight="25.0" minWidth="75.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" text="Expenses"/>
-                  <Button fx:id="budgetNavButton" layoutX="73.0" layoutY="438.0" minHeight="25.0" minWidth="75.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" text="Budgeter" onAction="#switchToBudget"/>
-          </children>
-        </AnchorPane>
+        <!-- loading font used in Menu-->
+        <fx:define>
+          <Font fx:id="x1" size="18.0" />
+        </fx:define>
+
+        <!-- Imprting Menu Pane-->
+        <fx:include source="./Menu.fxml" />
 
         <!-- Expense Tracker Section-->
         <AnchorPane id="Content" minHeight="600.0" minWidth="680.0" prefHeight="600.0" prefWidth="680.0">
