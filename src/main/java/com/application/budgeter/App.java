@@ -22,10 +22,11 @@ import java.io.IOException;
     // read and add fx:id to fxml elements
 
 // problems
-    // buttom images not showing in Menu.fxml
+    // button images not showing in Menu.fxml
 
 // done / fixed
     // make menu section a single file and use it in each page (done)
+        // bugfix: font from imported file needs to loaded by each page
     // change pages (done)
         // use onAction in buttons on pages
         // make sure to use fx:controller in each fxml file
