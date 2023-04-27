@@ -17,14 +17,13 @@ import java.io.IOException;
 // TODO
     // resizing
         // anchor constraints
-    // change pages
+    // change pages (done)
         // use onAction in buttons on pages
         // make sure to use fx:controller in each fxml file
-    // make use of controllers
-    // push to team
+    // make use of controllers 
     // read and add fx:id to fxml elements
-    // add images to menu buttons
-    // make menu section a single file and use it in each page
+    // add images to menu buttons (done)
+    // make menu section a single file and use it in each page (done)
 
 
 public class App extends Application {
