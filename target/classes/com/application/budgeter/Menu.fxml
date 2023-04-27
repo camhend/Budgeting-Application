@@ -21,10 +21,10 @@
 Menu.fxml is imported into BudgetPage.fxml, DashboardPage.fxml, and ExpensePage.fxml and is used as a navigation menu for the application. 
 -->
 
-<AnchorPane minHeight="600.0" minWidth="220.0" prefHeight="600.0" prefWidth="220.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml" fx:controller="com.application.budgeter.MenuController">
+<AnchorPane minHeight="600.0" minWidth="220.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml" fx:controller="com.application.budgeter.MenuController">
     <children>
         <!-- Title (Menu) -->
-        <Label alignment="CENTER" layoutX="83.0" layoutY="20.0" minHeight="30.0" minWidth="60.0" prefHeight="30.0" prefWidth="60.0" style="&#10;" text="Menu" textAlignment="CENTER" textFill="#726d6d" wrapText="false">
+        <Label alignment="CENTER" layoutX="83.0" layoutY="20.0" minHeight="30.0" minWidth="60.0" style="&#10;" text="Menu" textAlignment="CENTER" textFill="#726d6d" wrapText="false">
             <font>
                 <Font size="18.0" fx:id="x1"/>
             </font>
@@ -35,7 +35,7 @@ Menu.fxml is imported into BudgetPage.fxml, DashboardPage.fxml, and ExpensePage.
             <graphic>
                 <ImageView fitHeight="130.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="false">
                     <image>
-                        <Image url="@./images/dashboardButton.jpg" />
+                        <Image url="@./images/DashboardButton.jpg" />
                     </image>
                 </ImageView>
             </graphic>
@@ -46,7 +46,7 @@ Menu.fxml is imported into BudgetPage.fxml, DashboardPage.fxml, and ExpensePage.
             <graphic>
                 <ImageView fitHeight="130.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="false">
                     <image>
-                        <Image url="@./images/expenseButton.jpg" />
+                        <Image url="@./images/ExpenseButton.jpg" />
                     </image>
                 </ImageView>
             </graphic>
@@ -57,7 +57,7 @@ Menu.fxml is imported into BudgetPage.fxml, DashboardPage.fxml, and ExpensePage.
             <graphic>
                 <ImageView fitHeight="130.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="false">
                     <image>
-                        <Image url="@./images/budgetButton.jpg" />
+                        <Image url="@./images/BudgetButton.jpg" />
                     </image>
                 </ImageView>
             </graphic>

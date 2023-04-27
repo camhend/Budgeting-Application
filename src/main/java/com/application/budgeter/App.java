@@ -16,14 +16,21 @@ import java.io.IOException;
 
 // TODO
     // resizing
-        // anchor constraints
+        // anchorpane constraints
+        // replace vbox with anchorpane
+    // make use of controllers 
+    // read and add fx:id to fxml elements
+
+// problems
+    // buttom images not showing in Menu.fxml
+
+// done / fixed
+    // make menu section a single file and use it in each page (done)
     // change pages (done)
         // use onAction in buttons on pages
         // make sure to use fx:controller in each fxml file
-    // make use of controllers 
-    // read and add fx:id to fxml elements
     // add images to menu buttons (done)
-    // make menu section a single file and use it in each page (done)
+
 
 
 public class App extends Application {
