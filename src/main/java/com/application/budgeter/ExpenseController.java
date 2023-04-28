@@ -14,6 +14,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
 public class ExpenseController implements Initializable {
 
@@ -161,12 +163,75 @@ public class ExpenseController implements Initializable {
                 break;
         }
     } // end changeMenuButton method
+
+
+    public void updateTotal() {
+        // update total button
+        switch (totalMenu.getText()) {
+            case "Past Month":
+                total.setText("$" + calcluateTotal(1));
+                break;
+            case "Past 3 Months":
+                total.setText("$" + calcluateTotal(3));
+                break;
+            case "Past 6 Months":
+                total.setText("$" + calcluateTotal(6));
+                break;
+            case "Past 12 Months":
+                total.setText("$" + calcluateTotal(12));
+                break;
+            case "All Time":
+                total.setText("$" + calcluateTotal(0)); // 0 means all time
+                break;
+        }
+    }
     
 
     
     // add data from text fields to tableview
     public void addExpense() {
+        // if any fields are empty
+        if (addExpenseField.getText().isEmpty() || addCategoryField.getText().isEmpty() || addDateField.getText().isEmpty() || addCostField.getText().isEmpty()) {
+            // display error message
+            Alert alert = new Alert(AlertType.ERROR);
 
+            alert.setTitle("Error");
+            alert.setHeaderText("Error");
+            alert.setContentText("Please fill out all fields");
+            alert.showAndWait();
+        }
+        // if cost is valid format with $
+        else if (!addCostField.getText().matches("^\\$?[0-9]+(\\.[0-9]{1,2})?$")) {
+            // display error message
+            Alert alert = new Alert(AlertType.ERROR);
+
+            alert.setTitle("Error");
+            alert.setHeaderText("Error");
+            alert.setContentText("Please enter a valid cost (ex. $1.50)");
+            alert.showAndWait();
+        }
+        // if date is valid mm/dd/yyyy
+        else if (!addDateField.getText().matches("^(0[1-9]|1[012])/(0[1-9]|[12][0-9]|3[01])/[0-9]{4}$")) {
+            // display error message
+            Alert alert = new Alert(AlertType.ERROR);
+
+            alert.setTitle("Error");
+            alert.setHeaderText("Error");
+            alert.setContentText("Please enter a valid date (mm/dd/yyyy)");
+            alert.showAndWait();
+        }
+        // else add data to tableview
+        else {
+            // add data to tableview
+            list.add(new Expense(addExpenseField.getText(), addCategoryField.getText(), addDateField.getText(), addCostField.getText()));
+            // clear text fields
+            addExpenseField.clear();
+            addCategoryField.clear();
+            addDateField.clear();
+            addCostField.clear();
+
+            updateTotal();
+        }
     } // end addExpense method
 
 
