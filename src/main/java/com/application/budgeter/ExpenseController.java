@@ -66,4 +66,11 @@ public class ExpenseController implements Initializable {
         // add dummy data to tableview
         expenseTable.setItems(list);
     }
+
+    // add data from text fields to tableview
+    public void pushExpense() {
+
+    }
+
+
 }

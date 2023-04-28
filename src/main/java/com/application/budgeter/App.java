@@ -25,6 +25,9 @@ import java.io.IOException;
         // figure out how to lock aspect ratio
     // make use of controllers 
     // read and add fx:id to fxml elements
+    // make drop down total time button change text
+    // make add expense button add expense to tableview
+    // save button???
 
 // problems
     // button images not showing in Menu.fxml

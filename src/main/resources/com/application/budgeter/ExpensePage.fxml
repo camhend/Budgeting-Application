@@ -17,7 +17,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 
-<VBox minHeight="600.0" minWidth="900.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.application.budgeter.ExpenseController">
+<VBox minHeight="600.0" minWidth="900.0" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.application.budgeter.ExpenseController">
   <children>
     <SplitPane dividerPositions="0.5" focusTraversable="true" minHeight="600.0" minWidth="900.0" prefHeight="600.0" prefWidth="900.0" VBox.vgrow="ALWAYS">
       <items>
@@ -31,12 +31,12 @@
         <fx:include source="./Menu.fxml" />
 
         <!-- Expense Tracker Section-->
-        <AnchorPane id="Content" minHeight="600.0" minWidth="680.0" VBox.vgrow="ALWAYS">
+        <AnchorPane id="Content" minHeight="600.0" minWidth="680.0" prefHeight="600.0" prefWidth="680.0" VBox.vgrow="ALWAYS">
           <children>
-            <Label alignment="CENTER" font="$x1" layoutX="264.0" layoutY="20.0" minHeight="27.0" minWidth="144.0" style="&#10;" text="Expense Tracker" textAlignment="CENTER" textFill="#726d6d"  VBox.vgrow="ALWAYS" />
+            <Label alignment="CENTER" font="$x1" layoutX="264.0" layoutY="20.0" minHeight="27.0" minWidth="144.0" prefHeight="27.0" prefWidth="144.0" style="&#10;" text="Expense Tracker" textAlignment="CENTER" textFill="#726d6d"  VBox.vgrow="ALWAYS" />
 
             <!-- Expense Table -->
-            <TableView fx:id="expenseTable" editable="true" layoutX="63.0" layoutY="185.0" minHeight="415.0" minWidth="558.0" VBox.vgrow="ALWAYS">
+            <TableView fx:id="expenseTable" editable="true" layoutX="63.0" layoutY="185.0" minHeight="415.0" minWidth="558.0" prefHeight="415.0" prefWidth="558.0"  VBox.vgrow="ALWAYS">
               <columns>
                 <TableColumn editable="false" minWidth="180.0" text="Expense" fx:id="expenseColumn" />
                 <TableColumn editable="false" minWidth="145.0" text="Category" fx:id="categoryColumn" />
@@ -46,9 +46,8 @@
             </TableView>
 
             <!-- add button -->
-            <Button layoutX="443.0" layoutY="149.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" text="+" />
-
-            <!-- save button-->
+            <Button layoutX="443.0" layoutY="149.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" text="+" onAction="#pushExpense"/>
+            
             <Button layoutX="548.0" layoutY="149.0" minHeight="25.0" minWidth="70.0" mnemonicParsing="false" text="Save" />
 
             <!-- total -->
@@ -58,7 +57,7 @@
 
 
             <!-- menu button for choosing total calculation over time-->
-            <MenuButton layoutX="452.0" layoutY="73.0" minHeight="25.0" minWidth="75.0" mnemonicParsing="false" text="Time">
+            <MenuButton fx:id="timeTotalButton" layoutX="452.0" layoutY="73.0" minHeight="25.0" minWidth="75.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" text="Time">
               <items>
                 <MenuItem mnemonicParsing="false" text="Past Month" />
                 <MenuItem mnemonicParsing="false" text="Past 3 Months" />
@@ -69,23 +68,12 @@
             </MenuButton>
 
             <!-- text fields for adding expenses -->
-            <TextField layoutX="63.0" layoutY="149.0" minHeight="25.0" minWidth="95.0"  promptText="Expense..." />
-            <TextField layoutX="158.0" layoutY="149.0" minHeight="25.0" minWidth="95.0"  promptText="Category..." />
-            <TextField layoutX="253.0" layoutY="149.0" minHeight="25.0" minWidth="95.0"  promptText="Date..." />
-            <TextField layoutX="348.0" layoutY="149.0" minHeight="25.0" minWidth="95.0" promptText="Cost..." />
+            <TextField layoutX="63.0" layoutY="149.0" minHeight="25.0" minWidth="95.0" prefHeight="25.0" prefWidth="95.0" promptText="Expense..." />
+            <TextField layoutX="158.0" layoutY="149.0" minHeight="25.0" minWidth="95.0" prefHeight="25.0" prefWidth="95.0" promptText="Category..." />
+            <TextField layoutX="253.0" layoutY="149.0" minHeight="25.0" minWidth="95.0" prefHeight="25.0" prefWidth="95.0" promptText="Date..." />
+            <TextField layoutX="348.0" layoutY="149.0" minHeight="25.0" minWidth="95.0" prefHeight="25.0" prefWidth="95.0" promptText="Cost..." />
 
-            <!-- search bar -->
-            <TextField layoutX="123.0" layoutY="73.0" minHeight="25.0" minWidth="118.0" promptText="Search....             🔍" />
 
-            <!-- menu button for choosing what to search by -->
-            <MenuButton layoutX="64.0" layoutY="73.0" minHeight="25.0" minWidth="60.0" mnemonicParsing="false" text="Tag">
-                <items>
-                  <MenuItem mnemonicParsing="false" text="Expense" />
-                  <MenuItem mnemonicParsing="false" text="Category" />
-                  <MenuItem mnemonicParsing="false" text="Date" />
-                  <MenuItem mnemonicParsing="false" text="Cost" />
-                </items>
-            </MenuButton>
           </children>
         </AnchorPane>
 
