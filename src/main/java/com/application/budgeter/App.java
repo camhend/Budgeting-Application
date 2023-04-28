@@ -33,6 +33,7 @@ import java.io.IOException;
     // button images not showing in Menu.fxml
         // possibly because Menu.fxml is being imported into the other pages instead of being loaded by the main app
     // bug occuring saying duplicate columns in tableview
+    // tableview doesnt sort by dateColumn accurately
 
 // done / fixed
     // make menu section a single file and use it in each page (done)

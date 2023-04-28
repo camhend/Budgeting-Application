@@ -46,32 +46,32 @@
             </TableView>
 
             <!-- add button -->
-            <Button layoutX="443.0" layoutY="149.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" text="+" onAction="#pushExpense"/>
+            <Button layoutX="443.0" layoutY="149.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" text="+" fx:id="addExpenseButton" onAction="#addExpense"/>
             
-            <Button layoutX="548.0" layoutY="149.0" minHeight="25.0" minWidth="70.0" mnemonicParsing="false" text="Save" />
+            <Button layoutX="548.0" layoutY="149.0" minHeight="25.0" minWidth="70.0" mnemonicParsing="false" text="Save" fx:id="saveExpenseButton" onAction="#saveExpenses"/>
 
             <!-- total -->
             <Text fill="#574f4f" layoutX="555.0" layoutY="65.0" strokeType="OUTSIDE" strokeWidth="0.0" text="TOTAL" wrappingWidth="37.13671875" />
             <!-- text field for total -->
-            <Text style="-fx-background-color: red;" layoutX="526.0" layoutY="73.0"/>
+            <Label fx:id="total" text="" alignment="CENTER" style="-fx-background-color: gainsboro; -fx-font-size: 16;"  layoutX="526.0" layoutY="73.0" minHeight="20.0" minWidth="93.0" />
 
 
             <!-- menu button for choosing total calculation over time-->
-            <MenuButton fx:id="timeTotalButton" layoutX="452.0" layoutY="73.0" minHeight="25.0" minWidth="75.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" text="Time">
+            <MenuButton fx:id="totalMenu" alignment="CENTER" layoutX="410.0" layoutY="73.0" minHeight="25.0" minWidth="117.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" text="Time">
               <items>
-                <MenuItem mnemonicParsing="false" text="Past Month" />
-                <MenuItem mnemonicParsing="false" text="Past 3 Months" />
-                <MenuItem mnemonicParsing="false" text="Past 6 Months" />
-                <MenuItem mnemonicParsing="false" text="Past 12 Months" />
-                <MenuItem mnemonicParsing="false" text="All Time" />
+                <MenuItem mnemonicParsing="false" text="Past Month" onAction="#changeMenuButton" />
+                <MenuItem mnemonicParsing="false" text="Past 3 Months" onAction="#changeMenuButton" />
+                <MenuItem mnemonicParsing="false" text="Past 6 Months" onAction="#changeMenuButton" />
+                <MenuItem mnemonicParsing="false" text="Past 12 Months" onAction="#changeMenuButton" />
+                <MenuItem mnemonicParsing="false" text="All Time" onAction="#changeMenuButton" />
               </items>
             </MenuButton>
 
             <!-- text fields for adding expenses -->
-            <TextField layoutX="63.0" layoutY="149.0" minHeight="25.0" minWidth="95.0" prefHeight="25.0" prefWidth="95.0" promptText="Expense..." />
-            <TextField layoutX="158.0" layoutY="149.0" minHeight="25.0" minWidth="95.0" prefHeight="25.0" prefWidth="95.0" promptText="Category..." />
-            <TextField layoutX="253.0" layoutY="149.0" minHeight="25.0" minWidth="95.0" prefHeight="25.0" prefWidth="95.0" promptText="Date..." />
-            <TextField layoutX="348.0" layoutY="149.0" minHeight="25.0" minWidth="95.0" prefHeight="25.0" prefWidth="95.0" promptText="Cost..." />
+            <TextField layoutX="63.0" layoutY="149.0" minHeight="25.0" minWidth="95.0" prefHeight="25.0" prefWidth="95.0" promptText="Expense..." fx:id="addExpenseField"/>
+            <TextField layoutX="158.0" layoutY="149.0" minHeight="25.0" minWidth="95.0" prefHeight="25.0" prefWidth="95.0" promptText="Category..." fx:id="addCategoryField"/>
+            <TextField layoutX="253.0" layoutY="149.0" minHeight="25.0" minWidth="95.0" prefHeight="25.0" prefWidth="95.0" promptText="Date..." fx:id="addDateField"/>
+            <TextField layoutX="348.0" layoutY="149.0" minHeight="25.0" minWidth="95.0" prefHeight="25.0" prefWidth="95.0" promptText="Cost..." fx:id="addCostField"/>
 
 
           </children>
