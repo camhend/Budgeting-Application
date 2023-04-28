@@ -16,6 +16,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import java.io.IOException;
+import java.io.FileWriter;
 
 public class ExpenseController implements Initializable {
 
@@ -238,6 +240,32 @@ public class ExpenseController implements Initializable {
 
     // save data from tableview to file
     public void saveExpenses() {
+        // write list to expenses.csv
+        try {
+            // open file and write each expense to file
+            FileWriter csvWriter = new FileWriter("expenses.csv");
+            for (Expense expense : list) {
+                csvWriter.append(expense.getExpense() + "," + expense.getCategory() + "," + expense.getDate() + "," + expense.getCost() + "\n");
+            }
+            csvWriter.flush(); // flush data to file
+            csvWriter.close(); // close file
 
+            // display success message
+            Alert alert = new Alert(AlertType.INFORMATION);
+
+            alert.setTitle("Success");
+            alert.setHeaderText("Success");
+            alert.setContentText("Expenses saved to file");
+            alert.showAndWait();
+        }
+        catch (IOException e) {
+            // display error message
+            Alert alert = new Alert(AlertType.ERROR);
+
+            alert.setTitle("Error");
+            alert.setHeaderText("Error");
+            alert.setContentText("Error saving expenses to file");
+            alert.showAndWait();
+        }
     } // end saveExpenses method
 } // end ExpenseController class
