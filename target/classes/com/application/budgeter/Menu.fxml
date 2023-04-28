@@ -31,7 +31,8 @@ Menu.fxml is imported into BudgetPage.fxml, DashboardPage.fxml, and ExpensePage.
         </Label>
 
         <!-- Dashboard button -->
-        <Button fx:id="dashboardNavButton" layoutX="40.0" layoutY="85.0" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" onAction="#switchToDashboard">
+        <!-- not scaling proportionately-->
+        <Button fx:id="dashboardNavButton" layoutX="40.0" layoutY="85.0" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" onAction="#switchToDashboard" AnchorPane.topAnchor="85.0" AnchorPane.leftAnchor="40.0" >
             <graphic>
                 <ImageView fitHeight="130.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="false">
                     <image>
