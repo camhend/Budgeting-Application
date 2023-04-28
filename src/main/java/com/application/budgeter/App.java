@@ -28,6 +28,7 @@ import java.io.IOException;
 
 // problems
     // button images not showing in Menu.fxml
+        // possibly because Menu.fxml is being imported into the other pages instead of being loaded by the main app
     // bug occuring saying duplicate columns in tableview
 
 // done / fixed
@@ -44,13 +45,10 @@ public class App extends Application {
 
     private static Scene scene;
     
-
     @Override
     public void start(Stage stage) throws IOException {
 
         scene = new Scene(loadFXML("DashboardPage"), 900, 615);
-
-
 
         // set current size to min
         stage.setMinWidth(900);

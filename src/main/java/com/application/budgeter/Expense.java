@@ -1,5 +1,8 @@
 package com.application.budgeter;
 
+
+// placeholder expense class for ExpenseController
+
 public class Expense 
 {
     String expense;
@@ -14,6 +17,7 @@ public class Expense
         this.cost = cost;
     }
 
+    // get methods used by ExpenseController
     public String getExpense() {
         return expense;
     }
