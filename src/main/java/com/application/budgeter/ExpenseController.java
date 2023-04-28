@@ -57,10 +57,12 @@ public class ExpenseController implements Initializable {
         new Expense("hotdog", "food", "03/03/2023", "$1.50"),
         new Expense("notdog", "food", "03/04/2023", "$2.50"),
         new Expense("hotdog", "food", "03/03/2023", "$1.50"),
-        new Expense("notdog", "food", "03/04/2023", "$2.50"),
+        new Expense("notdog", "food", "03/04/2023", "$2.25"),
         new Expense("hotdog", "food", "03/03/2023", "$1.50"),
         new Expense("notdog", "food", "03/02/2022", "$2.50")
     );
+
+
 
     // initialize method (runs when ExpenseController is created)
     @Override
@@ -93,18 +95,17 @@ public class ExpenseController implements Initializable {
             totalCost += Double.parseDouble(expense.getCost().substring(1));
         }
 
-
         // set totalMenu to All Time
         totalMenu.setText("All Time");
         // set total label to totalCost
         total.setText("$" + totalCost);
-    }
+    } // end initialize
 
     
 
     // adjust font size depending on length of text
     // if months = 0 then calculate all time
-    public double calcluateTotal(int months) {
+    public String calcluateTotal(int months) {
 
         double totalCost = 0;
 
@@ -133,17 +134,19 @@ public class ExpenseController implements Initializable {
             }
         }
 
-        // string format 2 decimal places double parse
-        totalCost = Double.parseDouble(String.format("%.2f", totalCost));
+        return String.format("%.2f", totalCost);
+    } // end calcluateTotal method
 
-        return totalCost;
-    }
+
 
     // changes menu button text to selected menu item
     public void changeMenuButton(ActionEvent event) {
         MenuItem menuItem = (MenuItem) event.getSource();
         totalMenu.setText(menuItem.getText());
         switch (menuItem.getText()) {
+            case "Past Month":
+                total.setText("$" + calcluateTotal(1));
+                break;
             case "Past 3 Months":
                 total.setText("$" + calcluateTotal(3));
                 break;
@@ -154,20 +157,22 @@ public class ExpenseController implements Initializable {
                 total.setText("$" + calcluateTotal(12));
                 break;
             case "All Time":
-                total.setText("$" + calcluateTotal(0));
+                total.setText("$" + calcluateTotal(0)); // 0 means all time
                 break;
         }
-    }
+    } // end changeMenuButton method
     
+
     
     // add data from text fields to tableview
     public void addExpense() {
 
-    }
+    } // end addExpense method
+
+
 
     // save data from tableview to file
-    // save tableview to file or save data structure to file??
     public void saveExpenses() {
 
-    }
-}
+    } // end saveExpenses method
+} // end ExpenseController class
