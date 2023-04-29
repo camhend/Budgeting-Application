@@ -116,7 +116,13 @@ public class ExpenseController implements Initializable {
         if (months == 0) {
             // adds all costs from list to totalCost removing the $ sign
             for (Expense expense : list) {
-                totalCost += Double.parseDouble(expense.getCost().substring(1));
+                // if dollar sign 
+                if (expense.getCost().charAt(0) == '$') {
+                    totalCost += Double.parseDouble(expense.getCost().substring(1));
+                }
+                else {
+                    totalCost += Double.parseDouble(expense.getCost());
+                }
             }
         }
         else // if months != 0 then calculate past months
@@ -202,16 +208,6 @@ public class ExpenseController implements Initializable {
             alert.setContentText("Please fill out all fields");
             alert.showAndWait();
         }
-        // if cost is valid format with $
-        else if (!addCostField.getText().matches("^\\$?[0-9]+(\\.[0-9]{1,2})?$")) {
-            // display error message
-            Alert alert = new Alert(AlertType.ERROR);
-
-            alert.setTitle("Error");
-            alert.setHeaderText("Error");
-            alert.setContentText("Please enter a valid cost (ex. $1.50)");
-            alert.showAndWait();
-        }
         // if date is valid mm/dd/yyyy
         else if (!addDateField.getText().matches("^(0[1-9]|1[012])/(0[1-9]|[12][0-9]|3[01])/[0-9]{4}$")) {
             // display error message
@@ -222,8 +218,29 @@ public class ExpenseController implements Initializable {
             alert.setContentText("Please enter a valid date (mm/dd/yyyy)");
             alert.showAndWait();
         }
+        // if cost is valid format with $
+        else if (!addCostField.getText().matches("^\\$?[0-9]+(\\.[0-9]{1,2})?$")) {
+            // display error message
+            Alert alert = new Alert(AlertType.ERROR);
+
+            alert.setTitle("Error");
+            alert.setHeaderText("Error");
+            alert.setContentText("Please enter a valid cost (ex. $1.50)");
+            alert.showAndWait();
+        }
+        
         // else add data to tableview
         else {
+            // add 2 decimal places to addCostField
+            addCostField.setText(String.format("%.2f", Double.parseDouble(addCostField.getText().substring(1))));
+            
+            // if cost doesn't have $ sign then add it
+            if (!addCostField.getText().contains("$")) {
+                addCostField.setText("$" + addCostField.getText());
+            }
+
+            
+
             // add data to tableview
             list.add(new Expense(addExpenseField.getText(), addCategoryField.getText(), addDateField.getText(), addCostField.getText()));
             // clear text fields
