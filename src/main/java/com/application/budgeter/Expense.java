@@ -1,37 +1,52 @@
 package com.application.budgeter;
 
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.util.regex.Pattern;
 
-// placeholder expense class for ExpenseController
+// This class defines an object that holds information about an expense entry
 
-public class Expense 
-{
-    String expense;
-    String category;
-    String date;
-    String cost;
+public class Expense {
+    private int ID;
+    private String name;
+    private LocalDate localDate;
+    private String category;
+    private int amount;
 
-    public Expense(String expense, String category, String date, String cost) {
-        this.expense = expense;
+    
+    public Expense (int ID, String name, LocalDate localDate, String category, int amount) {
+        this.ID = ID;
+        this.name = name;
+        this.localDate =localDate;
         this.category = category;
-        this.date = date;
-        this.cost = cost;
+        this.amount = amount;
     }
 
-    // get methods used by ExpenseController
-    public String getExpense() {
-        return expense;
+    public boolean equals ( int ID, String name, LocalDate localDate, String category, int amount) {
+        return ID == this.ID 
+            && name.equals(this.name)
+            && localDate.equals(this.localDate)
+            && category.equals(this.category)
+            && amount == this.amount;
     }
 
-    public String getCategory() {
-        return category;
-    }
+    public int getID() { return ID; } 
 
-    public String getDate() {
-        return date;
-    }
+    public String getName() { return name; } 
 
-    public String getCost() {
-        return cost;
-    }
+    public LocalDate getLocalDate() { return localDate; } 
+
+    public String getCategory() { return category; } 
+
+    public int getAmount() { return amount; } 
+
+    public void setID(int ID) { this.ID= ID; } 
+
+    public void setName(String name) { this.name = name; } 
+
+    public void setLocalDate(LocalDate localDate) { this.localDate = localDate; } 
+
+    public void setCategory(String category) { this.category = category; } 
+
+    public void setAmount(int amount) { this.amount= amount; }
 }
- 

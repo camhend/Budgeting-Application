@@ -18,16 +18,23 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import java.io.IOException;
 import java.io.FileWriter;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.control.TableRow;
+
+
 
 public class ExpenseController implements Initializable {
 
     // initialize tableview from fxml
-    @FXML private TableView<Expense> expenseTable;
+    @FXML private TableView<PlaceholderExpense> expenseTable;
     // initialize table columns from fxml
-    @FXML private TableColumn<Expense, String> expenseColumn;
-    @FXML private TableColumn<Expense, String> categoryColumn;
-    @FXML private TableColumn<Expense, String> dateColumn;
-    @FXML private TableColumn<Expense, String> costColumn;
+    @FXML private TableColumn<PlaceholderExpense, String> expenseColumn;
+    @FXML private TableColumn<PlaceholderExpense, String> categoryColumn;
+    @FXML private TableColumn<PlaceholderExpense, String> dateColumn;
+    @FXML private TableColumn<PlaceholderExpense, String> costColumn;
 
     @FXML private MenuButton totalMenu;
     @FXML private Label total;
@@ -43,27 +50,27 @@ public class ExpenseController implements Initializable {
 
 
     // dummy data (replace with pulling from file)
-    ObservableList<Expense> list = FXCollections.observableArrayList(
-        new Expense("hotdog", "food", "03/03/2024", "$1.50"),
-        new Expense("notdog", "food", "03/04/2023", "$2.50"),
-        new Expense("hotdog", "food", "03/03/2023", "$1.50"),
-        new Expense("notdog", "food", "03/04/2023", "$2.50"),
-        new Expense("hotdog", "food", "03/03/2023", "$1.50"),
-        new Expense("notdog", "food", "03/04/2023", "$2.50"),
-        new Expense("hotdog", "food", "03/03/2023", "$1.50"),
-        new Expense("notdog", "food", "03/04/2023", "$2.50"),
-        new Expense("hotdog", "food", "03/03/2023", "$1.50"),
-        new Expense("notdog", "food", "03/04/2023", "$2.50"),
-        new Expense("hotdog", "food", "03/03/2023", "$1.50"),
-        new Expense("notdog", "food", "03/04/2023", "$2.50"),
-        new Expense("hotdog", "food", "03/03/2023", "$1.50"),
-        new Expense("notdog", "food", "03/04/2023", "$2.50"),
-        new Expense("hotdog", "food", "03/03/2023", "$1.50"),
-        new Expense("notdog", "food", "03/04/2023", "$2.50"),
-        new Expense("hotdog", "food", "03/03/2023", "$1.50"),
-        new Expense("notdog", "food", "03/04/2023", "$2.25"),
-        new Expense("hotdog", "food", "03/03/2023", "$1.50"),
-        new Expense("notdog", "food", "03/02/2022", "$2.50")
+    ObservableList<PlaceholderExpense> list = FXCollections.observableArrayList(
+        new PlaceholderExpense("hotdog", "food", "03/03/2024", "$1.50"),
+        new PlaceholderExpense("notdog", "food", "03/04/2023", "$2.50"),
+        new PlaceholderExpense("hotdog", "food", "03/03/2023", "$1.50"),
+        new PlaceholderExpense("notdog", "food", "03/04/2023", "$2.50"),
+        new PlaceholderExpense("hotdog", "food", "03/03/2023", "$1.50"),
+        new PlaceholderExpense("notdog", "food", "03/04/2023", "$2.50"),
+        new PlaceholderExpense("hotdog", "food", "03/03/2023", "$1.50"),
+        new PlaceholderExpense("notdog", "food", "03/04/2023", "$2.50"),
+        new PlaceholderExpense("hotdog", "food", "03/03/2023", "$1.50"),
+        new PlaceholderExpense("notdog", "food", "03/04/2023", "$2.50"),
+        new PlaceholderExpense("hotdog", "food", "03/03/2023", "$1.50"),
+        new PlaceholderExpense("notdog", "food", "03/04/2023", "$2.50"),
+        new PlaceholderExpense("hotdog", "food", "03/03/2023", "$1.50"),
+        new PlaceholderExpense("notdog", "food", "03/04/2023", "$2.50"),
+        new PlaceholderExpense("hotdog", "food", "03/03/2023", "$1.50"),
+        new PlaceholderExpense("notdog", "food", "03/04/2023", "$2.50"),
+        new PlaceholderExpense("hotdog", "food", "03/03/2023", "$1.50"),
+        new PlaceholderExpense("notdog", "food", "03/04/2023", "$2.25"),
+        new PlaceholderExpense("hotdog", "food", "03/03/2023", "$1.50"),
+        new PlaceholderExpense("notdog", "food", "03/02/2022", "$2.50")
     );
 
 
@@ -86,8 +93,12 @@ public class ExpenseController implements Initializable {
         dateColumn.setStyle("-fx-alignment: CENTER;");
         costColumn.setStyle("-fx-alignment: CENTER;");
 
-        // add columns to tableview
-        expenseTable.getColumns().addAll(expenseColumn, categoryColumn, dateColumn, costColumn);
+        // add columns to tableview if not already added
+        if (!expenseTable.getColumns().contains(expenseColumn)) {
+            expenseTable.getColumns().addAll(expenseColumn, categoryColumn, dateColumn, costColumn);
+        }
+
+        
 
         // add dummy data to tableview
         expenseTable.setItems(list);
@@ -95,7 +106,7 @@ public class ExpenseController implements Initializable {
         // calcluate all costs from list
         double totalCost = 0;
         // adds all costs from list to totalCost removing the $ sign
-        for (Expense expense : list) {
+        for (PlaceholderExpense expense : list) {
             totalCost += Double.parseDouble(expense.getCost().substring(1));
         }
 
@@ -115,7 +126,7 @@ public class ExpenseController implements Initializable {
 
         if (months == 0) {
             // adds all costs from list to totalCost removing the $ sign
-            for (Expense expense : list) {
+            for (PlaceholderExpense expense : list) {
                 // if dollar sign 
                 if (expense.getCost().charAt(0) == '$') {
                     totalCost += Double.parseDouble(expense.getCost().substring(1));
@@ -134,7 +145,7 @@ public class ExpenseController implements Initializable {
             // 
 
             // adds all costs from list to totalCost removing the $ sign
-            for (Expense expense : list) {
+            for (PlaceholderExpense expense : list) {
                 // convert expense date to localDate
                 LocalDate expenseDate = LocalDate.parse(expense.getDate(), DateTimeFormatter.ofPattern("MM/dd/yyyy"));
                 if (expenseDate.isAfter(pastDate) && expenseDate.isBefore(currentDate) || expenseDate.isEqual(currentDate))
@@ -146,7 +157,7 @@ public class ExpenseController implements Initializable {
 
         return String.format("%.2f", totalCost);
     } // end calcluateTotal method
-
+ 
 
 
     // changes menu button text to selected menu item
@@ -242,7 +253,7 @@ public class ExpenseController implements Initializable {
             
 
             // add data to tableview
-            list.add(new Expense(addExpenseField.getText(), addCategoryField.getText(), addDateField.getText(), addCostField.getText()));
+            list.add(new PlaceholderExpense(addExpenseField.getText(), addCategoryField.getText(), addDateField.getText(), addCostField.getText()));
             // clear text fields
             addExpenseField.clear();
             addCategoryField.clear();
@@ -261,7 +272,7 @@ public class ExpenseController implements Initializable {
         try {
             // open file and write each expense to file
             FileWriter csvWriter = new FileWriter("expenses.csv");
-            for (Expense expense : list) {
+            for (PlaceholderExpense expense : list) {
                 csvWriter.append(expense.getExpense() + "," + expense.getCategory() + "," + expense.getDate() + "," + expense.getCost() + "\n");
             }
             csvWriter.flush(); // flush data to file
@@ -285,4 +296,6 @@ public class ExpenseController implements Initializable {
             alert.showAndWait();
         }
     } // end saveExpenses method
+
+    
 } // end ExpenseController class
