@@ -21,32 +21,32 @@ public class ExpenseTest {
     }
     
     @Test
-    public void getNameTest() {
+    public void testGetName() {
         assertEquals("testname", expense.getName());
     }
 
     @Test
-    public void getIdTest() {
+    public void testGetId() {
         assertEquals(1, expense.getID());
     }
 
     @Test 
-    public void getLocalDateTest() {
+    public void testGetLocalDate() {
         assertEquals(LocalDate.parse("2001-01-01"), expense.getLocalDate());
     }
 
     @Test 
-    public void getCategoryTest() {
+    public void testGetCategory() {
         assertEquals("food", expense.getCategory());
     }
 
     @Test 
-    public void getAmountTest() {
+    public void testGetAmount() {
         assertEquals(15, expense.getAmount());
     }
 
     @Test
-    public void equalsTest() {
+    public void testEquals() {
         Expense other = new Expense(
             1, 
             "testname", 
