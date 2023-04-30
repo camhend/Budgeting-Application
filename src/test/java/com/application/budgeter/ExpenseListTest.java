@@ -20,11 +20,16 @@ public class ExpenseListTest {
             15);
     }
 
+    @Test
+    public void testIsEmpty() {
+        ExpenseList emptyList = new ExpenseList();
+        assertTrue(emptyList.isEmpty());
+    }  
+
     @Test(expected = NoSuchElementException.class)
-    public void removeFromEmptyList() {
+    public void testRemoveFromEmptyList() {
         ExpenseList emptyList = new ExpenseList();
         emptyList.remove(expense);
-
-    }
+    }    
 
 }
