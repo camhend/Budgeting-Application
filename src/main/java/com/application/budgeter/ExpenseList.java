@@ -56,8 +56,8 @@ public class ExpenseList {
     */
     
     // Add to end of list. Increment ID from current tail node's expense ID
-    public void add ( LocalDate localDate, String name, String category, int amount  ) { 
-        Expense expense = new Expense( idCount, name, localDate, category, amount);
+    public void add ( String name, String category, LocalDate localDate, int amount) { 
+        Expense expense = new Expense( idCount, name, category, localDate, amount);
         ExpenseNode node = new ExpenseNode (expense, null, null);
         if ( this.isEmpty() ) {
             head = node;
@@ -72,7 +72,7 @@ public class ExpenseList {
         size++;
     }
 
-    // get the ExpenseNode that contains the given Expense
+    // Get the ExpenseNode that contains the given Expense
     private ExpenseNode getNode( Expense other) {
         ExpenseNode current = head;
         while (current != null) {
@@ -85,17 +85,71 @@ public class ExpenseList {
         return null;
     }
 
+    // Get Expense object at the given list index
+    public Expense get( int index ) {
+        if ( index < 0 || index > size - 1 ) {
+            throw new IndexOutOfBoundsException();
+        }
+        ExpenseNode current;
+        if ( index < size / 2 ) {
+            current = head;
+            for (int i = 0; i < index; i++) {
+                current = current.next;
+            }
+        } else {
+            current = tail;
+            for (int i = size - 1; i > index; i--) {
+                current = current.prev;
+            }
+        }
+        return current.expense;
+    }
+
+    // Return whether list contains the given Expense
+    public boolean contains( Expense target ) {
+        ExpenseNode current = head;
+        while (current != null) {
+            if (current.expense.equals( target )) {
+                return true;
+            } else {
+                current = current.next;
+            }
+        }
+        return false;
+    }
+
+    // clear the list of all elements
+    public void clear () {
+        this.head = null;
+        this.tail = null;
+        size = 0;
+        totalSpending = 0;
+        idCount = 1;
+    }
+
     // Remove the ExpenseNode that contains the given Expense
     public void remove( Expense target ) {
         if (head == null) {
             throw new NoSuchElementException("Cannot remove an Expense not in the list.");
         } else {
             ExpenseNode node = this.getNode(target);
-            node.prev.next = node.next;
-            node.next.prev = node.prev;
+            if (node == head) {
+                node.next.prev = null;
+                head = node.next;
+            } else if (node == tail) {
+                node.prev.next = null;
+                tail = node.prev;
+            } else {
+                node.prev.next = node.next;
+                node.next.prev = node.prev;
+            }
             totalSpending -= target.getAmount();
             size--;
         }
+    }
+
+    public int size() {
+        return size;
     }
 
     public boolean isEmpty() {
