@@ -5,7 +5,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.regex.Pattern;
 
 // This class defines an object that holds information about an expense entry
-
 public class Expense {
     private int ID;
     private String name;
@@ -22,12 +21,12 @@ public class Expense {
         this.amount = amount;
     }
 
-    public boolean equals ( int ID, String name, LocalDate localDate, String category, int amount) {
-        return ID == this.ID 
-            && name.equals(this.name)
-            && localDate.equals(this.localDate)
-            && category.equals(this.category)
-            && amount == this.amount;
+    public boolean equals ( Expense other) {
+        return other.getID() == this.ID 
+            && other.getName().equals(this.name)
+            && other.getLocalDate().equals(this.localDate)
+            && other.getCategory().equals(this.category)
+            && other.getAmount() == this.amount;
     }
 
     public int getID() { return ID; } 

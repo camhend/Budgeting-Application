@@ -1,10 +1,12 @@
 package com.application.budgeter;
 
 import java.time.*;
+import java.util.NoSuchElementException;
 
 public class ExpenseList {
     private ExpenseNode head;
     private ExpenseNode tail;
+    private int totalSpending = 0;
 
     private static class ExpenseNode {
         public ExpenseNode next;
@@ -37,8 +39,6 @@ public class ExpenseList {
         }
     }
     */
-
-
     
     // add to end of list. Increment ID from current tail node's expense ID
     public void add ( LocalDate localDate, String name, String category, int amount  ) {
@@ -58,6 +58,7 @@ public class ExpenseList {
             node.prev = tail;
             tail = node;
         }
+        totalSpending += amount;
     }
 
     // get the ExpenseNode that contains the given Expense
@@ -75,9 +76,15 @@ public class ExpenseList {
 
     // Remove the ExpenseNode that contains the given Expense
     public void remove( Expense target ) {
-        ExpenseNode node = this.getNode(target);
-        node.prev.next = node.next;
-        node.next.prev = node.prev;
+        if (head == null) {
+            throw new NoSuchElementException("Cannot remove an Expense not in the list.");
+        } else {
+            ExpenseNode node = this.getNode(target);
+            node.prev.next = node.next;
+            node.next.prev = node.prev;
+            totalSpending -= target.getAmount();
+        }
+        
     }
 
     public boolean isEmpty() {
