@@ -3,11 +3,26 @@ package com.application.budgeter;
 import java.time.*;
 import java.util.NoSuchElementException;
 
+// This class defines a LinkedList used for storing
+// Expense objects. Each new Expense is assigned an ID
+// and added to the end of the list.
 public class ExpenseList {
     private ExpenseNode head;
     private ExpenseNode tail;
-    private int totalSpending = 0;
+    private int totalSpending;
+    private int size;
+    private int idCount;
 
+    // ExpenseList constructor
+    public ExpenseList () {
+        this.head  = null;
+        this.tail = null;
+        this.size = 0;
+        this.totalSpending = 0;
+        this.idCount = 1;
+    }
+
+    // Nested class for LinkedList Nodes
     private static class ExpenseNode {
         public ExpenseNode next;
         public ExpenseNode prev;
@@ -40,15 +55,9 @@ public class ExpenseList {
     }
     */
     
-    // add to end of list. Increment ID from current tail node's expense ID
-    public void add ( LocalDate localDate, String name, String category, int amount  ) {
-        int ID;
-        if ( this.isEmpty() ) {
-            ID = 1;
-        } else {
-            ID = tail.expense.getID() + 1;
-        }        
-        Expense expense = new Expense( ID, name, localDate, category, amount);
+    // Add to end of list. Increment ID from current tail node's expense ID
+    public void add ( LocalDate localDate, String name, String category, int amount  ) { 
+        Expense expense = new Expense( idCount, name, localDate, category, amount);
         ExpenseNode node = new ExpenseNode (expense, null, null);
         if ( this.isEmpty() ) {
             head = node;
@@ -59,6 +68,8 @@ public class ExpenseList {
             tail = node;
         }
         totalSpending += amount;
+        idCount++;
+        size++;
     }
 
     // get the ExpenseNode that contains the given Expense
@@ -83,8 +94,8 @@ public class ExpenseList {
             node.prev.next = node.next;
             node.next.prev = node.prev;
             totalSpending -= target.getAmount();
+            size--;
         }
-        
     }
 
     public boolean isEmpty() {
