@@ -13,19 +13,19 @@ public class Expense {
     private int amount;
 
     
-    public Expense (int ID, String name, LocalDate localDate, String category, int amount) {
+    public Expense (int ID, String name, String category, LocalDate localDate, int amount) {
         this.ID = ID;
         this.name = name;
-        this.localDate =localDate;
         this.category = category;
+        this.localDate =localDate;
         this.amount = amount;
     }
 
     public boolean equals ( Expense other) {
         return other.getID() == this.ID 
-            && other.getName().equals(this.name)
-            && other.getLocalDate().equals(this.localDate)
+            && other.getName().equals(this.name)    
             && other.getCategory().equals(this.category)
+            && other.getLocalDate().equals(this.localDate)
             && other.getAmount() == this.amount;
     }
 
@@ -33,9 +33,9 @@ public class Expense {
 
     public String getName() { return name; } 
 
-    public LocalDate getLocalDate() { return localDate; } 
-
     public String getCategory() { return category; } 
+    
+    public LocalDate getLocalDate() { return localDate; } 
 
     public int getAmount() { return amount; } 
 
@@ -43,9 +43,9 @@ public class Expense {
 
     public void setName(String name) { this.name = name; } 
 
-    public void setLocalDate(LocalDate localDate) { this.localDate = localDate; } 
-
     public void setCategory(String category) { this.category = category; } 
+
+    public void setLocalDate(LocalDate localDate) { this.localDate = localDate; } 
 
     public void setAmount(int amount) { this.amount= amount; }
 }

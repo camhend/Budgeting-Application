@@ -15,8 +15,8 @@ public class ExpenseTest {
         expense = new Expense(
             1, 
             "testname", 
-            LocalDate.parse("2001-01-01"), 
             "food", 
+            LocalDate.parse("2001-01-01"), 
             15);
     }
     
@@ -47,14 +47,21 @@ public class ExpenseTest {
 
     @Test
     public void testEquals() {
+        Expense expense = new Expense(
+            1, 
+            "testname", 
+            "food", 
+            LocalDate.parse("2001-01-01"), 
+            15);
+        
         Expense other = new Expense(
             1, 
             "testname", 
-            LocalDate.parse("2001-01-01"), 
             "food", 
+            LocalDate.parse("2001-01-01"), 
             15);
             assertTrue(expense.equals(other));
     }
-    
+
 
 }
