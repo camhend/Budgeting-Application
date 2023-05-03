@@ -19,7 +19,6 @@ public class ExpenseList {
         this.tail = null;
         this.size = 0;
         this.totalSpending = 0;
-        this.idCount = 1;
     }
 
     // Nested class for LinkedList Nodes
@@ -57,7 +56,7 @@ public class ExpenseList {
     
     // Add to end of list. Increment ID from current tail node's expense ID
     public void add ( String name, String category, LocalDate localDate, int amount) { 
-        Expense expense = new Expense( idCount, name, category, localDate, amount);
+        Expense expense = new Expense( name, category, localDate, amount);
         ExpenseNode node = new ExpenseNode (expense, null, null);
         if ( this.isEmpty() ) {
             head = node;
@@ -68,7 +67,6 @@ public class ExpenseList {
             tail = node;
         }
         totalSpending += amount;
-        idCount++;
         size++;
     }
 
@@ -106,10 +104,10 @@ public class ExpenseList {
     }
 
     // Return whether list contains the given Expense
-    public boolean contains( Expense target ) {
+    public boolean contains( Expense expense ) {
         ExpenseNode current = head;
         while (current != null) {
-            if (current.expense.equals( target )) {
+            if (current.expense.equals( expense )) {
                 return true;
             } else {
                 current = current.next;
@@ -128,11 +126,11 @@ public class ExpenseList {
     }
 
     // Remove the ExpenseNode that contains the given Expense
-    public void remove( Expense target ) {
+    public void remove( Expense expense ) {
         if (head == null) {
             throw new NoSuchElementException("Cannot remove an Expense not in the list.");
         } else {
-            ExpenseNode node = this.getNode(target);
+            ExpenseNode node = this.getNode(expense);
             if (node == head) {
                 node.next.prev = null;
                 head = node.next;
@@ -143,7 +141,7 @@ public class ExpenseList {
                 node.prev.next = node.next;
                 node.next.prev = node.prev;
             }
-            totalSpending -= target.getAmount();
+            totalSpending -= expense.getAmount();
             size--;
         }
     }

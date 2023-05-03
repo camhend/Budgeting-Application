@@ -13,7 +13,6 @@ public class ExpenseTest {
     @Before
     public void initialize() {
         expense = new Expense(
-            1, 
             "testname", 
             "food", 
             LocalDate.parse("2001-01-01"), 
@@ -23,11 +22,6 @@ public class ExpenseTest {
     @Test
     public void testGetName() {
         assertEquals("testname", expense.getName());
-    }
-
-    @Test
-    public void testGetId() {
-        assertEquals(1, expense.getID());
     }
 
     @Test 
@@ -48,14 +42,12 @@ public class ExpenseTest {
     @Test
     public void testEquals() {
         Expense expense = new Expense(
-            1, 
             "testname", 
             "food", 
             LocalDate.parse("2001-01-01"), 
             15);
         
         Expense other = new Expense(
-            1, 
             "testname", 
             "food", 
             LocalDate.parse("2001-01-01"), 
