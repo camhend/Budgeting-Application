@@ -9,28 +9,20 @@ import java.io.IOException;
 
 // TODO
     // resizing
-        // anchorpane constraints
-        // replace vbox with anchorpane
+        // on stage size chance anchorpane constraints
         // figure out how to lock aspect ratio
-    // make use of controllers 
-    // read and add fx:id to fxml elements
-    // make drop down total time button change text
-    // make add expense button add expense to tableview
-    // save button???
+    // polish and bug test front end
+        // make draft of integration
+    // observable linked list for tableview
+    // make menu work
 
 // problems
     // button images not showing in Menu.fxml
         // possibly because Menu.fxml is being imported into the other pages instead of being loaded by the main app
-    // bug occuring saying duplicate columns in tableview
     // tableview doesnt sort by dateColumn accurately
+        // implement merge sort for linked list
 
-// done / fixed
-    // make menu section a single file and use it in each page (done)
-        // bugfix: font from imported file needs to loaded by each page
-    // change pages (done)
-        // use onAction in buttons on pages
-        // make sure to use fx:controller in each fxml file
-    // add images to menu buttons (done)
+
 
 
 
@@ -41,7 +33,10 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 
-        scene = new Scene(loadFXML("DashboardPage"), 900, 615);
+        scene = new Scene(loadFXML("MainPage"), 900, 615);
+
+        
+
 
         // set current size to min
         stage.setMinWidth(900);
@@ -57,6 +52,8 @@ public class App extends Application {
     }
 
     private static Parent loadFXML(String fxml) throws IOException {
+        String path = App.class.getResource(fxml + ".fxml").toString();
+        System.out.println("Loading FXML from: " + path);
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
         return fxmlLoader.load();
     }

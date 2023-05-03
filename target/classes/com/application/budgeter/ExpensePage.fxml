@@ -17,67 +17,53 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 
-<VBox minHeight="600.0" minWidth="900.0" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.application.budgeter.ExpenseController">
+
+<!-- Expense Tracker Section-->
+<AnchorPane id="Content" minHeight="600.0" minWidth="680.0" prefHeight="600.0" prefWidth="680.0" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.application.budgeter.ExpenseController">
   <children>
-    <SplitPane dividerPositions="0.5" focusTraversable="true" minHeight="600.0" minWidth="900.0" prefHeight="600.0" prefWidth="900.0" VBox.vgrow="ALWAYS">
+    <Label alignment="CENTER" layoutX="264.0" layoutY="20.0" minHeight="27.0" minWidth="144.0" prefHeight="27.0" prefWidth="144.0" style="&#10;" text="Expense Tracker" textAlignment="CENTER" textFill="#726d6d"  VBox.vgrow="ALWAYS">
+      <font>
+        <Font fx:id="x1" size="18.0" />                
+      </font>
+    </Label>
+    <!-- Expense Table -->
+    <TableView fx:id="expenseTable" editable="false" layoutX="63.0" layoutY="185.0" minHeight="415.0" minWidth="558.0" prefHeight="415.0" prefWidth="558.0"  VBox.vgrow="ALWAYS">
+      <columns>
+        <TableColumn editable="false" minWidth="180.0" text="Expense" fx:id="expenseColumn" />
+        <TableColumn editable="false" minWidth="145.0" text="Category" fx:id="categoryColumn" />
+        <TableColumn editable="false" minWidth="116.0" text="Date" fx:id="dateColumn" />
+        <TableColumn editable="false" minWidth="103.0" text="Cost" fx:id="costColumn" />
+      </columns>
+    </TableView>
+
+    <!-- add button -->
+    <Button layoutX="443.0" layoutY="149.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" text="+" fx:id="addExpenseButton" onAction="#addExpense"/>
+    
+    <Button layoutX="548.0" layoutY="149.0" minHeight="25.0" minWidth="70.0" mnemonicParsing="false" text="Save" fx:id="saveExpenseButton" onAction="#saveExpenses"/>
+
+    <!-- total -->
+    <Text fill="#574f4f" layoutX="555.0" layoutY="65.0" strokeType="OUTSIDE" strokeWidth="0.0" text="TOTAL" wrappingWidth="37.13671875" />
+    <!-- text field for total -->
+    <Label fx:id="total" text="" alignment="CENTER" style="-fx-background-color: gainsboro; -fx-font-size: 16;"  layoutX="526.0" layoutY="73.0" minHeight="20.0" minWidth="93.0" />
+
+
+    <!-- menu button for choosing total calculation over time-->
+    <MenuButton fx:id="totalMenu" alignment="CENTER" layoutX="410.0" layoutY="73.0" minHeight="25.0" minWidth="117.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" text="Time">
       <items>
-
-        <!-- loading font used in Menu-->
-        <fx:define>
-          <Font fx:id="x1" size="18.0" />
-        </fx:define>
-
-        <!-- Importing Menu Pane-->
-        <fx:include source="./Menu.fxml" />
-
-        <!-- Expense Tracker Section-->
-        <AnchorPane id="Content" minHeight="600.0" minWidth="680.0" prefHeight="600.0" prefWidth="680.0" VBox.vgrow="ALWAYS">
-          <children>
-            <Label alignment="CENTER" font="$x1" layoutX="264.0" layoutY="20.0" minHeight="27.0" minWidth="144.0" prefHeight="27.0" prefWidth="144.0" style="&#10;" text="Expense Tracker" textAlignment="CENTER" textFill="#726d6d"  VBox.vgrow="ALWAYS" />
-
-            <!-- Expense Table -->
-            <TableView fx:id="expenseTable" editable="true" layoutX="63.0" layoutY="185.0" minHeight="415.0" minWidth="558.0" prefHeight="415.0" prefWidth="558.0"  VBox.vgrow="ALWAYS">
-              <columns>
-                <TableColumn editable="false" minWidth="180.0" text="Expense" fx:id="expenseColumn" />
-                <TableColumn editable="false" minWidth="145.0" text="Category" fx:id="categoryColumn" />
-                <TableColumn editable="false" minWidth="116.0" text="Date" fx:id="dateColumn" />
-                <TableColumn editable="false" minWidth="103.0" text="Cost" fx:id="costColumn" />
-              </columns>
-            </TableView>
-
-            <!-- add button -->
-            <Button layoutX="443.0" layoutY="149.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" text="+" fx:id="addExpenseButton" onAction="#addExpense"/>
-            
-            <Button layoutX="548.0" layoutY="149.0" minHeight="25.0" minWidth="70.0" mnemonicParsing="false" text="Save" fx:id="saveExpenseButton" onAction="#saveExpenses"/>
-
-            <!-- total -->
-            <Text fill="#574f4f" layoutX="555.0" layoutY="65.0" strokeType="OUTSIDE" strokeWidth="0.0" text="TOTAL" wrappingWidth="37.13671875" />
-            <!-- text field for total -->
-            <Label fx:id="total" text="" alignment="CENTER" style="-fx-background-color: gainsboro; -fx-font-size: 16;"  layoutX="526.0" layoutY="73.0" minHeight="20.0" minWidth="93.0" />
-
-
-            <!-- menu button for choosing total calculation over time-->
-            <MenuButton fx:id="totalMenu" alignment="CENTER" layoutX="410.0" layoutY="73.0" minHeight="25.0" minWidth="117.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" text="Time">
-              <items>
-                <MenuItem mnemonicParsing="false" text="Past Month" onAction="#changeMenuButton" />
-                <MenuItem mnemonicParsing="false" text="Past 3 Months" onAction="#changeMenuButton" />
-                <MenuItem mnemonicParsing="false" text="Past 6 Months" onAction="#changeMenuButton" />
-                <MenuItem mnemonicParsing="false" text="Past 12 Months" onAction="#changeMenuButton" />
-                <MenuItem mnemonicParsing="false" text="All Time" onAction="#changeMenuButton" />
-              </items>
-            </MenuButton>
-
-            <!-- text fields for adding expenses -->
-            <TextField layoutX="63.0" layoutY="149.0" minHeight="25.0" minWidth="95.0" prefHeight="25.0" prefWidth="95.0" promptText="Expense..." fx:id="addExpenseField"/>
-            <TextField layoutX="158.0" layoutY="149.0" minHeight="25.0" minWidth="95.0" prefHeight="25.0" prefWidth="95.0" promptText="Category..." fx:id="addCategoryField"/>
-            <TextField layoutX="253.0" layoutY="149.0" minHeight="25.0" minWidth="95.0" prefHeight="25.0" prefWidth="95.0" promptText="Date..." fx:id="addDateField"/>
-            <TextField layoutX="348.0" layoutY="149.0" minHeight="25.0" minWidth="95.0" prefHeight="25.0" prefWidth="95.0" promptText="Cost..." fx:id="addCostField"/>
-
-
-          </children>
-        </AnchorPane>
-
+        <MenuItem mnemonicParsing="false" text="Past Month" onAction="#changeMenuButton" />
+        <MenuItem mnemonicParsing="false" text="Past 3 Months" onAction="#changeMenuButton" />
+        <MenuItem mnemonicParsing="false" text="Past 6 Months" onAction="#changeMenuButton" />
+        <MenuItem mnemonicParsing="false" text="Past 12 Months" onAction="#changeMenuButton" />
+        <MenuItem mnemonicParsing="false" text="All Time" onAction="#changeMenuButton" />
       </items>
-    </SplitPane>
+    </MenuButton>
+
+    <!-- text fields for adding expenses -->
+    <TextField layoutX="63.0" layoutY="149.0" minHeight="25.0" minWidth="95.0" prefHeight="25.0" prefWidth="95.0" promptText="Expense..." fx:id="addExpenseField"/>
+    <TextField layoutX="158.0" layoutY="149.0" minHeight="25.0" minWidth="95.0" prefHeight="25.0" prefWidth="95.0" promptText="Category..." fx:id="addCategoryField"/>
+    <TextField layoutX="253.0" layoutY="149.0" minHeight="25.0" minWidth="95.0" prefHeight="25.0" prefWidth="95.0" promptText="Date..." fx:id="addDateField"/>
+    <TextField layoutX="348.0" layoutY="149.0" minHeight="25.0" minWidth="95.0" prefHeight="25.0" prefWidth="95.0" promptText="Cost..." fx:id="addCostField"/>
+
+
   </children>
-</VBox>
+</AnchorPane>

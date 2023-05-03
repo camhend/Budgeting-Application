@@ -21,10 +21,10 @@
 Menu.fxml is imported into BudgetPage.fxml, DashboardPage.fxml, and ExpensePage.fxml and is used as a navigation menu for the application. 
 -->
 
-<AnchorPane minHeight="600.0" minWidth="220.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml" fx:controller="com.application.budgeter.MenuController">
+<AnchorPane minHeight="600.0" minWidth="220.0" fx:id="menuPage" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml" fx:controller="com.application.budgeter.MenuController">
     <children>
         <!-- Title (Menu) -->
-        <Label alignment="CENTER" layoutX="83.0" layoutY="20.0" minHeight="30.0" minWidth="60.0" style="&#10;" text="Menu" textAlignment="CENTER" textFill="#726d6d" wrapText="false">
+        <Label fx:id="menuTitle" alignment="CENTER" layoutX="83.0" layoutY="20.0" minHeight="30.0" minWidth="60.0" style="&#10;" text="Menu" textAlignment="CENTER" textFill="#726d6d" wrapText="false">
             <font>
                 <Font size="18.0" fx:id="x1"/>
             </font>

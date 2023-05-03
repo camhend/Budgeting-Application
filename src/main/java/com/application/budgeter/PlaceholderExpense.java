@@ -33,5 +33,22 @@ public class PlaceholderExpense
     public String getCost() {
         return cost;
     }
+
+    // set methods used by ExpenseController
+    public void setExpense(String expense) {
+        this.expense = expense;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public void setCost(String cost) {
+        this.cost = cost;
+    }
 }
  

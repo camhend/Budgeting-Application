@@ -23,6 +23,16 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.control.TableRow;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.util.converter.IntegerStringConverter;
+import javafx.util.converter.LocalDateStringConverter;
+import javafx.scene.control.SplitPane;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.binding.Bindings;
+import java.util.Scanner;
+import java.io.FileNotFoundException;
+import java.io.File;
 
 
 
@@ -36,18 +46,19 @@ public class ExpenseController implements Initializable {
     @FXML private TableColumn<PlaceholderExpense, String> dateColumn;
     @FXML private TableColumn<PlaceholderExpense, String> costColumn;
 
-    @FXML private MenuButton totalMenu;
+    @FXML private MenuButton totalMenu; // menu for tracking different time periods 
     @FXML private Label total;
 
-    @FXML private Button addExpenseButton;
-
-    @FXML private Button saveExpenseButton;
-
+    @FXML private Button addExpenseButton; // + button
     @FXML private TextField addExpenseField;
     @FXML private TextField addCategoryField;
     @FXML private TextField addDateField;
     @FXML private TextField addCostField;
 
+
+    @FXML private Button saveExpenseButton; // saves expense to file
+
+    
 
     // dummy data (replace with pulling from file)
     ObservableList<PlaceholderExpense> list = FXCollections.observableArrayList(
@@ -99,6 +110,38 @@ public class ExpenseController implements Initializable {
         }
 
         
+        // read expenses.csv file and add to list
+        try {
+            // create new scanner for file
+            Scanner scanner = new Scanner(new File("expenses.csv"));
+            // while scanner has next line
+            while (scanner.hasNextLine()) {
+                // create new scanner for line
+                Scanner line = new Scanner(scanner.nextLine());
+                // use , as delimiter
+                line.useDelimiter(",");
+                // add new PlaceholderExpense to list
+                list.add(new PlaceholderExpense(line.next(), line.next(), line.next(), line.next()));
+                // close line scanner
+                line.close();
+            }
+            // close scanner
+            scanner.close();
+        // catch if file is not found
+        } catch (FileNotFoundException e) {
+            // create new file
+            try {
+                new File("expenses.csv").createNewFile();
+            // catch if file cannot be created
+            } catch (IOException e2) {
+                // error message
+                Alert alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Error Creating New Expenses File");
+                alert.setContentText("An error occured while creating a new expenses file.");
+                alert.showAndWait();
+            }
+        }
 
         // add dummy data to tableview
         expenseTable.setItems(list);
@@ -114,7 +157,43 @@ public class ExpenseController implements Initializable {
         totalMenu.setText("All Time");
         // set total label to totalCost
         total.setText("$" + totalCost);
-    } // end initialize
+
+        // right click to delete row
+        // context menu for deleting row
+        ContextMenu editingContextMenu = new ContextMenu();
+        // menu item for deleting row
+        MenuItem deleteMenuItem = new MenuItem("Delete");
+        // edit menu item 
+        MenuItem editMenuItem = new MenuItem("Edit");
+        // add menu item to context menu
+        editingContextMenu.getItems().addAll(deleteMenuItem, editMenuItem);
+
+        // set context menu to tableview
+        expenseTable.setContextMenu(editingContextMenu);
+
+        // set event handler for when delete menu item is clicked
+        deleteMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                // get selected row
+                PlaceholderExpense selectedExpense = expenseTable.getSelectionModel().getSelectedItem();
+                // remove selected row from list
+                list.remove(selectedExpense);
+                // update tableview
+                expenseTable.setItems(list);
+                // update total
+                updateTotal();
+            }
+        });
+
+        // set event handler for when edit menu item is clicked
+        // make tableview editable
+        // when value is changed check if valid
+            // all fields must be filled
+            // date is mm/dd/yyyy
+            // cost is a number (no letters) add $ sign if not added, make sure 2 decimal format
+        
+    } // end initialize method
 
     
 
@@ -295,7 +374,8 @@ public class ExpenseController implements Initializable {
             alert.setContentText("Error saving expenses to file");
             alert.showAndWait();
         }
-    } // end saveExpenses method
-
+    } // end saveExpenses 
+    
+    
     
 } // end ExpenseController class
