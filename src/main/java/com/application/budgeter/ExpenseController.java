@@ -98,6 +98,12 @@ public class ExpenseController implements Initializable {
     @Override
     public void initialize(java.net.URL arg0, java.util.ResourceBundle arg1) {
 
+        // make total's width = 10% of window width
+        total.setPrefWidth(expensePage.getWidth() * .1);
+
+
+
+
        
 
         // listener for adjusting elements' width when window is resized
@@ -114,7 +120,7 @@ public class ExpenseController implements Initializable {
 
            
             AnchorPane.setRightAnchor(totalTitle, total.getWidth() + newVal.doubleValue() * .1);  // set totalTitle above totalMenu            
-            AnchorPane.setRightAnchor(totalMenu, total.getWidth() + newVal.doubleValue() * .1);  // total menu next to total label
+            AnchorPane.setRightAnchor(totalMenu, total.getWidth() + newVal.doubleValue() * .1 + totalMenu.getWidth());  // total menu next to total label
 
             // tableview takes up 80% of window width centered
             AnchorPane.setLeftAnchor(expenseTable, newVal.doubleValue() * .1);
@@ -139,6 +145,8 @@ public class ExpenseController implements Initializable {
             // save button at right 10% of window
             AnchorPane.setLeftAnchor(saveExpenseButton, newVal.doubleValue() * .8);
             AnchorPane.setRightAnchor(saveExpenseButton, newVal.doubleValue() * .1);    
+
+            
         });
 
         // listener for adjusting elements' height when window is resized
@@ -271,6 +279,7 @@ public class ExpenseController implements Initializable {
             // date is mm/dd/yyyy
             // cost is a number (no letters) add $ sign if not added, make sure 2 decimal format
         
+
     } // end initialize method
 
     
@@ -399,10 +408,15 @@ public class ExpenseController implements Initializable {
         
         // else add data to tableview
         else {
+            // if addCostField has $ sign remove it
+            if (addCostField.getText().charAt(0) == '$') {
+                addCostField.setText(addCostField.getText().substring(1));
+            }
+
             // add 2 decimal places to addCostField
-            addCostField.setText(String.format("%.2f", Double.parseDouble(addCostField.getText().substring(1))));
+            addCostField.setText(String.format("%.2f", Double.parseDouble(addCostField.getText())));
             
-            // if cost doesn't have $ sign then add it
+            // add $ back to addCostField
             if (!addCostField.getText().contains("$")) {
                 addCostField.setText("$" + addCostField.getText());
             }

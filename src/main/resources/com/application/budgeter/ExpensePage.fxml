@@ -26,6 +26,8 @@
         <Font fx:id="x1" size="18.0" />                
       </font>
     </Label>
+
+
     <!-- Expense Table -->
     <TableView fx:id="expenseTable" editable="false" VBox.vgrow="ALWAYS">
       <columns>
@@ -36,13 +38,16 @@
       </columns>
     </TableView>
 
+
     <!-- add button -->
     <Button mnemonicParsing="false" text="+" fx:id="addExpenseButton" onAction="#addExpense"/>
     
+    <!-- save button -->
     <Button mnemonicParsing="false" text="Save" fx:id="saveExpenseButton" onAction="#saveExpenses"/>
 
-    <!-- total -->
+    <!-- total title -->
     <Text fx:id="totalTitle" fill="#574f4f" textAlignment="CENTER" strokeType="OUTSIDE" strokeWidth="0.0" text="TOTAL" wrappingWidth="37.13671875" />
+
     <!-- text field for total -->
     <Label fx:id="total" text="" alignment="CENTER" style="-fx-background-color: gainsboro; -fx-font-size: 16;" />
 
@@ -57,6 +62,7 @@
         <MenuItem mnemonicParsing="false" text="All Time" onAction="#changeMenuButton" />
       </items>
     </MenuButton>
+
 
     <!-- text fields for adding expenses -->
     <TextField promptText="Expense..." fx:id="addExpenseField"/>

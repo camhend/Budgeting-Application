@@ -24,45 +24,21 @@ Menu.fxml is imported into BudgetPage.fxml, DashboardPage.fxml, and ExpensePage.
 <AnchorPane minHeight="600.0" minWidth="220.0" fx:id="menuPage" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml" fx:controller="com.application.budgeter.MenuController">
     <children>
         <!-- Title (Menu) -->
-        <Label fx:id="menuTitle" alignment="CENTER" layoutX="83.0" layoutY="20.0" minHeight="30.0" minWidth="60.0" style="&#10;" text="Menu" textAlignment="CENTER" textFill="#726d6d" wrapText="false">
+        <Label fx:id="menuTitle" alignment="CENTER" style="&#10;" text="Menu" textAlignment="CENTER" textFill="#726d6d" wrapText="false">
             <font>
-                <Font size="18.0" fx:id="x1"/>
+                <Font size="18.0" />
             </font>
         </Label>
 
         <!-- Dashboard button -->
         <!-- not scaling proportionately-->
-        <Button fx:id="dashboardNavButton" layoutX="40.0" layoutY="85.0" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" onAction="#switchToDashboard" AnchorPane.topAnchor="85.0" AnchorPane.leftAnchor="40.0" >
-            <graphic>
-                <ImageView fitHeight="130.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="false">
-                    <image>
-                        <Image url="@./images/DashboardButton.jpg" />
-                    </image>
-                </ImageView>
-            </graphic>
-        </Button>
-
+        <Button fx:id="dashboardNavButton" mnemonicParsing="false" onAction="#switchToDashboard" />
+        
         <!-- Expense button -->
-        <Button fx:id="expenseNavButton" layoutX="40.0" layoutY="260.0" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" onAction="#switchToExpense">
-            <graphic>
-                <ImageView fitHeight="130.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="false">
-                    <image>
-                        <Image url="@./images/ExpenseButton.jpg" />
-                    </image>
-                </ImageView>
-            </graphic>
-        </Button>
+        <Button fx:id="expenseNavButton" mnemonicParsing="false" onAction="#switchToExpense" />
 
         <!-- Budget button -->
-        <Button fx:id="budgetNavButton" layoutX="40.0" layoutY="435.0" minHeight="130.0" minWidth="130.0" mnemonicParsing="false" onAction="#switchToBudget">
-            <graphic>
-                <ImageView fitHeight="130.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="false">
-                    <image>
-                        <Image url="@./images/BudgetButton.jpg" />
-                    </image>
-                </ImageView>
-            </graphic>
-        </Button>
+        <Button fx:id="budgetNavButton" mnemonicParsing="false" onAction="#switchToBudget" />
 
     </children>
 </AnchorPane>
