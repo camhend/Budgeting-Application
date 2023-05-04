@@ -23,14 +23,6 @@ public class ExpenseListTest {
         assertTrue(emptyList.size() == 0);
     }   
 
-
-    @Test
-    public void testAdd() {
-        expenseList.add("hotdog", "food", LocalDate.parse("2001-01-01"), 10);
-        assertEquals(1, expenseList.size());
-        assertEquals(10, expenseList.getTotalSpending());
-    }
-
     @Test
     public void testContains_EmptyList_ReturnFalse() {
         Expense expense = new Expense("shoe", "clothing", LocalDate.parse("2008-10-12"), 50);
@@ -52,19 +44,73 @@ public class ExpenseListTest {
         assertFalse(expenseList.contains( ExpenseNotInList ));
     }
 
+    
     @Test
-    public void testGet_AddtoEmptyList_newExpenseIsAtIndexZero() {
+    public void testAdd_IncrementsCounters() {
+        expenseList.add("hotdog", "food", LocalDate.parse("2001-01-01"), 10);
+        assertEquals(1, expenseList.size());
+        assertEquals(10, expenseList.getTotalSpending());
+    }
+
+
+    @Test
+    public void testAdd_AddtoEmptyList_newExpenseIsAtIndexZero() {
         expenseList.add("hotdog", "food", LocalDate.parse("2001-01-01"), 10);
         Expense expectedExpense = new Expense("hotdog", "food", LocalDate.parse("2001-01-01"), 10);
         assertTrue(expectedExpense.equals(expenseList.get(0)));
     }
 
     @Test
-    public void testGet_AfterAddtoList_newExpenseIsAtEnd() {
+    public void testAdd_AfterAddtoList_newExpenseIsAtEnd() {
         expenseList.add("hotdog", "food", LocalDate.parse("2001-01-01"), 10); // index 0
         expenseList.add("shoe", "clothing", LocalDate.parse("2008-10-12"), 50); // index 1
         Expense expectedExpense = new Expense("shoe", "clothing", LocalDate.parse("2008-10-12"), 50);
         assertTrue(expectedExpense.equals(expenseList.get(1)));
+    }
+
+    @Test
+    public void testAdd_AddOlderDate_OlderDateIsLowerIndex() {
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-01-01"), 10);
+        Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2002-12-14"), 50);
+        Expense olderExpense = new Expense("groceries", "food", LocalDate.parse("1995-02-28"), 50);
+
+        expenseList.add(exp1);
+        expenseList.add(exp2);
+        expenseList.add(olderExpense);
+
+        assertTrue(expenseList.get(0).equals(olderExpense));
+        assertTrue(expenseList.get(1).equals(exp1));
+        assertTrue(expenseList.get(2).equals(exp2));
+    }
+    
+    @Test
+    public void testAdd_AddMiddleDate_MiddleDateIsMiddleIndex() {
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-01-01"), 10);
+        Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2020-12-14"), 50);
+        Expense middleExpense = new Expense("groceries", "food", LocalDate.parse("2006-02-28"), 50);
+
+        expenseList.add(exp1);
+        expenseList.add(exp2);
+        expenseList.add(middleExpense);
+
+        assertTrue(expenseList.get(0).equals(exp1));
+        assertTrue(expenseList.get(1).equals(middleExpense));
+        assertTrue(expenseList.get(2).equals(exp2));
+    }
+
+    @Test
+    public void testAdd_AddNewerDate_NewerDateIsLastIndex() {
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-01-01"), 10);
+        Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2010-06-14"), 50);
+        Expense newerExpense = new Expense("groceries", "food", LocalDate.parse("2020-02-28"), 50);
+
+        expenseList.add(exp1);
+        expenseList.add(exp2);
+        expenseList.add(newerExpense);
+
+        assertTrue(expenseList.get(0).equals(exp1));
+        assertTrue(expenseList.get(1).equals(exp2));
+        assertTrue(expenseList.get(2).equals(newerExpense));
     }
 
     @Test

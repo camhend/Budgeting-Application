@@ -36,34 +36,64 @@ public class ExpenseList implements Iterable<Expense> {
     }
 
 
-    // Add new Expense to end of list. Takes expense details as parameters
+    // Add new Expense to the list in sorted order by date
+    // Takes Expense fields as parameters
         public void add ( String name, String category, LocalDate localDate, int amount) { 
-        Expense expense = new Expense( name, category, localDate, amount);
-        ExpenseNode node = new ExpenseNode (expense, null, null);
+        Expense newExpense = new Expense( name, category, localDate, amount);
+        ExpenseNode newNode = new ExpenseNode (newExpense, null, null);
         if ( this.isEmpty() ) {
-            head = node;
-            tail = node;
+            head = newNode;
+            tail = newNode;
+        } else if ( newExpense.getLocalDate().isEqual(tail.expense.getLocalDate()) ||
+                    newExpense.getLocalDate().isAfter(tail.expense.getLocalDate()) ) {
+            tail.next = newNode;
+            newNode.prev = tail;
+            tail = newNode;
+        } else if ( newExpense.getLocalDate().isBefore(head.expense.getLocalDate()) ) {
+            head.prev = newNode;
+            newNode.next = head;
+            head = newNode;
         } else {
-            tail.next = node;
-            node.prev = tail;
-            tail = node;
+            ExpenseNode current = tail;
+            while ( newExpense.getLocalDate().isBefore(current.expense.getLocalDate()) ) {
+                current = current.prev;
+            }
+            current.next.prev = newNode;
+            newNode.next = current.next;
+            newNode.prev = current;
+            current.next = newNode;           
         }
-        totalSpending += amount;
+        totalSpending += newExpense.getAmount();
         size++;
     }
 
-    // Add Expense to end of list. Takes Expense object as parameter 
-    public void add ( Expense expense) { 
-        ExpenseNode node = new ExpenseNode (expense, null, null);
+    // Add new Expense to list in sorted order by date
+    // Takes Expense object as parameter
+    public void add ( Expense newExpense) { 
+        ExpenseNode newNode = new ExpenseNode (newExpense, null, null);
         if ( this.isEmpty() ) {
-            head = node;
-            tail = node;
+            head = newNode;
+            tail = newNode;
+        } else if ( newExpense.getLocalDate().isEqual(tail.expense.getLocalDate()) ||
+                    newExpense.getLocalDate().isAfter(tail.expense.getLocalDate()) ) {
+            tail.next = newNode;
+            newNode.prev = tail;
+            tail = newNode;
+        } else if ( newExpense.getLocalDate().isBefore(head.expense.getLocalDate()) ) {
+            head.prev = newNode;
+            newNode.next = head;
+            head = newNode;
         } else {
-            tail.next = node;
-            node.prev = tail;
-            tail = node;
+            ExpenseNode current = tail;
+            while ( newExpense.getLocalDate().isBefore(current.expense.getLocalDate()) ) {
+                current = current.prev;
+            }
+            current.next.prev = newNode;
+            newNode.next = current.next;
+            newNode.prev = current;
+            current.next = newNode;           
         }
-        totalSpending += expense.getAmount();
+        totalSpending += newExpense.getAmount();
         size++;
     }
 
@@ -143,6 +173,9 @@ public class ExpenseList implements Iterable<Expense> {
             return true;
         }
     }
+
+    // TODO: implement edit. Return true if successfully found and edited
+
 
     public int size() {
         return size;
