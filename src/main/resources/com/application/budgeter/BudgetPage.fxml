@@ -17,32 +17,15 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 
-<VBox minHeight="600.0" minWidth="900.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.application.budgeter.BudgetController">
+
+<!--Dashboard Section-->
+<!-- add resizble with parent-->
+<AnchorPane id="budgetPage" minHeight="600.0" minWidth="680.0" prefHeight="600.0" prefWidth="680.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.application.budgeter.BudgetController"> 
   <children>
-    <SplitPane dividerPositions="0.5" focusTraversable="true" minHeight="600.0" minWidth="900.0" VBox.vgrow="ALWAYS">
-      <items>
-
-        <!-- loading font used in Menu-->
-        <fx:define>
-          <Font fx:id="x1" size="18.0" />
-        </fx:define>
-
-        <!-- Imprting Menu Pane-->
-        <fx:include source="./Menu.fxml" />
-        
-
-        <!--Budget Planner Section-->
-        <AnchorPane id="Content" minHeight="600.0" minWidth="680.0" prefHeight="600.0" prefWidth="680.0">
-          <children>
-            <Label alignment="CENTER" font="$x1" layoutX="264.0" layoutY="20.0" minHeight="27.0" minWidth="144.0" style="&#10;" text="Budgeter" textAlignment="CENTER" textFill="#726d6d">
-                <opaqueInsets>
-                    <Insets />
-                </opaqueInsets>
-            </Label>
-          </children>
-        </AnchorPane>
-
-       </items>
-    </SplitPane>
+    <Label alignment="CENTER" font="$x1" layoutX="264.0" layoutY="20.0" minHeight="27.0" minWidth="144.0" style="&#10;" text="Budgeter" textAlignment="CENTER" textFill="#726d6d">
+      <font>
+        <Font fx:id="x1" size="18.0" />                
+      </font>
+    </Label>
   </children>
-</VBox>
+</AnchorPane>

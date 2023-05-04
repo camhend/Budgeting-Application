@@ -35,6 +35,7 @@ import java.io.FileNotFoundException;
 import java.io.File;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
+import javafx.application.Platform;
 
 
 
@@ -51,7 +52,7 @@ public class ExpenseController implements Initializable {
     @FXML private MenuButton totalMenu; // menu for tracking different time periods 
     @FXML private Label total; // total amount of money spent in time period
 
-    @FXML private Text totalTitle; // title of total section
+    @FXML private Label totalTitle; // title of total section
 
     @FXML private Button addExpenseButton; // + button
     @FXML private TextField addExpenseField;
@@ -104,6 +105,7 @@ public class ExpenseController implements Initializable {
 
 
 
+
        
 
         // listener for adjusting elements' width when window is resized
@@ -119,8 +121,13 @@ public class ExpenseController implements Initializable {
             total.setPrefWidth(newVal.doubleValue() * .1);
 
            
-            AnchorPane.setRightAnchor(totalTitle, total.getWidth() + newVal.doubleValue() * .1);  // set totalTitle above totalMenu            
-            AnchorPane.setRightAnchor(totalMenu, total.getWidth() + newVal.doubleValue() * .1 + totalMenu.getWidth());  // total menu next to total label
+            // runs after total is resized
+            Platform.runLater(() -> {
+                AnchorPane.setLeftAnchor(totalTitle, newVal.doubleValue() * 0.8);
+                AnchorPane.setRightAnchor(totalTitle, newVal.doubleValue() * 0.1);  
+                totalTitle.setPrefWidth(newVal.doubleValue() * .1);
+                AnchorPane.setRightAnchor(totalMenu, total.getWidth() + newVal.doubleValue() * .1);  // total menu next to total label
+            });
 
             // tableview takes up 80% of window width centered
             AnchorPane.setLeftAnchor(expenseTable, newVal.doubleValue() * .1);
@@ -152,8 +159,8 @@ public class ExpenseController implements Initializable {
         // listener for adjusting elements' height when window is resized
         expensePage.heightProperty().addListener((obs, oldVal, newVal) -> {
             // page title at top 5% of window
-            AnchorPane.setTopAnchor(expenseTitle, newVal.doubleValue() * .05); 
-            AnchorPane.setBottomAnchor(expenseTitle, newVal.doubleValue() * .90); 
+            AnchorPane.setTopAnchor(expenseTitle, newVal.doubleValue() * .03); 
+            AnchorPane.setBottomAnchor(expenseTitle, newVal.doubleValue() * .92); 
 
             AnchorPane.setTopAnchor(total, newVal.doubleValue() * .1); // total cost at top 10% of window
             AnchorPane.setTopAnchor(totalTitle, newVal.doubleValue() * .075); // total title at top 10% of window

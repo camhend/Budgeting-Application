@@ -18,17 +18,37 @@
 <?import javafx.scene.image.Image?>
 
 
-<SplitPane fx:id="splitPane" dividerPositions="0.20" mouseTransparent="false" focusTraversable="true" minHeight="600.0" minWidth="900.0" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.application.budgeter.MainPageController">
+<SplitPane fx:id="mainPage" dividerPositions="0.20" mouseTransparent="false" focusTraversable="true" minHeight="600.0" minWidth="900.0" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml" fx:controller="com.application.budgeter.MainPageController">
     <items>
 
         <!-- loading font used in Menu and Main Content-->
         <fx:define>
             <Font fx:id="x1" size="18.0" />
         </fx:define>
-
-        <!-- Imprting Menu Pane-->
-        <fx:include source="./Menu.fxml" />
         
+        
+        <AnchorPane minHeight="600.0" minWidth="220.0" fx:id="menuPage">
+            <children>
+                <!-- Title (Menu) -->
+                <Label fx:id="menuTitle" alignment="CENTER" style="&#10;" text="Menu" textAlignment="CENTER" textFill="#726d6d" wrapText="false">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Label>
+
+                <!-- Dashboard button -->
+                <!-- not scaling proportionately-->
+                <Button fx:id="dashboardNavButton" mnemonicParsing="false" onAction="#switchToDashboard" />
+                
+                <!-- Expense button -->
+                <Button fx:id="expenseNavButton" mnemonicParsing="false" onAction="#switchToExpense" />
+
+                <!-- Budget button -->
+                <Button fx:id="budgetNavButton" mnemonicParsing="false" onAction="#switchToBudget" />
+
+            </children>
+        </AnchorPane>
+
         <!-- Main Content Section (always starts with dashboard)-->
         <fx:include source="./ExpensePage.fxml" fx:id="contentPage"/>
 

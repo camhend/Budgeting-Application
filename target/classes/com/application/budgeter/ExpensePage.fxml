@@ -18,10 +18,11 @@
 <?import javafx.scene.image.Image?>
 
 
+
 <!-- Expense Tracker Section-->
-<AnchorPane fx:id="expensePage" prefHeight="600.0" prefWidth="680.0" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.application.budgeter.ExpenseController">
+<AnchorPane fx:id="expensePage" prefHeight="600.0" prefWidth="680.0" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml" fx:controller="com.application.budgeter.ExpenseController">
   <children>
-    <Label fx:id="expenseTitle" alignment="CENTER" style="&#10;" text="Expense Tracker" textAlignment="CENTER" textFill="#726d6d"  VBox.vgrow="ALWAYS">
+    <Label fx:id="expenseTitle" alignment="CENTER" style="&#10;" text="Expense Tracker" textAlignment="CENTER" textFill="#726d6d" >
       <font>
         <Font fx:id="x1" size="18.0" />                
       </font>
@@ -46,7 +47,7 @@
     <Button mnemonicParsing="false" text="Save" fx:id="saveExpenseButton" onAction="#saveExpenses"/>
 
     <!-- total title -->
-    <Text fx:id="totalTitle" fill="#574f4f" textAlignment="CENTER" strokeType="OUTSIDE" strokeWidth="0.0" text="TOTAL" wrappingWidth="37.13671875" />
+    <Label fx:id="totalTitle" style="-fx-font-weight: bold;" textFill="#00FF00" alignment="CENTER" text="TOTAL" />
 
     <!-- text field for total -->
     <Label fx:id="total" text="" alignment="CENTER" style="-fx-background-color: gainsboro; -fx-font-size: 16;" />
