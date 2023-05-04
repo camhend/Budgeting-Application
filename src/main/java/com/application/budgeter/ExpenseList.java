@@ -69,12 +69,12 @@ public class ExpenseList implements Iterable<Expense> {
 
     // Get the ExpenseNode that contains the given Expense
     private ExpenseNode getNode( Expense other) {
-        ExpenseNode current = head;
+        ExpenseNode current = tail;
         while (current != null) {
             if ( current.expense.equals(other) ) {
                 return current;
             } else {
-                current = current.next;
+                current = current.prev;
             }
         }
         return null;
@@ -102,12 +102,12 @@ public class ExpenseList implements Iterable<Expense> {
 
     // Return whether list contains the given Expense
     public boolean contains( Expense expense ) {
-        ExpenseNode current = head;
+        ExpenseNode current = tail;
         while (current != null) {
             if (current.expense.equals( expense )) {
                 return true;
             } else {
-                current = current.next;
+                current = current.prev;
             }
         }
         return false;
@@ -122,11 +122,12 @@ public class ExpenseList implements Iterable<Expense> {
     }
 
     // Remove the ExpenseNode that contains the given Expense
-    public void remove( Expense expense ) {
-        if (head == null) {
-            throw new NoSuchElementException("Cannot remove an Expense not in the list.");
+    // Return true if successfully removed.
+    public boolean remove( Expense expense ) {
+        ExpenseNode node = this.getNode(expense);
+        if (node == null) {
+            return false;
         } else {
-            ExpenseNode node = this.getNode(expense);
             if (node == head) {
                 node.next.prev = null;
                 head = node.next;
@@ -139,6 +140,7 @@ public class ExpenseList implements Iterable<Expense> {
             }
             totalSpending -= expense.getAmount();
             size--;
+            return true;
         }
     }
 
@@ -155,7 +157,7 @@ public class ExpenseList implements Iterable<Expense> {
     }
 
     // return Iterator instance
-    public Iterator iterator() {
+    public Iterator<Expense> iterator() {
         return new ExpenseListIterator();
     }
 
@@ -166,7 +168,6 @@ public class ExpenseList implements Iterable<Expense> {
             return current != null;
         }
           
-        // TODO: FIX
         public Expense next()
         {
             Expense expense = current.expense;

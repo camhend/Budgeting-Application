@@ -67,11 +67,11 @@ public class ExpenseListTest {
         assertTrue(expectedExpense.equals(expenseList.get(1)));
     }
 
-    @Test(expected = NoSuchElementException.class)
-    public void testRemoveFromEmptyList() {
+    @Test
+    public void testRemoveFromEmptyList_ExpectFalse() {
         ExpenseList emptyList = new ExpenseList();
         Expense expense = new Expense("hotdog", "food", LocalDate.parse("2001-01-01"), 10);
-        emptyList.remove(expense);
+        assertFalse( emptyList.remove(expense) );
     }   
 
     @Test
@@ -85,7 +85,7 @@ public class ExpenseListTest {
         expenseList.add(exp3);
 
         assertTrue( expenseList.contains(exp1) ); // exp1 in list
-        expenseList.remove( exp1 );
+        assertTrue(expenseList.remove( exp1 ) ); // item successfully removed; return true
         assertFalse( expenseList.contains(exp1) ); // exp1 removed
 
         assertEquals(exp2, expenseList.get(0)); // exp2 is the new head
@@ -102,7 +102,7 @@ public class ExpenseListTest {
         expenseList.add(exp3);
 
         assertTrue( expenseList.contains(exp2) ); // exp2 in list
-        expenseList.remove( exp2 );
+        assertTrue(expenseList.remove( exp2 ) ); // item successfully removed; return true
         assertFalse( expenseList.contains(exp2) ); // exp2 removed
     }
 
@@ -117,7 +117,7 @@ public class ExpenseListTest {
         expenseList.add(exp3);
 
         assertTrue( expenseList.contains(exp3) ); // exp3 in list
-        expenseList.remove( exp3 );
+        assertTrue(expenseList.remove( exp3 ) ); // item successfully removed; return true
         assertFalse( expenseList.contains(exp3) ); // exp3 removed
     }
 
