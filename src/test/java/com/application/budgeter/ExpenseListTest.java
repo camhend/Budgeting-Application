@@ -23,10 +23,12 @@ public class ExpenseListTest {
         assertTrue(emptyList.size() == 0);
     }   
 
+
     @Test
-    public void testAdd_IncrementsSize_ExpectSizeOne() {
+    public void testAdd() {
         expenseList.add("hotdog", "food", LocalDate.parse("2001-01-01"), 10);
         assertEquals(1, expenseList.size());
+        assertEquals(10, expenseList.getTotalSpending());
     }
 
     @Test
@@ -51,14 +53,14 @@ public class ExpenseListTest {
     }
 
     @Test
-    public void testGet_IndexZeroAfterAddtoEmptyList() {
+    public void testGet_AddtoEmptyList_newExpenseIsAtIndexZero() {
         expenseList.add("hotdog", "food", LocalDate.parse("2001-01-01"), 10);
         Expense expectedExpense = new Expense("hotdog", "food", LocalDate.parse("2001-01-01"), 10);
         assertTrue(expectedExpense.equals(expenseList.get(0)));
     }
 
     @Test
-    public void testGet_AfterAddtoList() {
+    public void testGet_AfterAddtoList_newExpenseIsAtEnd() {
         expenseList.add("hotdog", "food", LocalDate.parse("2001-01-01"), 10); // index 0
         expenseList.add("shoe", "clothing", LocalDate.parse("2008-10-12"), 50); // index 1
         Expense expectedExpense = new Expense("shoe", "clothing", LocalDate.parse("2008-10-12"), 50);
@@ -74,35 +76,72 @@ public class ExpenseListTest {
 
     @Test
     public void testRemove_RemoveExpenseFromHead_ExpenseNoLongerInList() {
-        expenseList.add("hotdog", "food", LocalDate.parse("2001-01-01"), 10); // index 0
-        expenseList.add("shoe", "clothing", LocalDate.parse("2002-12-14"), 50); // index 1
-        expenseList.add("groceries", "food", LocalDate.parse("2010-02-28"), 50); // index 2
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-01-01"), 10);
+        Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2002-12-14"), 50);
+        Expense exp3 = new Expense("groceries", "food", LocalDate.parse("2010-02-28"), 50);
 
-        Expense expenseToRemove = new Expense ("hotdog", "food", LocalDate.parse("2001-01-01"), 10);
-        expenseList.remove( expenseToRemove );
-        assertFalse( expenseList.contains(expenseToRemove) );
+        expenseList.add(exp1);
+        expenseList.add(exp2);
+        expenseList.add(exp3);
+
+        assertTrue( expenseList.contains(exp1) ); // exp1 in list
+        expenseList.remove( exp1 );
+        assertFalse( expenseList.contains(exp1) ); // exp1 removed
+
+        assertEquals(exp2, expenseList.get(0)); // exp2 is the new head
     }
 
     @Test
     public void testRemove_RemoveExpenseFromMiddle_ExpenseNoLongerInList() {
-        expenseList.add("hotdog", "food", LocalDate.parse("2001-01-01"), 10); // index 0
-        expenseList.add("shoe", "clothing", LocalDate.parse("2002-12-14"), 50); // index 1
-        expenseList.add("groceries", "food", LocalDate.parse("2010-02-28"), 50); // index 2
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-01-01"), 10);
+        Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2002-12-14"), 50);
+        Expense exp3 = new Expense("groceries", "food", LocalDate.parse("2010-02-28"), 50);
 
-        Expense expenseToRemove = new Expense ("shoe", "clothing", LocalDate.parse("2002-12-14"), 50);
-        expenseList.remove( expenseToRemove );
-        assertFalse( expenseList.contains(expenseToRemove) );
+        expenseList.add(exp1);
+        expenseList.add(exp2);
+        expenseList.add(exp3);
+
+        assertTrue( expenseList.contains(exp2) ); // exp2 in list
+        expenseList.remove( exp2 );
+        assertFalse( expenseList.contains(exp2) ); // exp2 removed
     }
 
     @Test
     public void testRemove_RemoveExpenseFromTail_ExpenseNoLongerInList() {
-        expenseList.add("hotdog", "food", LocalDate.parse("2001-01-01"), 10); // index 0
-        expenseList.add("shoe", "clothing", LocalDate.parse("2002-12-14"), 50); // index 1
-        expenseList.add("groceries", "food", LocalDate.parse("2010-02-28"), 50); // index 2
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-01-01"), 10);
+        Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2002-12-14"), 50);
+        Expense exp3 = new Expense("groceries", "food", LocalDate.parse("2010-02-28"), 50);
 
-        Expense expenseToRemove = new Expense ("groceries", "food", LocalDate.parse("2010-02-28"), 50);
-        expenseList.remove( expenseToRemove );
-        assertFalse( expenseList.contains(expenseToRemove) );
+        expenseList.add(exp1);
+        expenseList.add(exp2);
+        expenseList.add(exp3);
+
+        assertTrue( expenseList.contains(exp3) ); // exp3 in list
+        expenseList.remove( exp3 );
+        assertFalse( expenseList.contains(exp3) ); // exp3 removed
+    }
+
+    @Test
+    public void testForEach() {  
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-01-01"), 10);
+        Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2002-12-14"), 50);
+        Expense exp3 = new Expense("groceries", "food", LocalDate.parse("2010-02-28"), 50);
+
+        expenseList.add(exp1);
+        expenseList.add(exp2);
+        expenseList.add(exp3);
+        Expense[] arr = {exp1, exp2, exp3}; // array representation of expected list
+        
+        int index = 2; // ExpenseList.iterator() starts at tail
+        for (Expense expense : expenseList) {
+            assertTrue(expense.equals(arr[index]));
+            index--;
+        }
+    }
+
+    @Test
+    public void testForEach_EmptyList() {  
+        assertFalse(expenseList.iterator().hasNext());
     }
 
 }
