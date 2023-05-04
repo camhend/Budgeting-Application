@@ -11,7 +11,6 @@ import java.io.IOException;
     // polish and bug test front end
         // make draft of integration
     // observable linked list for tableview
-    // make menu work
 
 // problems
     // button images not showing in Menu.fxml
