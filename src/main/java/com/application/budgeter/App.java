@@ -8,9 +8,6 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 // TODO
-    // resizing
-        // on stage size chance anchorpane constraints
-        // figure out how to lock aspect ratio
     // polish and bug test front end
         // make draft of integration
     // observable linked list for tableview

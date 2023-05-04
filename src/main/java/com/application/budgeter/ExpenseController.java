@@ -33,6 +33,8 @@ import javafx.beans.binding.Bindings;
 import java.util.Scanner;
 import java.io.FileNotFoundException;
 import java.io.File;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
 
 
 
@@ -47,7 +49,9 @@ public class ExpenseController implements Initializable {
     @FXML private TableColumn<PlaceholderExpense, String> costColumn;
 
     @FXML private MenuButton totalMenu; // menu for tracking different time periods 
-    @FXML private Label total;
+    @FXML private Label total; // total amount of money spent in time period
+
+    @FXML private Text totalTitle; // title of total section
 
     @FXML private Button addExpenseButton; // + button
     @FXML private TextField addExpenseField;
@@ -57,6 +61,10 @@ public class ExpenseController implements Initializable {
 
 
     @FXML private Button saveExpenseButton; // saves expense to file
+
+    @FXML private Label expenseTitle; // title of page
+
+    @FXML private AnchorPane expensePage; // page that holds all the elements
 
     
 
@@ -89,6 +97,76 @@ public class ExpenseController implements Initializable {
     // initialize method (runs when ExpenseController is created)
     @Override
     public void initialize(java.net.URL arg0, java.util.ResourceBundle arg1) {
+
+       
+
+        // listener for adjusting elements' width when window is resized
+        expensePage.widthProperty().addListener((obs, oldVal, newVal) -> {
+            
+            // page title centered
+            AnchorPane.setLeftAnchor(expenseTitle, newVal.doubleValue() * .40); 
+            AnchorPane.setRightAnchor(expenseTitle, newVal.doubleValue() * .40); 
+
+            // total takes up 10% of window width 
+            AnchorPane.setRightAnchor(total, newVal.doubleValue() * .1); 
+            AnchorPane.setLeftAnchor(total, newVal.doubleValue() * .8); 
+            total.setPrefWidth(newVal.doubleValue() * .1);
+
+           
+            AnchorPane.setRightAnchor(totalTitle, total.getWidth() + newVal.doubleValue() * .1);  // set totalTitle above totalMenu            
+            AnchorPane.setRightAnchor(totalMenu, total.getWidth() + newVal.doubleValue() * .1);  // total menu next to total label
+
+            // tableview takes up 80% of window width centered
+            AnchorPane.setLeftAnchor(expenseTable, newVal.doubleValue() * .1);
+            AnchorPane.setRightAnchor(expenseTable, newVal.doubleValue() * .1);
+
+            // add buttons above tableview 10% of window each 
+            AnchorPane.setLeftAnchor(addExpenseField, newVal.doubleValue() * .1);
+            AnchorPane.setRightAnchor(addExpenseField, newVal.doubleValue() * .8);
+
+            AnchorPane.setLeftAnchor(addCategoryField, newVal.doubleValue() * .2);
+            AnchorPane.setRightAnchor(addCategoryField, newVal.doubleValue() * .7);
+
+            AnchorPane.setLeftAnchor(addDateField, newVal.doubleValue() * .3);
+            AnchorPane.setRightAnchor(addDateField, newVal.doubleValue() * .6);
+
+            AnchorPane.setLeftAnchor(addCostField, newVal.doubleValue() * .4);
+            AnchorPane.setRightAnchor(addCostField, newVal.doubleValue() * .5);
+
+            AnchorPane.setLeftAnchor(addExpenseButton, newVal.doubleValue() * .5);
+            AnchorPane.setRightAnchor(addExpenseButton, newVal.doubleValue() * .46);
+
+            // save button at right 10% of window
+            AnchorPane.setLeftAnchor(saveExpenseButton, newVal.doubleValue() * .8);
+            AnchorPane.setRightAnchor(saveExpenseButton, newVal.doubleValue() * .1);    
+        });
+
+        // listener for adjusting elements' height when window is resized
+        expensePage.heightProperty().addListener((obs, oldVal, newVal) -> {
+            // page title at top 5% of window
+            AnchorPane.setTopAnchor(expenseTitle, newVal.doubleValue() * .05); 
+            AnchorPane.setBottomAnchor(expenseTitle, newVal.doubleValue() * .90); 
+
+            AnchorPane.setTopAnchor(total, newVal.doubleValue() * .1); // total cost at top 10% of window
+            AnchorPane.setTopAnchor(totalTitle, newVal.doubleValue() * .075); // total title at top 10% of window
+            AnchorPane.setTopAnchor(totalMenu, newVal.doubleValue() * .1); // total menu at top 10% of window
+            
+            // tableview anchorpane takes up 70% of window height
+            AnchorPane.setBottomAnchor(expenseTable, 0.0);
+            AnchorPane.setTopAnchor(expenseTable, newVal.doubleValue() * .3);
+
+            // add buttons above tableview
+            AnchorPane.setBottomAnchor(addExpenseField, newVal.doubleValue() * .72);
+            AnchorPane.setBottomAnchor(addCategoryField, newVal.doubleValue() * .72);
+            AnchorPane.setBottomAnchor(addDateField, newVal.doubleValue() * .72);
+            AnchorPane.setBottomAnchor(addCostField, newVal.doubleValue() * .72);
+            AnchorPane.setBottomAnchor(addExpenseButton, newVal.doubleValue() * .72);
+
+            // save button above tableview
+            AnchorPane.setBottomAnchor(saveExpenseButton, newVal.doubleValue() * .72); 
+        });
+        
+
         // set cell value factory for each column
         expenseColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("expense"));
         categoryColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("category"));
