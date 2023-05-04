@@ -27,6 +27,7 @@ import javafx.scene.Parent;
 
 
 
+
 public class MainPageController implements Initializable {
 
     @FXML private SplitPane mainPage;
@@ -42,17 +43,47 @@ public class MainPageController implements Initializable {
 
     // add listener to reapply divider positions if window is resized
     public void initialize(java.net.URL arg0, java.util.ResourceBundle arg1) {
-        // get the divider position and set it to 0.25 when the window is resized
+
+        
+
+
+        // get the divider position and set it to 0.20 when the window is resized
         mainPage.getDividers().get(0).positionProperty().addListener((obs, oldVal, newVal) -> {
             mainPage.setDividerPositions(0.20);
         });
 
+        
+        // set mainPage anchorpane constraints to 0 (prob remove)
+        AnchorPane.setTopAnchor(mainPage, 0.0);
+        AnchorPane.setBottomAnchor(mainPage, 0.0);
+        AnchorPane.setLeftAnchor(mainPage, 0.0);
+        AnchorPane.setRightAnchor(mainPage, 0.0); 
+
         // set button images to DashboardButton.jpg, BudgetButton.jpg, and ExpenseButton.jpg set image to fit budgetNavButton
+        ImageView dashboardImageView = new ImageView(new Image(getClass().getResourceAsStream("/com/application/budgeter/images/DashboardButton.jpg")));
+        dashboardNavButton.setGraphic(dashboardImageView);
+        // fit width and height to button
+        dashboardImageView.fitWidthProperty().bind(dashboardNavButton.widthProperty());
+        dashboardImageView.fitHeightProperty().bind(dashboardNavButton.heightProperty());
+
+        ImageView budgetImageView = new ImageView(new Image(getClass().getResourceAsStream("/com/application/budgeter/images/BudgetButton.jpg")));
+        budgetNavButton.setGraphic(budgetImageView);
+        // fit width and height to button
+        budgetImageView.fitWidthProperty().bind(budgetNavButton.widthProperty());
+        budgetImageView.fitHeightProperty().bind(budgetNavButton.heightProperty());
+
+        ImageView expenseImageView = new ImageView(new Image(getClass().getResourceAsStream("/com/application/budgeter/images/ExpenseButton.jpg")));
+        expenseNavButton.setGraphic(expenseImageView);
+        // fit width and height to button
+        expenseImageView.fitWidthProperty().bind(expenseNavButton.widthProperty());
+        expenseImageView.fitHeightProperty().bind(expenseNavButton.heightProperty());
+
 
 
 
         // listener to resize buttons and title width when window is resized
         menuPage.widthProperty().addListener((obs, oldVal, newVal) -> {
+            mainPage.setDividerPositions(0.20);
             // 18.5 - 81.5%
 
             AnchorPane.setLeftAnchor(menuTitle, menuPage.getWidth()*.185);
@@ -70,6 +101,7 @@ public class MainPageController implements Initializable {
         
         // listener to resize buttons and title height when window is resized
         menuPage.heightProperty().addListener((obs, oldVal, newVal) -> {
+            mainPage.setDividerPositions(0.20);
             // measurements in percentage of height bottom to top
 
             // anchorpane title takes 90 - 95%
@@ -91,16 +123,26 @@ public class MainPageController implements Initializable {
         });
     } 
 
+
+
+    // switches fx:include content page to the page specified by fileName
     public void switchContentPage(String fileName) throws IOException {
         // load the fxml file
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(App.class.getResource(fileName + ".fxml"));
         AnchorPane contentPage = (AnchorPane) loader.load();
 
-        // set the content page to the new page
-        mainPage.getItems().set(1, contentPage);
-        
+        // if current page is = to the new page, do nothing
+        if (mainPage.getItems().get(1).equals(contentPage)) {
+            return;
+        }
+        else {
+            // set the content page to the new page
+            mainPage.getItems().set(1, contentPage);
+        }
     }
+
+    // switch pages methods accessed by menu buttons
 
     @FXML
     private void switchToDashboard() throws IOException {
@@ -116,5 +158,21 @@ public class MainPageController implements Initializable {
     @FXML
     private void switchToExpense() throws IOException {
         switchContentPage("ExpensePage");
+    }
+
+    @FXML
+    private void addButtonImages() {
+        // set button images to DashboardButton.jpg, BudgetButton.jpg, and ExpenseButton.jpg set image to fit budgetNavButton
+        Image dashboardImage = new Image(getClass().getResourceAsStream("DashboardButton.jpg"));
+        ImageView dashboardImageView = new ImageView(dashboardImage);
+        dashboardNavButton.setGraphic(dashboardImageView);
+
+        Image budgetImage = new Image(getClass().getResourceAsStream("BudgetButton.jpg"));
+        ImageView budgetImageView = new ImageView(budgetImage);
+        budgetNavButton.setGraphic(budgetImageView);
+
+        Image expenseImage = new Image(getClass().getResourceAsStream("ExpenseButton.jpg"));
+        ImageView expenseImageView = new ImageView(expenseImage);
+        expenseNavButton.setGraphic(expenseImageView);
     }
 }
