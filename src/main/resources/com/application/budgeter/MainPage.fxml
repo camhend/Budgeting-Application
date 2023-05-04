@@ -18,7 +18,7 @@
 <?import javafx.scene.image.Image?>
 
 
-<SplitPane fx:id="mainPage" dividerPositions="0.20" mouseTransparent="false" focusTraversable="true" minHeight="600.0" minWidth="900.0" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml" fx:controller="com.application.budgeter.MainPageController">
+<SplitPane fx:id="mainPage" dividerPositions="0.20" mouseTransparent="false" focusTraversable="false" minHeight="600.0" minWidth="900.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml" fx:controller="com.application.budgeter.MainPageController">
     <items>
 
         <!-- loading font used in Menu and Main Content-->
@@ -50,7 +50,7 @@
         </AnchorPane>
 
         <!-- Main Content Section (always starts with dashboard)-->
-        <fx:include source="./ExpensePage.fxml" fx:id="contentPage"/>
+        <fx:include source="./DashboardPage.fxml" fx:id="contentPage"/>
 
     </items>
 </SplitPane>

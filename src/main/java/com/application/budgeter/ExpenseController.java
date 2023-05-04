@@ -120,7 +120,10 @@ public class ExpenseController implements Initializable {
             AnchorPane.setLeftAnchor(total, newVal.doubleValue() * .8); 
             total.setPrefWidth(newVal.doubleValue() * .1);
 
-           
+            AnchorPane.setLeftAnchor(totalTitle, newVal.doubleValue() * 0.8);
+            AnchorPane.setRightAnchor(totalTitle, newVal.doubleValue() * 0.1);  
+            totalTitle.setPrefWidth(newVal.doubleValue() * .1);
+            AnchorPane.setRightAnchor(totalMenu, total.getWidth() + newVal.doubleValue() * .1);  // total menu next to total label
             // runs after total is resized
             Platform.runLater(() -> {
                 AnchorPane.setLeftAnchor(totalTitle, newVal.doubleValue() * 0.8);

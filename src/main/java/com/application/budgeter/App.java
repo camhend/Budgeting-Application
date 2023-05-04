@@ -11,14 +11,10 @@ import java.io.IOException;
     // polish and bug test front end
         // make draft of integration
     // observable linked list for tableview
-
-// problems
-    // button images not showing in Menu.fxml
-        // possibly because Menu.fxml is being imported into the other pages instead of being loaded by the main app
-    // tableview doesnt sort by dateColumn accurately
-        // implement merge sort for linked list
-
-
+        // date sorting
+    // button images
+        // cant find files
+    // seperate tasks in initialize method into seperate methods
 
 
 
@@ -31,9 +27,6 @@ public class App extends Application {
 
         scene = new Scene(loadFXML("ExpensePage"), 900, 615);
         scene = new Scene(loadFXML("MainPage"), 900, 615);
-
-
-        
 
 
         // set current size to min
