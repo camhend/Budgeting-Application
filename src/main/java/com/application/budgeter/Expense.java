@@ -41,4 +41,14 @@ public class Expense {
     public void setLocalDate(LocalDate localDate) { this.localDate = localDate; } 
 
     public void setAmount(int amount) { this.amount= amount; }
+
+    public String toString () {
+        String toString = 
+            "[" + 
+            name + ", " +
+            category + ", " +
+            localDate.toString() + ", " +
+            amount + "]";
+        return toString;
+    }
 }

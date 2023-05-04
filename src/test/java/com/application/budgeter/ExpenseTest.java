@@ -40,7 +40,7 @@ public class ExpenseTest {
     }
 
     @Test
-    public void testEquals() {
+    public void testEquals_ExpensesEqual() {
         Expense expense = new Expense(
             "testname", 
             "food", 
@@ -55,5 +55,46 @@ public class ExpenseTest {
             assertTrue(expense.equals(other));
     }
 
+    @Test
+    public void testEquals_ExpensesNotEqual() {
+        Expense expense = new Expense(
+            "testname", 
+            "food", 
+            LocalDate.parse("2001-01-01"), 
+            15);
+        
+        Expense other = new Expense(
+            "other", 
+            "clothes", 
+            LocalDate.parse("2010-12-01"), 
+            30);
+
+            assertFalse(expense.equals(other));
+    }
+
+    @Test
+    public void testEquals_NotAnExpense() {
+        Expense expense = new Expense(
+            "testname", 
+            "food", 
+            LocalDate.parse("2001-01-01"), 
+            15);
+        
+        String test = "testObject";
+
+        assertFalse(expense.equals(test));
+    }
+
+    @Test
+    public void testToString() {
+        Expense expense = new Expense(
+            "testname", 
+            "food", 
+            LocalDate.parse("2001-01-01"), 
+            15);
+        
+        String expectedString = "[testname, food, 2001-01-01, 15]";
+        assertEquals(expectedString, expense.toString());
+    }
 
 }
