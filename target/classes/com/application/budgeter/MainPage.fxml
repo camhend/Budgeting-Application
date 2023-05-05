@@ -27,7 +27,7 @@
         </fx:define>
         
         
-        <AnchorPane minHeight="600.0" minWidth="220.0" fx:id="menuPage">
+        <AnchorPane minHeight="600.0" minWidth="220.0"  fx:id="menuPage">
             <children>
                 <!-- Title (Menu) -->
                 <Label fx:id="menuTitle" alignment="CENTER" style="&#10;" text="Menu" textAlignment="CENTER" textFill="#726d6d" wrapText="false">
@@ -37,7 +37,6 @@
                 </Label>
 
                 <!-- Dashboard button -->
-                <!-- not scaling proportionately-->
                 <Button fx:id="dashboardNavButton" mnemonicParsing="false" onAction="#switchToDashboard" />
                 
                 <!-- Expense button -->
@@ -50,7 +49,7 @@
         </AnchorPane>
 
         <!-- Main Content Section (always starts with dashboard)-->
-        <fx:include source="./DashboardPage.fxml" fx:id="contentPage"/>
+        <fx:include source="DashboardPage.fxml" fx:id="contentPage"/>
 
     </items>
 </SplitPane>

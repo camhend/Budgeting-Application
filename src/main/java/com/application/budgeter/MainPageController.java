@@ -6,26 +6,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.fxml.FXMLLoader;
-import java.io.IOException;
-import javafx.fxml.FXML;
-import javafx.scene.control.SplitPane;
-import javafx.scene.layout.AnchorPane;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button; 
-import javafx.scene.control.SplitPane.Divider;
-import javafx.scene.layout.VBox;
-// image
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.StackPane;
 import javafx.scene.control.Label;
-import javafx.stage.Screen;
-import javafx.geometry.Bounds;
-
-import javafx.scene.Node;
-import javafx.scene.Parent;
-
-
 
 
 public class MainPageController implements Initializable {
@@ -34,32 +18,80 @@ public class MainPageController implements Initializable {
 
     @FXML private AnchorPane menuPage; // MenuPage anchorpane
 
-    @FXML private Label menuTitle;
+    @FXML private Label menuTitle; 
 
     @FXML private Button dashboardNavButton;
     @FXML private Button budgetNavButton;
     @FXML private Button expenseNavButton;
     
 
+
     // add listener to reapply divider positions if window is resized
     public void initialize(java.net.URL arg0, java.util.ResourceBundle arg1) {
 
-        
-
+        addButtonImages(); 
 
         // get the divider position and set it to 0.20 when the window is resized
         mainPage.getDividers().get(0).positionProperty().addListener((obs, oldVal, newVal) -> {
             mainPage.setDividerPositions(0.20);
         });
 
+        // listener to resize buttons and title width when window is resized
+        menuPage.widthProperty().addListener((obs, oldVal, newVal) -> {
+            setWidthAnchorConstraints();
+        });
         
-        // set mainPage anchorpane constraints to 0 (prob remove)
-        AnchorPane.setTopAnchor(mainPage, 0.0);
-        AnchorPane.setBottomAnchor(mainPage, 0.0);
-        AnchorPane.setLeftAnchor(mainPage, 0.0);
-        AnchorPane.setRightAnchor(mainPage, 0.0); 
+        // listener to resize buttons and title height when window is resized
+        menuPage.heightProperty().addListener((obs, oldVal, newVal) -> {
+            setHeightAnchorConstraints();
+        });
+    } 
 
+
+
+    // switches fx:include content page to the page specified by fileName
+    public void switchContentPage(String fileName) throws IOException {
+        // load the fxml file
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(App.class.getResource(fileName + ".fxml"));
+        AnchorPane newPage = (AnchorPane) loader.load();
+        // detect current source page
+        AnchorPane currentPage = (AnchorPane) mainPage.getItems().get(1);
+
+        // if content page = source page, do nothing
+        if (newPage.getId().equals(currentPage.getId())) {
+            return;
+        }
+
+        // set the content page to the loaded fxml file
+        mainPage.getItems().set(1, newPage);
+    }
+
+
+
+    // switch pages methods accessed by menu buttons
+
+    @FXML
+    private void switchToDashboard() throws IOException {
+        switchContentPage("DashboardPage");
+    }
+
+    @FXML
+    private void switchToBudget() throws IOException {
+        switchContentPage("BudgetPage");
+    }
+
+    @FXML
+    private void switchToExpense() throws IOException {
+        switchContentPage("ExpensePage");
+    }
+
+
+
+    @FXML
+    private void addButtonImages() {
         // set button images to DashboardButton.jpg, BudgetButton.jpg, and ExpenseButton.jpg set image to fit budgetNavButton
+
         ImageView dashboardImageView = new ImageView(new Image(getClass().getResourceAsStream("/com/application/budgeter/images/DashboardButton.jpg")));
         dashboardNavButton.setGraphic(dashboardImageView);
         // fit width and height to button
@@ -77,102 +109,49 @@ public class MainPageController implements Initializable {
         // fit width and height to button
         expenseImageView.fitWidthProperty().bind(expenseNavButton.widthProperty());
         expenseImageView.fitHeightProperty().bind(expenseNavButton.heightProperty());
+    } // end addButtonImages
+
+
+    // set anchorpane constraints for menu buttons and title
+    private void setWidthAnchorConstraints() {
+        mainPage.setDividerPositions(0.20);
+        // 18.5 - 81.5%
+
+        AnchorPane.setLeftAnchor(menuTitle, menuPage.getWidth()*.185);
+        AnchorPane.setRightAnchor(menuTitle, menuPage.getWidth()*.185);
+
+        AnchorPane.setLeftAnchor(dashboardNavButton, menuPage.getWidth()*.185);
+        AnchorPane.setRightAnchor(dashboardNavButton, menuPage.getWidth()*.185);
+
+        AnchorPane.setLeftAnchor(expenseNavButton, menuPage.getWidth()*.185);
+        AnchorPane.setRightAnchor(expenseNavButton, menuPage.getWidth()*.185);
+
+        AnchorPane.setLeftAnchor(budgetNavButton, menuPage.getWidth()*.185);
+        AnchorPane.setRightAnchor(budgetNavButton, menuPage.getWidth()*.185);
+    } // end setWidthAnchorConstraints
 
 
 
+    // set anchorpane constraints for menu buttons and title
+    private void setHeightAnchorConstraints() {
+        mainPage.setDividerPositions(0.20);
+        // measurements in percentage of height bottom to top
 
-        // listener to resize buttons and title width when window is resized
-        menuPage.widthProperty().addListener((obs, oldVal, newVal) -> {
-            mainPage.setDividerPositions(0.20);
-            // 18.5 - 81.5%
+        // anchorpane title takes 90 - 95%
+        AnchorPane.setTopAnchor(menuTitle, menuPage.getHeight()*.03); 
+        AnchorPane.setBottomAnchor(menuTitle, menuPage.getHeight()*.92);
 
-            AnchorPane.setLeftAnchor(menuTitle, menuPage.getWidth()*.185);
-            AnchorPane.setRightAnchor(menuTitle, menuPage.getWidth()*.185);
-
-            AnchorPane.setLeftAnchor(dashboardNavButton, menuPage.getWidth()*.185);
-            AnchorPane.setRightAnchor(dashboardNavButton, menuPage.getWidth()*.185);
-
-            AnchorPane.setLeftAnchor(expenseNavButton, menuPage.getWidth()*.185);
-            AnchorPane.setRightAnchor(expenseNavButton, menuPage.getWidth()*.185);
-
-            AnchorPane.setLeftAnchor(budgetNavButton, menuPage.getWidth()*.185);
-            AnchorPane.setRightAnchor(budgetNavButton, menuPage.getWidth()*.185);
-        });
+        // anchorpane dashboard 62.5 - 82.5%
+        AnchorPane.setTopAnchor(dashboardNavButton, menuPage.getHeight()*.175); 
+        AnchorPane.setBottomAnchor(dashboardNavButton, menuPage.getHeight()*.625);
         
-        // listener to resize buttons and title height when window is resized
-        menuPage.heightProperty().addListener((obs, oldVal, newVal) -> {
-            mainPage.setDividerPositions(0.20);
-            // measurements in percentage of height bottom to top
 
-            // anchorpane title takes 90 - 95%
-            AnchorPane.setTopAnchor(menuTitle, menuPage.getHeight()*.03); 
-            AnchorPane.setBottomAnchor(menuTitle, menuPage.getHeight()*.92);
+        // anchorpane expense 35 - 55%
+        AnchorPane.setTopAnchor(expenseNavButton, menuPage.getHeight()*.45);
+        AnchorPane.setBottomAnchor(expenseNavButton, menuPage.getHeight()*.35); 
 
-            // anchorpane dashboard 62.5 - 82.5%
-            AnchorPane.setTopAnchor(dashboardNavButton, menuPage.getHeight()*.175); 
-            AnchorPane.setBottomAnchor(dashboardNavButton, menuPage.getHeight()*.625);
-            
-
-            // anchorpane expense 35 - 55%
-            AnchorPane.setTopAnchor(expenseNavButton, menuPage.getHeight()*.45);
-            AnchorPane.setBottomAnchor(expenseNavButton, menuPage.getHeight()*.35); 
-
-            // anchorpane budget 7.5 - 27.5%
-            AnchorPane.setTopAnchor(budgetNavButton, menuPage.getHeight()*.725); 
-            AnchorPane.setBottomAnchor(budgetNavButton, menuPage.getHeight()*.075);
-        });
-    } 
-
-
-
-    // switches fx:include content page to the page specified by fileName
-    public void switchContentPage(String fileName) throws IOException {
-        // load the fxml file
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(App.class.getResource(fileName + ".fxml"));
-        AnchorPane contentPage = (AnchorPane) loader.load();
-
-        // if current page is = to the new page, do nothing
-        if (mainPage.getItems().get(1).equals(contentPage)) {
-            return;
-        }
-        else {
-            // set the content page to the new page
-            mainPage.getItems().set(1, contentPage);
-        }
-    }
-
-    // switch pages methods accessed by menu buttons
-
-    @FXML
-    private void switchToDashboard() throws IOException {
-        switchContentPage("DashboardPage");
-        
-    }
-
-    @FXML
-    private void switchToBudget() throws IOException {
-        switchContentPage("BudgetPage");
-    }
-
-    @FXML
-    private void switchToExpense() throws IOException {
-        switchContentPage("ExpensePage");
-    }
-
-    @FXML
-    private void addButtonImages() {
-        // set button images to DashboardButton.jpg, BudgetButton.jpg, and ExpenseButton.jpg set image to fit budgetNavButton
-        Image dashboardImage = new Image(getClass().getResourceAsStream("DashboardButton.jpg"));
-        ImageView dashboardImageView = new ImageView(dashboardImage);
-        dashboardNavButton.setGraphic(dashboardImageView);
-
-        Image budgetImage = new Image(getClass().getResourceAsStream("BudgetButton.jpg"));
-        ImageView budgetImageView = new ImageView(budgetImage);
-        budgetNavButton.setGraphic(budgetImageView);
-
-        Image expenseImage = new Image(getClass().getResourceAsStream("ExpenseButton.jpg"));
-        ImageView expenseImageView = new ImageView(expenseImage);
-        expenseNavButton.setGraphic(expenseImageView);
-    }
-}
+        // anchorpane budget 7.5 - 27.5%
+        AnchorPane.setTopAnchor(budgetNavButton, menuPage.getHeight()*.725); 
+        AnchorPane.setBottomAnchor(budgetNavButton, menuPage.getHeight()*.075);
+    } // end of setAnchorConstraints method 
+} // end of MainPageController class

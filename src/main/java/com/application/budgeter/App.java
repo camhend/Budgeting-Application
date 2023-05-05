@@ -16,6 +16,11 @@ import java.io.IOException;
         // cant find files
     // seperate tasks in initialize method into seperate methods
 
+// known bugs
+    // when resizing window, the divider position becomes moveable
+    // total not showing two decimal places on launch (FIXED)
+    // clicking on the menu buttons when already on that page causes elements to shift (FIXED)
+
 
 
 public class App extends Application {
@@ -24,6 +29,11 @@ public class App extends Application {
     
     @Override
     public void start(Stage stage) throws IOException {
+
+        ExpenseList expenseList = ExpenseList.getInstance(); // create expenseList singleton instance
+        expenseList.loadExpenses(); // load expenseList from expenses.csv
+
+        // *****placeholder for budgetList singleton instance*****
 
         scene = new Scene(loadFXML("ExpensePage"), 900, 615);
         scene = new Scene(loadFXML("MainPage"), 900, 615);

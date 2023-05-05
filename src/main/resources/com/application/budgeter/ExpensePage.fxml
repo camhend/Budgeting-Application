@@ -36,6 +36,7 @@
         <TableColumn editable="false" minWidth="145.0" text="Category" fx:id="categoryColumn" />
         <TableColumn editable="false" minWidth="116.0" text="Date" fx:id="dateColumn" />
         <TableColumn editable="false" minWidth="103.0" text="Cost" fx:id="costColumn" />
+        <TableColumn editable="false" maxWidth="0" text="ID" fx:id="idColumn" />
       </columns>
     </TableView>
 

@@ -11,10 +11,10 @@ public class Expense {
     private String name;
     private LocalDate localDate;
     private String category;
-    private int amount;
+    private double amount;
 
     
-    public Expense (int ID, String name, LocalDate localDate, String category, int amount) {
+    public Expense (int ID, String name, LocalDate localDate, String category, double amount) {
         this.ID = ID;
         this.name = name;
         this.localDate =localDate;
@@ -22,7 +22,7 @@ public class Expense {
         this.amount = amount;
     }
 
-    public boolean equals ( int ID, String name, LocalDate localDate, String category, int amount) {
+    public boolean equals ( int ID, String name, LocalDate localDate, String category, double amount) {
         return ID == this.ID 
             && name.equals(this.name)
             && localDate.equals(this.localDate)
@@ -38,7 +38,7 @@ public class Expense {
 
     public String getCategory() { return category; } 
 
-    public int getAmount() { return amount; } 
+    public double getAmount() { return amount; } 
 
     public void setID(int ID) { this.ID= ID; } 
 
@@ -48,5 +48,5 @@ public class Expense {
 
     public void setCategory(String category) { this.category = category; } 
 
-    public void setAmount(int amount) { this.amount= amount; }
+    public void setAmount(double amount) { this.amount= amount; }
 }
