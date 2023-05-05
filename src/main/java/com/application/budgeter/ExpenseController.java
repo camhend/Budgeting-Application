@@ -10,6 +10,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Tab;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import java.time.LocalDate;
@@ -19,39 +20,35 @@ import javafx.scene.control.Alert.AlertType;
 import java.io.IOException;
 import java.io.FileWriter;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.event.EventHandler;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.util.converter.IntegerStringConverter;
-import javafx.util.converter.LocalDateStringConverter;
-import javafx.scene.control.SplitPane;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.binding.Bindings;
 import java.util.Scanner;
 import java.io.FileNotFoundException;
 import java.io.File;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.text.Text;
 import javafx.application.Platform;
+import java.util.Arrays;
+import java.util.List;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.TableCell;
 
 
 
 public class ExpenseController implements Initializable {
 
-    // initialize tableview from fxml
-    @FXML private TableView<PlaceholderExpense> expenseTable;
-    // initialize table columns from fxml
-    @FXML private TableColumn<PlaceholderExpense, String> expenseColumn;
-    @FXML private TableColumn<PlaceholderExpense, String> categoryColumn;
-    @FXML private TableColumn<PlaceholderExpense, String> dateColumn;
-    @FXML private TableColumn<PlaceholderExpense, String> costColumn;
+    @FXML private Label expenseTitle; // title of page
+
+    @FXML private AnchorPane expensePage; // page that holds all the elements
+    
+    @FXML private TableView<Expense> expenseTable;
+    @FXML private TableColumn<Expense, String> expenseColumn;
+    @FXML private TableColumn<Expense, String> categoryColumn;
+    @FXML private TableColumn<Expense, String> dateColumn;
+    @FXML private TableColumn<Expense, String> costColumn;
+    @FXML private TableColumn<Expense, String> idColumn;
 
     @FXML private MenuButton totalMenu; // menu for tracking different time periods 
-    @FXML private Label total; // total amount of money spent in time period
 
+    @FXML private Label total; // total amount of money spent in time period
     @FXML private Label totalTitle; // title of total section
 
     @FXML private Button addExpenseButton; // + button
@@ -60,54 +57,105 @@ public class ExpenseController implements Initializable {
     @FXML private TextField addDateField;
     @FXML private TextField addCostField;
 
-
     @FXML private Button saveExpenseButton; // saves expense to file
 
-    @FXML private Label expenseTitle; // title of page
-
-    @FXML private AnchorPane expensePage; // page that holds all the elements
-
     
-
-    // dummy data (replace with pulling from file)
-    ObservableList<PlaceholderExpense> list = FXCollections.observableArrayList(
-        new PlaceholderExpense("hotdog", "food", "03/03/2024", "$1.50"),
-        new PlaceholderExpense("notdog", "food", "03/04/2023", "$2.50"),
-        new PlaceholderExpense("hotdog", "food", "03/03/2023", "$1.50"),
-        new PlaceholderExpense("notdog", "food", "03/04/2023", "$2.50"),
-        new PlaceholderExpense("hotdog", "food", "03/03/2023", "$1.50"),
-        new PlaceholderExpense("notdog", "food", "03/04/2023", "$2.50"),
-        new PlaceholderExpense("hotdog", "food", "03/03/2023", "$1.50"),
-        new PlaceholderExpense("notdog", "food", "03/04/2023", "$2.50"),
-        new PlaceholderExpense("hotdog", "food", "03/03/2023", "$1.50"),
-        new PlaceholderExpense("notdog", "food", "03/04/2023", "$2.50"),
-        new PlaceholderExpense("hotdog", "food", "03/03/2023", "$1.50"),
-        new PlaceholderExpense("notdog", "food", "03/04/2023", "$2.50"),
-        new PlaceholderExpense("hotdog", "food", "03/03/2023", "$1.50"),
-        new PlaceholderExpense("notdog", "food", "03/04/2023", "$2.50"),
-        new PlaceholderExpense("hotdog", "food", "03/03/2023", "$1.50"),
-        new PlaceholderExpense("notdog", "food", "03/04/2023", "$2.50"),
-        new PlaceholderExpense("hotdog", "food", "03/03/2023", "$1.50"),
-        new PlaceholderExpense("notdog", "food", "03/04/2023", "$2.25"),
-        new PlaceholderExpense("hotdog", "food", "03/03/2023", "$1.50"),
-        new PlaceholderExpense("notdog", "food", "03/02/2022", "$2.50")
-    );
-
+    ExpenseList expenseList = ExpenseList.getInstance(); // get instance of expenseList
+    
 
 
     // initialize method (runs when ExpenseController is created)
     @Override
     public void initialize(java.net.URL arg0, java.util.ResourceBundle arg1) {
 
-        // make total's width = 10% of window width
-        total.setPrefWidth(expensePage.getWidth() * .1);
+        // set cell factory for cost column to format cost to currency (adds $ and .00 to end of cost)
+        costColumn.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+        
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(String.format("$%.2f", Double.parseDouble(item)));
+                }
+            }
+        });
+
+        setAnchorPaneConstraints(); // set constraints for anchor pane
+
+        // set cell value factory for each column
+        expenseColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("name"));
+        categoryColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("category"));
+        dateColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("localDate"));
+        costColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("amount"));
+        idColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("ID"));
+
+        // set tableview resize policy to it will not resize columns past the width of the tableview
+        expenseTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        // align columns center
+        expenseColumn.setStyle("-fx-alignment: CENTER;");
+        categoryColumn.setStyle("-fx-alignment: CENTER;");
+        dateColumn.setStyle("-fx-alignment: CENTER;");
+        costColumn.setStyle("-fx-alignment: CENTER;");
+
+        // add columns to tableview if not already added
+        if (!expenseTable.getColumns().contains(expenseColumn)) {
+            // create list of columns to add
+            List<TableColumn<Expense, ?>> columns = Arrays.asList(expenseColumn, categoryColumn, dateColumn, costColumn);
+            expenseTable.getColumns().addAll(columns);
+        }
+
+
+        // add list to tableview
+        expenseTable.setItems(expenseList);
+
+        // calc all time total
+        totalMenu.setText("All Time");
+        updateTotal();
+
+        // right click to delete row
+        // context menu for deleting row
+        ContextMenu editingContextMenu = new ContextMenu();
+        // menu item for deleting row
+        MenuItem deleteMenuItem = new MenuItem("Delete");
+        // edit menu item 
+        MenuItem editMenuItem = new MenuItem("Edit");
+        // add menu item to context menu
+        editingContextMenu.getItems().addAll(deleteMenuItem, editMenuItem);
+
+        // set context menu to tableview
+        expenseTable.setContextMenu(editingContextMenu);
+
+        // set event handler for when delete menu item is clicked
+        deleteMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                // get selected row
+                Expense selectedExpense = expenseTable.getSelectionModel().getSelectedItem();
+                // remove selected row from list
+                expenseList.remove(selectedExpense);
+                // update tableview
+                expenseTable.setItems(expenseList);
+                // update total
+                updateTotal();
+            }
+        });
+
+        // set event handler for when edit menu item is clicked
+        // make tableview editable
+        // when value is changed check if valid
+            // all fields must be filled
+            // date is mm/dd/yyyy
+            // cost is a number (no letters) add $ sign if not added, make sure 2 decimal format
+        
+
+    } // end initialize method
 
 
 
-
-
-       
-
+    private void setAnchorPaneConstraints() {
         // listener for adjusting elements' width when window is resized
         expensePage.widthProperty().addListener((obs, oldVal, newVal) -> {
             
@@ -183,114 +231,7 @@ public class ExpenseController implements Initializable {
             // save button above tableview
             AnchorPane.setBottomAnchor(saveExpenseButton, newVal.doubleValue() * .72); 
         });
-        
-
-        // set cell value factory for each column
-        expenseColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("expense"));
-        categoryColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("category"));
-        dateColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("date"));
-        costColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("cost"));
-
-        // set tableview resize policy to it will not resize columns past the width of the tableview
-        expenseTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-
-        // align columns center
-        expenseColumn.setStyle("-fx-alignment: CENTER;");
-        categoryColumn.setStyle("-fx-alignment: CENTER;");
-        dateColumn.setStyle("-fx-alignment: CENTER;");
-        costColumn.setStyle("-fx-alignment: CENTER;");
-
-        // add columns to tableview if not already added
-        if (!expenseTable.getColumns().contains(expenseColumn)) {
-            expenseTable.getColumns().addAll(expenseColumn, categoryColumn, dateColumn, costColumn);
-        }
-
-        
-        // read expenses.csv file and add to list
-        try {
-            // create new scanner for file
-            Scanner scanner = new Scanner(new File("expenses.csv"));
-            // while scanner has next line
-            while (scanner.hasNextLine()) {
-                // create new scanner for line
-                Scanner line = new Scanner(scanner.nextLine());
-                // use , as delimiter
-                line.useDelimiter(",");
-                // add new PlaceholderExpense to list
-                list.add(new PlaceholderExpense(line.next(), line.next(), line.next(), line.next()));
-                // close line scanner
-                line.close();
-            }
-            // close scanner
-            scanner.close();
-        // catch if file is not found
-        } catch (FileNotFoundException e) {
-            // create new file
-            try {
-                new File("expenses.csv").createNewFile();
-            // catch if file cannot be created
-            } catch (IOException e2) {
-                // error message
-                Alert alert = new Alert(AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText("Error Creating New Expenses File");
-                alert.setContentText("An error occured while creating a new expenses file.");
-                alert.showAndWait();
-            }
-        }
-
-        // add dummy data to tableview
-        expenseTable.setItems(list);
-
-        // calcluate all costs from list
-        double totalCost = 0;
-        // adds all costs from list to totalCost removing the $ sign
-        for (PlaceholderExpense expense : list) {
-            totalCost += Double.parseDouble(expense.getCost().substring(1));
-        }
-
-        // set totalMenu to All Time
-        totalMenu.setText("All Time");
-        // set total label to totalCost
-        total.setText("$" + totalCost);
-
-        // right click to delete row
-        // context menu for deleting row
-        ContextMenu editingContextMenu = new ContextMenu();
-        // menu item for deleting row
-        MenuItem deleteMenuItem = new MenuItem("Delete");
-        // edit menu item 
-        MenuItem editMenuItem = new MenuItem("Edit");
-        // add menu item to context menu
-        editingContextMenu.getItems().addAll(deleteMenuItem, editMenuItem);
-
-        // set context menu to tableview
-        expenseTable.setContextMenu(editingContextMenu);
-
-        // set event handler for when delete menu item is clicked
-        deleteMenuItem.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                // get selected row
-                PlaceholderExpense selectedExpense = expenseTable.getSelectionModel().getSelectedItem();
-                // remove selected row from list
-                list.remove(selectedExpense);
-                // update tableview
-                expenseTable.setItems(list);
-                // update total
-                updateTotal();
-            }
-        });
-
-        // set event handler for when edit menu item is clicked
-        // make tableview editable
-        // when value is changed check if valid
-            // all fields must be filled
-            // date is mm/dd/yyyy
-            // cost is a number (no letters) add $ sign if not added, make sure 2 decimal format
-        
-
-    } // end initialize method
+    }
 
     
 
@@ -302,13 +243,13 @@ public class ExpenseController implements Initializable {
 
         if (months == 0) {
             // adds all costs from list to totalCost removing the $ sign
-            for (PlaceholderExpense expense : list) {
-                // if dollar sign 
-                if (expense.getCost().charAt(0) == '$') {
-                    totalCost += Double.parseDouble(expense.getCost().substring(1));
+            for (Expense expense : expenseList) {
+                // if dollar sign is in front of cost then remove it
+                if (Double.toString(expense.getAmount()).charAt(0) == '$') {
+                    totalCost += expense.getAmount();
                 }
                 else {
-                    totalCost += Double.parseDouble(expense.getCost());
+                    totalCost += expense.getAmount();
                 }
             }
         }
@@ -321,12 +262,12 @@ public class ExpenseController implements Initializable {
             // 
 
             // adds all costs from list to totalCost removing the $ sign
-            for (PlaceholderExpense expense : list) {
+            for (Expense expense : expenseList) {
                 // convert expense date to localDate
-                LocalDate expenseDate = LocalDate.parse(expense.getDate(), DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+                LocalDate expenseDate = expense.getLocalDate();
                 if (expenseDate.isAfter(pastDate) && expenseDate.isBefore(currentDate) || expenseDate.isEqual(currentDate))
                 {
-                    totalCost += Double.parseDouble(expense.getCost().substring(1));
+                    totalCost += expense.getAmount();
                 }
             }
         }
@@ -340,23 +281,7 @@ public class ExpenseController implements Initializable {
     public void changeMenuButton(ActionEvent event) {
         MenuItem menuItem = (MenuItem) event.getSource();
         totalMenu.setText(menuItem.getText());
-        switch (menuItem.getText()) {
-            case "Past Month":
-                total.setText("$" + calcluateTotal(1));
-                break;
-            case "Past 3 Months":
-                total.setText("$" + calcluateTotal(3));
-                break;
-            case "Past 6 Months":
-                total.setText("$" + calcluateTotal(6));
-                break;
-            case "Past 12 Months":
-                total.setText("$" + calcluateTotal(12));
-                break;
-            case "All Time":
-                total.setText("$" + calcluateTotal(0)); // 0 means all time
-                break;
-        }
+        updateTotal();
     } // end changeMenuButton method
 
 
@@ -434,7 +359,14 @@ public class ExpenseController implements Initializable {
             
 
             // add data to tableview
-            list.add(new PlaceholderExpense(addExpenseField.getText(), addCategoryField.getText(), addDateField.getText(), addCostField.getText()));
+            // convert data to string
+            String name = addExpenseField.getText();
+            String category = addCategoryField.getText();
+            LocalDate date = LocalDate.parse(addDateField.getText(), DateTimeFormatter.ofPattern("MM/dd/yyyy")); 
+            double cost = Double.parseDouble(addCostField.getText().substring(1));
+            
+            expenseList.add(name, category, date, cost);
+
             // clear text fields
             addExpenseField.clear();
             addCategoryField.clear();
@@ -453,8 +385,13 @@ public class ExpenseController implements Initializable {
         try {
             // open file and write each expense to file
             FileWriter csvWriter = new FileWriter("expenses.csv");
-            for (PlaceholderExpense expense : list) {
-                csvWriter.append(expense.getExpense() + "," + expense.getCategory() + "," + expense.getDate() + "," + expense.getCost() + "\n");
+            for (Expense expense : expenseList) {
+                // convert name, category, localDate, amount to string
+                String name = expense.getName();
+                String category = expense.getCategory();
+                String date = expense.getLocalDate().toString();
+                String amount = Double.toString(expense.getAmount());
+                csvWriter.append(name + "," + category + "," + date + "," + amount + "\n");
             }
             csvWriter.flush(); // flush data to file
             csvWriter.close(); // close file
