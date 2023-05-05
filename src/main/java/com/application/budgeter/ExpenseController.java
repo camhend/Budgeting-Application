@@ -42,9 +42,9 @@ public class ExpenseController implements Initializable {
     @FXML private TableView<Expense> expenseTable;
     @FXML private TableColumn<Expense, String> expenseColumn;
     @FXML private TableColumn<Expense, String> categoryColumn;
-    @FXML private TableColumn<Expense, String> dateColumn;
-    @FXML private TableColumn<Expense, String> costColumn;
-    @FXML private TableColumn<Expense, String> idColumn;
+    @FXML private TableColumn<Expense, LocalDate> dateColumn;
+    @FXML private TableColumn<Expense, Double> costColumn;
+    @FXML private TableColumn<Expense, Integer> idColumn;
 
     @FXML private MenuButton totalMenu; // menu for tracking different time periods 
 
@@ -68,19 +68,36 @@ public class ExpenseController implements Initializable {
     @Override
     public void initialize(java.net.URL arg0, java.util.ResourceBundle arg1) {
 
+        expenseTable.setPlaceholder(new Label("No Expenses Added Yet")); // set placeholder for tableview
+
         // set cell factory for cost column to format cost to currency (adds $ and .00 to end of cost)
         costColumn.setCellFactory(column -> new TableCell<>() {
             @Override
-            protected void updateItem(String item, boolean empty) {
+            protected void updateItem(Double item, boolean empty) {
                 super.updateItem(item, empty);
         
                 if (empty || item == null) {
                     setText(null);
                 } else {
-                    setText(String.format("$%.2f", Double.parseDouble(item)));
+                    setText(String.format("$%.2f", item));
                 }
             }
         });
+
+        // set cell factory for date column to format date to MM/dd/yyyy
+        dateColumn.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(LocalDate item, boolean empty) {
+                super.updateItem(item, empty);
+        
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
+                }
+            }
+        });
+        
 
         setAnchorPaneConstraints(); // set constraints for anchor pane
 
@@ -246,7 +263,7 @@ public class ExpenseController implements Initializable {
             for (Expense expense : expenseList) {
                 // if dollar sign is in front of cost then remove it
                 if (Double.toString(expense.getAmount()).charAt(0) == '$') {
-                    totalCost += expense.getAmount();
+                    
                 }
                 else {
                     totalCost += expense.getAmount();
@@ -366,6 +383,8 @@ public class ExpenseController implements Initializable {
             double cost = Double.parseDouble(addCostField.getText().substring(1));
             
             expenseList.add(name, category, date, cost);
+            // add expense to tableview
+            expenseTable.refresh();
 
             // clear text fields
             addExpenseField.clear();
@@ -389,7 +408,7 @@ public class ExpenseController implements Initializable {
                 // convert name, category, localDate, amount to string
                 String name = expense.getName();
                 String category = expense.getCategory();
-                String date = expense.getLocalDate().toString();
+                String date = expense.getLocalDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")).toString();
                 String amount = Double.toString(expense.getAmount());
                 csvWriter.append(name + "," + category + "," + date + "," + amount + "\n");
             }
@@ -414,7 +433,4 @@ public class ExpenseController implements Initializable {
             alert.showAndWait();
         }
     } // end saveExpenses 
-    
-    
-    
 } // end ExpenseController class

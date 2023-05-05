@@ -220,7 +220,7 @@ public class ExpenseList extends ModifiableObservableListBase<Expense>{
 
                 String expense = line.next();
                 String category = line.next();
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
                 LocalDate date = LocalDate.parse(line.next(), formatter);
                 double cost = Double.parseDouble(line.next());
 

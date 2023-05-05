@@ -20,6 +20,8 @@ import java.io.IOException;
     // when resizing window, the divider position becomes moveable
     // total not showing two decimal places on launch (FIXED)
     // clicking on the menu buttons when already on that page causes elements to shift (FIXED)
+    // date parsing is wonky
+        // date is showing up yyyy-mm-dd
 
 
 
