@@ -2,9 +2,12 @@ package com.application.budgeter;
 
 import java.util.Iterator;
 import java.time.*;
-import java.util.NoSuchElementException;
 
-// TODO: implement an Edit feature
+// TODO: make CSV reader / writer
+    // consider: how many expense to load? 
+    // how far back to go?
+    // How to add newly added expenses to CSV log? 
+    // What if a really old date is added? How will the newly added date be added to the CSV in a sorted manner?
 
 // This class defines a LinkedList used for storing
 // Expense objects. Oldest items are at the head, newest at the tail.
@@ -41,18 +44,22 @@ public class ExpenseList implements Iterable<Expense> {
         public void add ( String name, String category, LocalDate localDate, int amount) { 
         Expense newExpense = new Expense( name, category, localDate, amount);
         ExpenseNode newNode = new ExpenseNode (newExpense, null, null);
-        if ( this.isEmpty() ) {
+        // List is empty
+        if ( this.isEmpty() ) { 
             head = newNode;
             tail = newNode;
+        // New expense is equal or after the tail's date; add to tail
         } else if ( newExpense.getLocalDate().isEqual(tail.expense.getLocalDate()) ||
                     newExpense.getLocalDate().isAfter(tail.expense.getLocalDate()) ) {
             tail.next = newNode;
             newNode.prev = tail;
             tail = newNode;
+        // New expense is before the head's date; add to head
         } else if ( newExpense.getLocalDate().isBefore(head.expense.getLocalDate()) ) {
             head.prev = newNode;
             newNode.next = head;
             head = newNode;
+        // Else, search for sorted spot to add
         } else {
             ExpenseNode current = tail;
             while ( newExpense.getLocalDate().isBefore(current.expense.getLocalDate()) ) {
@@ -71,18 +78,22 @@ public class ExpenseList implements Iterable<Expense> {
     // Takes Expense object as parameter
     public void add ( Expense newExpense) { 
         ExpenseNode newNode = new ExpenseNode (newExpense, null, null);
+        // List is empty
         if ( this.isEmpty() ) {
             head = newNode;
             tail = newNode;
+        // New expense is equal or after the tail's date; add to tail
         } else if ( newExpense.getLocalDate().isEqual(tail.expense.getLocalDate()) ||
                     newExpense.getLocalDate().isAfter(tail.expense.getLocalDate()) ) {
             tail.next = newNode;
             newNode.prev = tail;
             tail = newNode;
+        // New expense is before the head's date; add to head
         } else if ( newExpense.getLocalDate().isBefore(head.expense.getLocalDate()) ) {
             head.prev = newNode;
             newNode.next = head;
             head = newNode;
+        // Else, search for sorted spot to add
         } else {
             ExpenseNode current = tail;
             while ( newExpense.getLocalDate().isBefore(current.expense.getLocalDate()) ) {
@@ -130,6 +141,84 @@ public class ExpenseList implements Iterable<Expense> {
         return current.expense;
     }
 
+    // Takes an Expense object in the ExpenseList and 
+    // replaces it with a new Expense object, and return true.
+    // If the date was changed, then move the ExpenseNode to
+    // the correct position in the sorted list.
+    // If the given Expense is not in the list, then return false.
+    public boolean edit( Expense old, Expense updated) {
+        ExpenseNode node = this.getNode(old);
+        if (node == null) { // expense not found in list
+            return false; 
+        }
+        node.expense = updated;
+        // If expense date was changed, then move the node
+        // to the correct sorted position.
+        if ( !updated.getLocalDate().equals(old.getLocalDate()) ) {
+            // First, remove edited node from the current position
+            if (node == head) {
+                node.next.prev = null;
+                head = node.next;
+            } else if (node == tail) {
+                node.prev.next = null;
+                tail = node.prev;
+            } else {
+                node.prev.next = node.next;
+                node.next.prev = node.prev;
+            }
+
+            // If the updated date is BEFORE the old date
+            if (updated.getLocalDate().isBefore(old.getLocalDate())) {
+                // If updated node is an earlier date than head, 
+                // then reassign head to be the updated node
+                if (updated.getLocalDate().isBefore(head.expense.getLocalDate())) {
+                    node.next = head;
+                    node.prev = null;
+                    head.prev = node;
+                    head = node;
+                // else traverse for the correct position
+                } else {
+                    ExpenseNode current = node;
+                    // traverse until the current node date is before the updated date 
+                    while (updated.getLocalDate().isBefore(current.expense.getLocalDate())) {
+                        current = current.prev;
+                    }
+                    node.next = current.next;
+                    node.prev = current;
+                    current.next.prev = node;
+                    current.next = node;  
+                }
+                
+                    
+            // If the updated date is AFTER the old date
+            } else if (updated.getLocalDate().isAfter(old.getLocalDate())) {
+                // If updated node is an later or equal date than tail, 
+                // then reassign tail to be the updated node
+                if ( updated.getLocalDate().isAfter(tail.expense.getLocalDate()) || 
+                     updated.getLocalDate().equals(tail.expense.getLocalDate()) ) 
+                {
+                    node.next = null;
+                    node.prev = tail;
+                    tail.next = node;
+                    tail = node;                   
+                // Else traverse for the correct position
+                } else {
+                    ExpenseNode current = node;
+                    // traverse until the current node date is after the updated date 
+                    while ( updated.getLocalDate().isAfter(current.expense.getLocalDate())
+                            || updated.getLocalDate().equals(current.expense.getLocalDate()))  {
+                        current = current.next;
+                    } 
+                    node.next = current;
+                    node.prev = current.prev;
+                    current.prev.next = node;
+                    current.prev = node;
+                }
+            }
+        } // End of If expense's date was changed
+        return true;
+    } // End of edit method
+
     // Return whether list contains the given Expense
     public boolean contains( Expense expense ) {
         ExpenseNode current = tail;
@@ -174,9 +263,6 @@ public class ExpenseList implements Iterable<Expense> {
         }
     }
 
-    // TODO: implement edit. Return true if successfully found and edited
-
-
     public int size() {
         return size;
     }
@@ -195,12 +281,41 @@ public class ExpenseList implements Iterable<Expense> {
     }
 
     private class ExpenseListIterator implements Iterator<Expense> {
-        ExpenseNode current = tail;
+        ExpenseNode current = head;
           
+        @Override
         public boolean hasNext()  {
             return current != null;
         }
           
+        @Override
+        public Expense next()
+        {
+            Expense expense = current.expense;
+            current = current.next;
+            return expense;
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException(); 
+        }  
+    }
+
+    // return backwards Iterator instance
+    public Iterator<Expense> descendingIterator() {
+        return new DescendingExpenseListIterator();
+    }
+
+    private class DescendingExpenseListIterator implements Iterator<Expense> {
+        ExpenseNode current = tail;
+          
+        @Override
+        public boolean hasNext()  {
+            return current != null;
+        }
+          
+        @Override
         public Expense next()
         {
             Expense expense = current.expense;
@@ -209,12 +324,10 @@ public class ExpenseList implements Iterable<Expense> {
         }
 
         @Override
-            public void remove() {
+        public void remove() {
             throw new UnsupportedOperationException(); 
         }  
-    
     }
-
     
 
 
