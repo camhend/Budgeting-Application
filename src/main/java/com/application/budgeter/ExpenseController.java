@@ -65,7 +65,9 @@ public class ExpenseController implements Initializable {
     @Override
     public void initialize(java.net.URL arg0, java.util.ResourceBundle arg1) {
 
-        expenseTable.setPlaceholder(new Label("No Expenses Added Yet")); // set placeholder for tableview
+        setAnchorPaneConstraints(); // set constraints for anchor pane
+        
+        expenseTable.setPlaceholder(new Label("No Expenses Added")); // set placeholder for tableview
 
         // set cell factory for cost column to format cost to currency (adds $ and .00 to end of cost)
         costColumn.setCellFactory(column -> new TableCell<>() {
@@ -96,7 +98,7 @@ public class ExpenseController implements Initializable {
         });
         
 
-        setAnchorPaneConstraints(); // set constraints for anchor pane
+        
 
         // set cell value factory for each column
         expenseColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("name"));

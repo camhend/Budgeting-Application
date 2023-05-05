@@ -156,8 +156,23 @@ public class ExpenseList extends ModifiableObservableListBase<Expense>{
     // Remove the ExpenseNode that contains the given Expense
     public void removeNode( Expense target ) {
         ExpenseNode node = this.getNode(target);
-        node.prev.next = node.next;
-        node.next.prev = node.prev;
+        // if node is head, set head to next node
+        if (node == tail && node == head) {
+            tail = null;
+            head = null;
+        }
+        else if (node == head) {
+            head = node.next;
+        }
+        // if node is tail, set tail to prev node
+        else if (node == tail) {
+            tail = node.prev;
+        }
+        else {
+            node.prev.next = node.next;
+            node.next.prev = node.prev;
+        }
+        
         size--;
     }
 
@@ -166,13 +181,28 @@ public class ExpenseList extends ModifiableObservableListBase<Expense>{
             throw new IndexOutOfBoundsException();
         }
         ExpenseNode current = head;
+        Expense currentExpense = current.expense;
         for (int i = 0; i < index; i++) {
             current = current.next;
         }
-        current.prev.next = current.next;
-        current.next.prev = current.prev;
+
+        if (current == tail && current == head) {
+            tail = null;
+            head = null;
+        }
+        else if (current == head) {
+            head = current.next;
+        }
+        else if (current == tail) {
+            tail = current.prev;
+        }
+        else {
+            current.prev.next = current.next;
+            current.next.prev = current.prev;
+        }
+        
         size--;
-        return current.expense;
+        return currentExpense;
     }
 
     public void edit( Expense target, String name, String category, LocalDate localDate, double amount ) {
