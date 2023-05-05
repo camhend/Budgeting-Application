@@ -37,7 +37,18 @@ public class ExpenseList implements Iterable<Expense> {
             this.expense = expense;
         }
     }
+    
+    public int size() {
+        return size;
+    }
 
+    public boolean isEmpty() {
+        return head == null;
+    }
+    
+    public int getTotalSpending() {
+        return totalSpending;
+    }
 
     // Add new Expense to the list in sorted order by date
     // Takes Expense fields as parameters
@@ -263,16 +274,15 @@ public class ExpenseList implements Iterable<Expense> {
         }
     }
 
-    public int size() {
-        return size;
-    }
-
-    public boolean isEmpty() {
-        return head == null;
-    }
-
-    public int getTotalSpending() {
-        return totalSpending;
+    // Return an array representation of the list
+    public Expense[] toArray() {
+        ExpenseNode current = head;
+        Expense[] arr = new Expense[this.size()];
+        for (int index = 0; index < this.size(); index++) {
+            arr[index] = current.expense;
+            current = current.next;
+        }
+        return arr;
     }
 
     // return Iterator instance

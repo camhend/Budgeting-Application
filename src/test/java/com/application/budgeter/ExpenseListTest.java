@@ -370,6 +370,27 @@ public class ExpenseListTest {
             index--;
         }
     }
+    
+        @Test
+        public void testToArray_emptyList() {
+            Expense[] actual = list.toArray();
+            Expense[] expected = {};
+            assertArrayEquals(expected, actual);
+    }
+
+        @Test
+        public void testToArray() {
+            Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-02-01"), 10);
+            Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2001-04-14"), 50);
+            Expense exp3 = new Expense("groceries", "food", LocalDate.parse("2001-06-28"), 50);
+
+            list.add(exp1);
+            list.add(exp2);
+            list.add(exp3);
+            Expense[] actual = list.toArray();
+            Expense[] expected = {exp1, exp2, exp3};
+            assertArrayEquals(expected, actual);
+    }
 
 
 }
