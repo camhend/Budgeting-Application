@@ -209,6 +209,27 @@ public class ExpenseListTest {
     }
 
     @Test
+    public void testRemove_OneElementInList() {
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-01-01"), 10);
+
+        list.add(exp1);
+
+        Expense[] expected = {exp1};
+        int index = 0;
+        for (Expense expense : list) {
+            assertEquals(expected[index], expense);
+            index++;
+        }
+
+        Iterator<Expense> itPrev = list.descendingIterator();
+        index = 0;
+        while ( itPrev.hasNext() ) {
+            assertEquals(expected[index], itPrev.next() );
+            index--;
+        }
+    }
+
+    @Test
     public void testRemove_RemoveExpenseFromHead_ExpenseNoLongerInList() {
         Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-01-01"), 10);
         Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2002-12-14"), 50);
@@ -370,7 +391,7 @@ public class ExpenseListTest {
             index--;
         }
     }
-    
+
         @Test
         public void testToArray_emptyList() {
             Expense[] actual = list.toArray();

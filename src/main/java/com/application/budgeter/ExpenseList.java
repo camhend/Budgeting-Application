@@ -258,7 +258,10 @@ public class ExpenseList implements Iterable<Expense> {
         if (node == null) {
             return false;
         } else {
-            if (node == head) {
+            if (node == head && node == tail) {
+                head = null;
+                tail = null;
+            } else if (node == head) {
                 node.next.prev = null;
                 head = node.next;
             } else if (node == tail) {
