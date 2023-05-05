@@ -254,9 +254,9 @@ public class ExpenseList extends ModifiableObservableListBase<Expense>{
                 csvWriter.append(",");
                 csvWriter.append(current.expense.getCategory());
                 csvWriter.append(",");
-                csvWriter.append(current.expense.getLocalDate().toString());
+                csvWriter.append(current.expense.getLocalDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")).toString());
                 csvWriter.append(",");
-                csvWriter.append(Double.toString(current.expense.getAmount()));
+                csvWriter.append(String.format("%.2f", current.expense.getAmount()));
                 csvWriter.append("\n");
                 // move to next node
                 current = current.next;

@@ -21,9 +21,6 @@ import java.io.IOException;
 import java.io.FileWriter;
 import javafx.scene.control.ContextMenu;
 import javafx.event.EventHandler;
-import java.util.Scanner;
-import java.io.FileNotFoundException;
-import java.io.File;
 import javafx.scene.layout.AnchorPane;
 import javafx.application.Platform;
 import java.util.Arrays;
@@ -400,37 +397,6 @@ public class ExpenseController implements Initializable {
 
     // save data from tableview to file
     public void saveExpenses() {
-        // write list to expenses.csv
-        try {
-            // open file and write each expense to file
-            FileWriter csvWriter = new FileWriter("expenses.csv");
-            for (Expense expense : expenseList) {
-                // convert name, category, localDate, amount to string
-                String name = expense.getName();
-                String category = expense.getCategory();
-                String date = expense.getLocalDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")).toString();
-                String amount = Double.toString(expense.getAmount());
-                csvWriter.append(name + "," + category + "," + date + "," + amount + "\n");
-            }
-            csvWriter.flush(); // flush data to file
-            csvWriter.close(); // close file
-
-            // display success message
-            Alert alert = new Alert(AlertType.INFORMATION);
-
-            alert.setTitle("Success");
-            alert.setHeaderText("Success");
-            alert.setContentText("Expenses saved to file");
-            alert.showAndWait();
-        }
-        catch (IOException e) {
-            // display error message
-            Alert alert = new Alert(AlertType.ERROR);
-
-            alert.setTitle("Error");
-            alert.setHeaderText("Error");
-            alert.setContentText("Error saving expenses to file");
-            alert.showAndWait();
-        }
+        expenseList.saveExpenses();
     } // end saveExpenses 
 } // end ExpenseController class

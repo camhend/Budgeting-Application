@@ -10,19 +10,14 @@ import java.io.IOException;
 // TODO
     // polish and bug test front end
         // make draft of integration
-    // observable linked list for tableview
-        // date sorting
-    // button images
-        // cant find files
     // seperate tasks in initialize method into seperate methods
+    // delete method
+    // edit method
+    // merge sort implementation
+    // finish integration
 
 // known bugs
     // when resizing window, the divider position becomes moveable
-    // total not showing two decimal places on launch (FIXED)
-    // clicking on the menu buttons when already on that page causes elements to shift (FIXED)
-    // date parsing is wonky
-        // date is showing up yyyy-mm-dd
-
 
 
 public class App extends Application {
