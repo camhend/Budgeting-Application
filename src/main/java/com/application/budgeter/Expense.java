@@ -1,18 +1,16 @@
 package com.application.budgeter;
 
 import java.time.*;
-import java.time.format.DateTimeFormatter;
-import java.util.regex.Pattern;
 
 // This class defines an object that holds information about an expense entry
 public class Expense {
     private String name;
     private LocalDate localDate;
     private String category;
-    private int amount;
+    private double amount;
 
     
-    public Expense (String name, String category, LocalDate localDate, int amount) {
+    public Expense (String name, String category, LocalDate localDate, double amount) {
         this.name = name;
         this.category = category;
         this.localDate =localDate;
@@ -32,7 +30,7 @@ public class Expense {
     
     public LocalDate getLocalDate() { return localDate; } 
 
-    public int getAmount() { return amount; } 
+    public double getAmount() { return amount; } 
 
     public void setName(String name) { this.name = name; } 
 
@@ -40,7 +38,7 @@ public class Expense {
 
     public void setLocalDate(LocalDate localDate) { this.localDate = localDate; } 
 
-    public void setAmount(int amount) { this.amount= amount; }
+    public void setAmount(double amount) { this.amount= amount; }
 
     public String toString () {
         String toString = 

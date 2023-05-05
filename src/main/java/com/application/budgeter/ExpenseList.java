@@ -52,7 +52,7 @@ public class ExpenseList implements Iterable<Expense> {
 
     // Add new Expense to the list in sorted order by date
     // Takes Expense fields as parameters
-        public void add ( String name, String category, LocalDate localDate, int amount) { 
+        public void add ( String name, String category, LocalDate localDate, double amount) { 
         Expense newExpense = new Expense( name, category, localDate, amount);
         ExpenseNode newNode = new ExpenseNode (newExpense, null, null);
         // List is empty

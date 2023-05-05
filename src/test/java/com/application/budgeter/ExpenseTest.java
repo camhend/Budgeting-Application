@@ -36,7 +36,7 @@ public class ExpenseTest {
 
     @Test 
     public void testGetAmount() {
-        assertEquals(15, expense.getAmount());
+        assertEquals(15.0, expense.getAmount(), 0.001);
     }
 
     @Test
@@ -93,7 +93,7 @@ public class ExpenseTest {
             LocalDate.parse("2001-01-01"), 
             15);
         
-        String expectedString = "[testname, food, 2001-01-01, 15]";
+        String expectedString = "[testname, food, 2001-01-01, 15.0]";
         assertEquals(expectedString, expense.toString());
     }
 
