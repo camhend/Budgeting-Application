@@ -14,3 +14,4 @@ TO DO:
   - add a branch for each team member to work on 
   - add Junit 5 to maven dependancies (testing framework)
     - add maven surefire plugin (helps with finding and running tests)
+  - (see App.java for development TODO list)
