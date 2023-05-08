@@ -18,7 +18,7 @@ import java.io.IOException;
 
 // known bugs
     // when resizing window, the divider position becomes moveable
-    // test 
+    // slight page size difference between expense page and other pages (cuz of anchorpane constraints??)
 
 
 public class App extends Application {
