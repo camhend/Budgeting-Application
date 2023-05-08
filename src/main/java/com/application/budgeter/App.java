@@ -32,7 +32,6 @@ public class App extends Application {
 
         // *****placeholder for budgetList singleton instance*****
 
-        scene = new Scene(loadFXML("ExpensePage"), 900, 615);
         scene = new Scene(loadFXML("MainPage"), 900, 615);
 
 
