@@ -27,10 +27,6 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 
-        ExpenseList expenseList = ExpenseList.getInstance(); // create expenseList singleton instance
-        expenseList.loadExpenses(); // load expenseList from expenses.csv
-
-        // *****placeholder for budgetList singleton instance*****
 
         scene = new Scene(loadFXML("MainPage"), 900, 615);
 
