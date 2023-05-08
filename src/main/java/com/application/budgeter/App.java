@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.IOException;
+import javafx.scene.image.Image;
 
 // TODO
     // polish and bug test front end
@@ -31,6 +32,9 @@ public class App extends Application {
 
         scene = new Scene(loadFXML("MainPage"), 900, 615);
 
+        // set icon to appIcon
+
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/com/application/budgeter/images/appIcon.jpg")));
 
         // set current size to min
         stage.setMinWidth(900);

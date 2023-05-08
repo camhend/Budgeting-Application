@@ -29,6 +29,9 @@ public class MainPageController implements Initializable {
     // add listener to reapply divider positions if window is resized
     public void initialize(java.net.URL arg0, java.util.ResourceBundle arg1) {
 
+        // set menuPage color to gray
+        menuPage.setStyle("-fx-background-color: #CFC5C5;");
+
         addButtonImages(); 
 
         // get the divider position and set it to 0.20 when the window is resized
