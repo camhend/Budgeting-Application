@@ -18,6 +18,7 @@ import java.io.IOException;
 
 // known bugs
     // when resizing window, the divider position becomes moveable
+    // test 
 
 
 public class App extends Application {
