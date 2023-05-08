@@ -27,6 +27,8 @@ import java.util.Arrays;
 import java.util.List;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.TableCell;
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 
 
@@ -68,6 +70,8 @@ public class ExpenseController implements Initializable {
     // initialize method (runs when ExpenseController is created)
     @Override
     public void initialize(java.net.URL arg0, java.util.ResourceBundle arg1) {
+        // load expenses from file
+        loadExpenses();
 
         setAnchorPaneConstraints(); // set constraints for anchor pane
         
@@ -403,6 +407,74 @@ public class ExpenseController implements Initializable {
 
     // save data from tableview to file
     public void saveExpenses() {
+        // write data from expenseList to expenses.csv
+
+        try {
+            FileWriter csvWriter = new FileWriter("expenses.csv");
+
+
+            // write data to csv file
+            for (Expense expense : expenseList) {
+                csvWriter.append(expense.getName());
+                csvWriter.append(",");
+                csvWriter.append(expense.getCategory());
+                csvWriter.append(",");
+                csvWriter.append(expense.getLocalDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
+                csvWriter.append(",");
+                csvWriter.append(String.valueOf(expense.getAmount()));
+                csvWriter.append("\n");
+            }
+            csvWriter.flush();
+            csvWriter.close();
+
+            // display success message
+            Alert alert = new Alert(AlertType.INFORMATION);
+
+            alert.setTitle("Success");
+            alert.setHeaderText("Success");
+            alert.setContentText("Expenses have been saved");
+            alert.showAndWait();
+        }
+        catch (IOException e) {
+            // display error message
+            Alert alert = new Alert(AlertType.ERROR);
+
+            alert.setTitle("Error");
+            alert.setHeaderText("Error");
+            alert.setContentText("Error saving expenses");
+            alert.showAndWait();
+        }
         
     } // end saveExpenses 
+
+    public void loadExpenses() {
+        // read data from expenses.csv to expenseList
+        try {
+            // clear expenseList
+            expenseList.clear();
+
+            // read data from csv file
+            BufferedReader csvReader = new BufferedReader(new FileReader("expenses.csv"));
+            String row;
+            while ((row = csvReader.readLine()) != null) {
+                String[] data = row.split(",");
+                String name = data[0];
+                String category = data[1];
+                LocalDate date = LocalDate.parse(data[2], DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+                double cost = Double.parseDouble(data[3]);
+                Expense newExpense = new Expense(name, category, date, cost);
+                expenseList.add(newExpense);
+            }
+            csvReader.close();
+        }
+        catch (IOException e) {
+            // display error message
+            Alert alert = new Alert(AlertType.ERROR);
+
+            alert.setTitle("Error");
+            alert.setHeaderText("Error");
+            alert.setContentText("Error loading expenses");
+            alert.showAndWait();
+        }
+    } // end loadExpenses method
 } // end ExpenseController class
