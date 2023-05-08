@@ -41,7 +41,6 @@ public class ExpenseController implements Initializable {
     @FXML private TableColumn<Expense, String> categoryColumn;
     @FXML private TableColumn<Expense, LocalDate> dateColumn;
     @FXML private TableColumn<Expense, Double> costColumn;
-    @FXML private TableColumn<Expense, Integer> idColumn;
 
     @FXML private MenuButton totalMenu; // menu for tracking different time periods 
 
@@ -110,7 +109,6 @@ public class ExpenseController implements Initializable {
         categoryColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("category"));
         dateColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("localDate"));
         costColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("amount"));
-        idColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("ID"));
 
         // set tableview resize policy to it will not resize columns past the width of the tableview
         expenseTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
