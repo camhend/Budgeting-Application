@@ -57,7 +57,12 @@ public class ExpenseController implements Initializable {
     @FXML private Button saveExpenseButton; // saves expense to file
 
     
-    ExpenseList expenseList = ExpenseList.getInstance(); // get instance of expenseList
+    ExpenseList expenses = new ExpenseList(); // list of expenses
+
+    ObservableList<Expense> expenseList = FXCollections.observableArrayList(); // list of expenses to display in tableview
+    
+    // add expenses to expenseList and display in tableview
+
     
 
 
@@ -380,8 +385,9 @@ public class ExpenseController implements Initializable {
             String category = addCategoryField.getText();
             LocalDate date = LocalDate.parse(addDateField.getText(), DateTimeFormatter.ofPattern("MM/dd/yyyy")); 
             double cost = Double.parseDouble(addCostField.getText().substring(1));
+            Expense newExpense = new Expense(name, category, date, cost);
             
-            expenseList.add(name, category, date, cost);
+            expenseList.add(newExpense);
             // add expense to tableview
             expenseTable.refresh();
 
@@ -399,6 +405,6 @@ public class ExpenseController implements Initializable {
 
     // save data from tableview to file
     public void saveExpenses() {
-        expenseList.saveExpenses();
+        
     } // end saveExpenses 
 } // end ExpenseController class
