@@ -32,8 +32,7 @@ public class App extends Application {
 
         scene = new Scene(loadFXML("MainPage"), 900, 615);
 
-        // set icon to appIcon
-
+        // set icon
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/com/application/budgeter/images/appIcon.jpg")));
 
         // set current size to min
