@@ -9,13 +9,14 @@ import java.io.IOException;
 import javafx.scene.image.Image;
 
 // TODO
-    // polish and bug test front end
-        // make draft of integration
-    // seperate tasks in initialize method into seperate methods
-    // delete method
-    // edit method
+    // seperate observable list for tableview 
+        // delete method
+        // edit method
+        // add method
+        // total method
     // merge sort implementation
-    // finish integration
+    // high res button images
+        // different images when clicked on
 
 // known bugs
     // when resizing window, the divider position becomes moveable

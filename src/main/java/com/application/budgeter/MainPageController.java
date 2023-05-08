@@ -30,7 +30,7 @@ public class MainPageController implements Initializable {
     public void initialize(java.net.URL arg0, java.util.ResourceBundle arg1) {
 
         // set menuPage color to gray
-        menuPage.setStyle("-fx-background-color: #CFC5C5;");
+        menuPage.setStyle("-fx-background-color: #ECEAEA;");
 
         addButtonImages(); 
 
