@@ -9,13 +9,13 @@ import java.io.IOException;
 import javafx.scene.image.Image;
 
 // TODO
-    // getIndex in Expense list
+
     // text shortening
-    // seperate observable list for tableview 
-        // delete method
+    
+        
         // edit method
         // add method
-            // add negative numbers?
+
         // total method
     // merge sort implementation
     // high res button images
@@ -30,8 +30,16 @@ import javafx.scene.image.Image;
        // category -> category
        // localDate -> date
        // amount -> cost
+       // normalize data written into file
+         // 2 decimal places
+         // no dollar sign
 
+    
+// DONE
+    // getIndex in Expense list
     // check if date is real
+    // delete method
+    // seperate observable list for tableview 
 
 // known bugs
     // when resizing window, the divider position becomes moveable
@@ -45,8 +53,9 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 
-        
+
         scene = new Scene(loadFXML("MainPage"), 900, 615);
+        
 
         // set icon
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/com/application/budgeter/images/appIcon.jpg")));
