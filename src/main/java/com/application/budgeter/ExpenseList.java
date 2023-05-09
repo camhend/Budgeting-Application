@@ -2,12 +2,15 @@ package com.application.budgeter;
 
 import java.util.Iterator;
 import java.time.*;
+import java.util.*;
 
 // TODO: make CSV reader / writer
     // consider: how many expense to load? 
     // how far back to go?
     // How to add newly added expenses to CSV log? 
     // What if a really old date is added? How will the newly added date be added to the CSV in a sorted manner?
+
+// TODO: what happens if an expense is edited to have a very old date?
 
 // This class defines a LinkedList used for storing
 // Expense objects. Oldest items are at the head, newest at the tail.
@@ -16,6 +19,7 @@ public class ExpenseList implements Iterable<Expense> {
     private ExpenseNode tail;
     private int totalSpending;
     private int size;
+    private Map<String, Double> categorySpending;
 
     // ExpenseList constructor
     public ExpenseList () {
@@ -23,6 +27,7 @@ public class ExpenseList implements Iterable<Expense> {
         this.tail = null;
         this.size = 0;
         this.totalSpending = 0;
+        this.categorySpending = new HashMap<String, Double>();
     } 
 
     // Nested class for LinkedList Nodes
@@ -52,9 +57,10 @@ public class ExpenseList implements Iterable<Expense> {
 
     // Add new Expense to the list in sorted order by date
     // Takes Expense fields as parameters
-        public void add ( String name, String category, LocalDate localDate, double amount) { 
+    public void add ( String name, String category, LocalDate localDate, double amount) { 
         Expense newExpense = new Expense( name, category, localDate, amount);
         ExpenseNode newNode = new ExpenseNode (newExpense, null, null);
+        category = category.toLowerCase(null);
         // List is empty
         if ( this.isEmpty() ) { 
             head = newNode;
@@ -82,6 +88,7 @@ public class ExpenseList implements Iterable<Expense> {
             current.next = newNode;           
         }
         totalSpending += newExpense.getAmount();
+        categorySpending.put(category, amount);
         size++;
     }
 
@@ -116,6 +123,7 @@ public class ExpenseList implements Iterable<Expense> {
             current.next = newNode;           
         }
         totalSpending += newExpense.getAmount();
+        categorySpending.put(newExpense.getCategory().toLowerCase(), newExpense.getAmount());
         size++;
     }
 
