@@ -528,18 +528,17 @@ public class ExpenseController implements Initializable {
         
         // else add data to tableview
         else {
-            // check if date is valid
-            try {
-                // parse 
-                LocalDate date = LocalDate.parse(addDateField.getText(), DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-            }
-            catch (DateTimeParseException e) {
+            String readDate = addDateField.getText();
+            LocalDate parsedDate = LocalDate.parse(readDate, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+            String formattedDate = parsedDate.format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+            // if date in tet field is equal to date parsed in LocalDate mm/dd/yyyy
+            if (!(readDate.equals(formattedDate))) {
                 // display error message
                 Alert alert = new Alert(AlertType.ERROR);
 
                 alert.setTitle("Error");
                 alert.setHeaderText("Error");
-                alert.setContentText("Please enter a valid date (mm/dd/yyyy)");
+                alert.setContentText("Please Enter a Date from the Gregorian Calendar");
                 alert.showAndWait();
                 return;
             }
