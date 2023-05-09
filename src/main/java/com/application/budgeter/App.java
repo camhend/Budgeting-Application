@@ -9,14 +9,29 @@ import java.io.IOException;
 import javafx.scene.image.Image;
 
 // TODO
+    // getIndex in Expense list
+    // text shortening
     // seperate observable list for tableview 
         // delete method
         // edit method
         // add method
+            // add negative numbers?
         // total method
     // merge sort implementation
     // high res button images
         // different images when clicked on
+    // searching total for x time period
+    // search total for x category x time period
+
+    // expenselist paramter
+
+    // NORMALIZE naming
+       // expense -> name
+       // category -> category
+       // localDate -> date
+       // amount -> cost
+
+    // check if date is real
 
 // known bugs
     // when resizing window, the divider position becomes moveable
