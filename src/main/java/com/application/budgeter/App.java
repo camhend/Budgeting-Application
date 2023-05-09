@@ -9,12 +9,12 @@ import java.io.IOException;
 import javafx.scene.image.Image;
 
 // TODO
-
-    // text shortening
-    
-        
         // edit method
-        // add method
+            // center in page
+            // make alert appear above popup
+            // test
+        // make add work for years under 4 digits
+        // text shortening or wrap text when too long
 
         // total method
     // merge sort implementation
@@ -40,6 +40,7 @@ import javafx.scene.image.Image;
     // check if date is real
     // delete method
     // seperate observable list for tableview 
+    // add method
 
 // known bugs
     // when resizing window, the divider position becomes moveable
