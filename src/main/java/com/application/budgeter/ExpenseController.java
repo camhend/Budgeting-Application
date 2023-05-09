@@ -35,6 +35,10 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.stage.Modality;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import java.time.format.DateTimeParseException;
 
 
 
@@ -161,99 +165,103 @@ public class ExpenseController implements Initializable {
             public void handle(ActionEvent event) {
                 // get selected row
                 Expense selectedExpense = expenseTable.getSelectionModel().getSelectedItem();
-
+                // create popup 
                 Popup popup = new Popup();
+                // add
                 popup.getContent().add(EditPage);
-                
-
-                // set text for textfields to selected expense (convert toString)
-                expensePopupField.setText(selectedExpense.getName());
-                categoryPopupField.setText(selectedExpense.getCategory());
-                // dd/mm/yyyy date 
-                datePopupField.setText(selectedExpense.getLocalDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
-                // convert double amount to 2 decimal format with $ sign
-                costPopupField.setText(String.format("$%.2f", Double.toString(selectedExpense.getAmount())));
-                
-                // Show the popup
+                // show
                 popup.show(expensePage.getScene().getWindow());
+                
+                
 
-                // disable expensePage's root
-                expensePage.getScene().getRoot().setDisable(true);
+                // // set text for textfields to selected expense (convert toString)
+                // expensePopupField.setText(selectedExpense.getName());
+                // categoryPopupField.setText(selectedExpense.getCategory());
+                // // dd/mm/yyyy date 
+                // datePopupField.setText(selectedExpense.getLocalDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
+                // // convert double amount to 2 decimal format with $ sign
+                // costPopupField.setText(String.format("$%.2f", Double.toString(selectedExpense.getAmount())));
+                
+                // // Show the popup
+                // popup.show(expensePage.getScene().getWindow());
 
-                // when close button is clicked
-                closeEditButton.setOnAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent event) {
-                        // close popup
-                        popup.hide();
-                        // undisable expensePage root
-                        expensePage.setDisable(false);
-                    }
-                });
+                // // disable expensePage's root
+                // expensePage.getScene().getRoot().setDisable(true);
 
-                // when finish button is clicked
-                finishEditButton.setOnAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent event) {
-                        // if none of the fields are empty, or if date is not valid, or if cost is not a number
-                        if (expensePopupField.getText().equals("") || categoryPopupField.getText().equals("") || datePopupField.getText().equals("") || costPopupField.getText().equals("")) {
-                            // alert user with javafx alert
-                            Alert alert = new Alert(AlertType.WARNING);
-                            alert.setTitle("Empty Fields");
-                            alert.setHeaderText("Empty Fields");
-                            alert.setContentText("Please fill out all fields");
-                            alert.showAndWait();
-                            return;
-                        }
-                        else if (!datePopupField.getText().matches("\\d{2}/\\d{2}/\\d{4}")) {
-                            // alert user with javafx alert
-                            Alert alert = new Alert(AlertType.WARNING);
-                            alert.setTitle("Invalid Date");
-                            alert.setHeaderText("Invalid Date");
-                            alert.setContentText("Please enter a valid date (mm/dd/yyyy)");
-                            alert.showAndWait();
-                            return;
-                        }
-                        else if (!costPopupField.getText().matches("\\d+(\\.\\d+)?")) {
-                            // alert user with javafx alert
-                            Alert alert = new Alert(AlertType.WARNING);
-                            alert.setTitle("Invalid Cost");
-                            alert.setHeaderText("Invalid Cost");
-                            alert.setContentText("Please enter a valid cost");
-                            alert.showAndWait();
-                            return;
-                        }
-                        else {
+                // // when close button is clicked
+                // closeEditButton.setOnAction(new EventHandler<ActionEvent>() {
+                //     @Override
+                //     public void handle(ActionEvent event) {
+                //         // close popup
+                //         popup.hide();
+                //         // undisable expensePage root
+                //         expensePage.setDisable(false);
+                //     }
+                // });
+
+                // // when finish button is clicked
+                // finishEditButton.setOnAction(new EventHandler<ActionEvent>() {
+                //     @Override
+                //     public void handle(ActionEvent event) {
+                //         // if none of the fields are empty, or if date is not valid, or if cost is not a number
+                //         if (expensePopupField.getText().equals("") || categoryPopupField.getText().equals("") || datePopupField.getText().equals("") || costPopupField.getText().equals("")) {
+                //             // alert user with javafx alert
+                //             Alert alert = new Alert(AlertType.WARNING);
+                //             alert.setTitle("Empty Fields");
+                //             alert.setHeaderText("Empty Fields");
+                //             alert.setContentText("Please fill out all fields");
+                //             alert.showAndWait();
+                //             return;
+                //         }
+                //         else if (!datePopupField.getText().matches("\\d{2}/\\d{2}/\\d{4}")) {
+                //             // alert user with javafx alert
+                //             Alert alert = new Alert(AlertType.WARNING);
+                //             alert.setTitle("Invalid Date");
+                //             alert.setHeaderText("Invalid Date");
+                //             alert.setContentText("Please enter a valid date (mm/dd/yyyy)");
+                //             alert.showAndWait();
+                //             return;
+                //         }
+                //         else if (!costPopupField.getText().matches("\\d+(\\.\\d+)?")) {
+                //             // alert user with javafx alert
+                //             Alert alert = new Alert(AlertType.WARNING);
+                //             alert.setTitle("Invalid Cost");
+                //             alert.setHeaderText("Invalid Cost");
+                //             alert.setContentText("Please enter a valid cost");
+                //             alert.showAndWait();
+                //             return;
+                //         }
+                //         else {
 
                         
-                        // create expense
-                        String name = expensePopupField.getText();
-                        String category = categoryPopupField.getText();
-                        LocalDate date = LocalDate.parse(datePopupField.getText(), DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-                        double cost = Double.parseDouble(costPopupField.getText().substring(1));
+                //         // create expense
+                //         String name = expensePopupField.getText();
+                //         String category = categoryPopupField.getText();
+                //         LocalDate date = LocalDate.parse(datePopupField.getText(), DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+                //         double cost = Double.parseDouble(costPopupField.getText().substring(1));
             
-                        Expense newExpense = new Expense(name, category, date, cost);
+                //         Expense newExpense = new Expense(name, category, date, cost);
 
-                        // close popup
-                        popup.hide();
-                        // undisable expensePage root
-                        expensePage.setDisable(false);
+                //         // close popup
+                //         popup.hide();
+                //         // undisable expensePage root
+                //         expensePage.setDisable(false);
 
-                        // get new expense
+                //         // get new expense
 
-                        // edit expenselist
-                        expenseList.edit(selectedExpense, newExpense);
+                //         // edit expenselist
+                //         expenseList.edit(selectedExpense, newExpense);
 
-                        // get new expense index
-                        int index = expenseList.getIndex(newExpense);
-                        // update observable list
-                        obsvExpenseList.remove(selectedExpense);
-                        obsvExpenseList.add(index, newExpense);
+                //         // get new expense index
+                //         int index = expenseList.getIndex(newExpense);
+                //         // update observable list
+                //         obsvExpenseList.remove(selectedExpense);
+                //         obsvExpenseList.add(index, newExpense);
 
-                        updateTotal();
-                        }
-                    }
-                });
+                //         updateTotal();
+                //         }
+                //     }
+                // });
                 
 
                 // Expense newExpense;
@@ -390,6 +398,7 @@ public class ExpenseController implements Initializable {
     } // end of formatTableCells method
 
 
+
     private void formatTableColumns() {
         // set cell value factory for each column
         expenseColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("name"));
@@ -406,7 +415,7 @@ public class ExpenseController implements Initializable {
             List<TableColumn<Expense, ?>> columns = Arrays.asList(expenseColumn, categoryColumn, dateColumn, costColumn);
             expenseTable.getColumns().addAll(columns);
         }
-    }
+    } // end of formatTableColumns method
 
     
 
@@ -460,8 +469,9 @@ public class ExpenseController implements Initializable {
     } // end changeMenuButton method
 
 
+    
     public void updateTotal() {
-        // update total button
+        // read menu button text and update total accordingly
         switch (totalMenu.getText()) {
             case "Past Month":
                 total.setText("$" + calcluateTotal(1));
@@ -479,7 +489,7 @@ public class ExpenseController implements Initializable {
                 total.setText("$" + calcluateTotal(0)); // 0 means all time
                 break;
         }
-    }
+    } // end updateTotal method
     
 
     
@@ -518,23 +528,30 @@ public class ExpenseController implements Initializable {
         
         // else add data to tableview
         else {
+            // check if date is valid
+            try {
+                // parse 
+                LocalDate date = LocalDate.parse(addDateField.getText(), DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+            }
+            catch (DateTimeParseException e) {
+                // display error message
+                Alert alert = new Alert(AlertType.ERROR);
+
+                alert.setTitle("Error");
+                alert.setHeaderText("Error");
+                alert.setContentText("Please enter a valid date (mm/dd/yyyy)");
+                alert.showAndWait();
+                return;
+            }
+            
             // if addCostField has $ sign remove it
             if (addCostField.getText().charAt(0) == '$') {
                 addCostField.setText(addCostField.getText().substring(1));
             }
-
-            // add 2 decimal places to addCostField
-            addCostField.setText(String.format("%.2f", Double.parseDouble(addCostField.getText())));
-            
-            // add $ back to addCostField
-            if (!addCostField.getText().contains("$")) {
-                addCostField.setText("$" + addCostField.getText());
-            }
-
-            
+            // add 2 decimal places to addCostField and add $ sign
+            addCostField.setText(String.format("$%.2f", Double.parseDouble(addCostField.getText())));
 
             // add data to tableview
-            // convert data to string
             String name = addExpenseField.getText();
             String category = addCategoryField.getText().toLowerCase(); // convert category to lowercase (easier to search)
             LocalDate date = LocalDate.parse(addDateField.getText(), DateTimeFormatter.ofPattern("MM/dd/yyyy")); 
@@ -543,6 +560,7 @@ public class ExpenseController implements Initializable {
             
             expenseList.add(newExpense);
             obsvExpenseList.add(newExpense);
+
             // add expense to tableview
             expenseTable.refresh();
 
