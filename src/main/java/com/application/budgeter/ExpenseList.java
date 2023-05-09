@@ -277,6 +277,20 @@ public class ExpenseList implements Iterable<Expense> {
         }
     }
 
+    public int getIndex( Expense expense ) {
+        ExpenseNode current = head;
+        int index = 0;
+        while (current != null) {
+            if (current.expense.equals( expense )) {
+                return index;
+            } else {
+                current = current.next;
+                index++;
+            }
+        }
+        return -1;
+    }
+
     // Return an array representation of the list
     public Expense[] toArray() {
         ExpenseNode current = head;

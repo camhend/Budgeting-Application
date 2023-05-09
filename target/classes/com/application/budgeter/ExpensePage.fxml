@@ -30,7 +30,7 @@
 
 
     <!-- Expense Table -->
-    <TableView fx:id="expenseTable" editable="false" VBox.vgrow="ALWAYS">
+    <TableView fx:id="expenseTable" editable="true" VBox.vgrow="ALWAYS">
       <columns>
         <TableColumn editable="false" minWidth="180.0" text="Expense" fx:id="expenseColumn" />
         <TableColumn editable="false" minWidth="145.0" text="Category" fx:id="categoryColumn" />

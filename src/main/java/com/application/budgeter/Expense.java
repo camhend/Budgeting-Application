@@ -35,7 +35,7 @@ public class Expense {
     public void setName(String name) { this.name = name; } 
 
     public void setCategory(String category) { this.category = category; } 
-
+    
     public void setLocalDate(LocalDate localDate) { this.localDate = localDate; } 
 
     public void setAmount(double amount) { this.amount= amount; }
