@@ -40,6 +40,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.time.format.DateTimeParseException;
 import javafx.stage.Window;
+import java.lang.NumberFormatException;
 
 
 
@@ -281,7 +282,7 @@ public class ExpenseController implements Initializable {
                             }
 
                             // get edited expense
-                            Expense editedExpense = new Expense(nameField.getText(), categoryField.getText(), LocalDate.parse(dateField.getText(), DateTimeFormatter.ofPattern("MM/dd/yyyy")), Double.parseDouble(costField.getText()));
+                            Expense editedExpense = new Expense(nameField.getText(), categoryField.getText().toLowerCase(null), LocalDate.parse(dateField.getText(), DateTimeFormatter.ofPattern("MM/dd/yyyy")), Double.parseDouble(costField.getText()));
                             // edit main expense list
                             expenseList.edit(selectedExpense, editedExpense);
                             // get index of edited expense
@@ -552,19 +553,23 @@ public class ExpenseController implements Initializable {
             alert.setContentText("Please enter a valid date (mm/dd/yyyy)");
             alert.showAndWait();
         }
-        // if cost is valid format with $
-        else if (!addCostField.getText().matches("^\\$?[0-9]+(\\.[0-9]{1,2})?$")) {
-            // display error message
-            Alert alert = new Alert(AlertType.ERROR);
-
-            alert.setTitle("Error");
-            alert.setHeaderText("Error");
-            alert.setContentText("Please enter a valid cost (ex. $1.50)");
-            alert.showAndWait();
-        }
-        
         // else add data to tableview
         else {
+            // if cost is an integer or double
+            try {
+                // if addCostField without $ sign is an integer
+                double cost = Double.parseDouble(addCostField.getText().replace("$", ""));
+            }
+            catch (NumberFormatException e) {
+                // display error message
+                Alert alert = new Alert(AlertType.ERROR);
+
+                alert.setTitle("Error");
+                alert.setHeaderText("Error");
+                alert.setContentText("Please enter a valid cost (e.g. $1.50)");
+                alert.showAndWait();
+                return;
+            }
             String readDate = addDateField.getText();
             LocalDate parsedDate = LocalDate.parse(readDate, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
             String formattedDate = parsedDate.format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
@@ -607,6 +612,8 @@ public class ExpenseController implements Initializable {
             addCostField.clear();
 
             updateTotal();
+            // sort 
+            expenseTable.getSortOrder().add(expenseTable.getColumns().get(2));
         }
     } // end addExpense method
 

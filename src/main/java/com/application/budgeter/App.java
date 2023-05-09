@@ -37,6 +37,8 @@ import javafx.scene.image.Image;
          // 2 decimal places
          // no dollar sign
 
+    // list not being added sortedly?
+
     
 // DONE
     // getIndex in Expense list
@@ -48,6 +50,10 @@ import javafx.scene.image.Image;
 // known bugs
     // when resizing window, the divider position becomes moveable
     // slight page size difference between expense page and other pages (cuz of anchorpane constraints??)
+
+// QOL
+    // auto place mm/dd/yyyy borders in date textfield
+    // info markers for each textfield
 
 
 public class App extends Application {
