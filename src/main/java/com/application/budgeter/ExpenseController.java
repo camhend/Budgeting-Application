@@ -291,7 +291,7 @@ public class ExpenseController implements Initializable {
                             obsvExpenseList.remove(selectedExpense);
                             // add edited expense to observable list at index
                             obsvExpenseList.add(index, editedExpense);
-                            
+
                             // update tableview
                             expenseTable.setItems(obsvExpenseList);
                             // update total
@@ -628,7 +628,8 @@ public class ExpenseController implements Initializable {
                 csvWriter.append(",");
                 csvWriter.append(expense.getLocalDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
                 csvWriter.append(",");
-                csvWriter.append(String.valueOf(expense.getAmount()));
+                // get amount with 2 decimals
+                csvWriter.append(String.format("%.2f", expense.getAmount()));
                 csvWriter.append("\n");
             }
             csvWriter.flush();

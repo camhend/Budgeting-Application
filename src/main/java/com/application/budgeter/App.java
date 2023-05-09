@@ -14,7 +14,10 @@ import javafx.scene.image.Image;
             // make alert appear above popup
             // test
         // make add work for years under 4 digits
+        // make more than 2 decimals work
         // text shortening or wrap text when too long
+
+        // write tests for expensecontroller 
 
         // total method
     // merge sort implementation
