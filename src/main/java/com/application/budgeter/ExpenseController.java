@@ -225,7 +225,6 @@ public class ExpenseController implements Initializable {
                 // y = y + expensePage root's height / 2
                 y = y + expensePage.getScene().getRoot().getLayoutBounds().getHeight() / 2;
 
-
                 // Show the popup in the center of the expensePage
                 popup.show(expensePage.getScene().getWindow(), x - layout.getPrefWidth() / 2, y - layout.getPrefHeight() / 2);
                 // disable main window
@@ -585,40 +584,9 @@ public class ExpenseController implements Initializable {
         }
         // else add data to tableview
         else {
-            // if cost is an integer or double
-            try {
-                // if addCostField without $ sign is an integer
-                double cost = Double.parseDouble(addCostField.getText().replace("$", ""));
-            }
-            catch (NumberFormatException e) {
-                // display error message
-                Alert alert = new Alert(AlertType.ERROR);
-
-                alert.setTitle("Error");
-                alert.setHeaderText("Error");
-                alert.setContentText("Please enter a valid cost (e.g. $1.50)");
-                alert.showAndWait();
-                return;
-            }
-            String readDate = addDateField.getText();
-            LocalDate parsedDate = LocalDate.parse(readDate, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-            String formattedDate = parsedDate.format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-            // if date in tet field is equal to date parsed in LocalDate mm/dd/yyyy
-            if (!(readDate.equals(formattedDate))) {
-                // display error message
-                Alert alert = new Alert(AlertType.ERROR);
-
-                alert.setTitle("Error");
-                alert.setHeaderText("Error");
-                alert.setContentText("Please Enter a Real Date");
-                alert.showAndWait();
-                return;
-            }
+            // remove $ sign from cost
+            addCostField.setText(addCostField.getText().replace("$", ""));
             
-            // if addCostField has $ sign remove it
-            if (addCostField.getText().charAt(0) == '$') {
-                addCostField.setText(addCostField.getText().substring(1));
-            }
             // add 2 decimal places to cost
             addCostField.setText(String.format("%.2f", Double.parseDouble(addCostField.getText())));
 
@@ -741,6 +709,8 @@ public class ExpenseController implements Initializable {
         }
         return true;
     } // end isValidDate method
+
+
 
     private boolean isValidCost(String cost) {
         // check if cost is an integer or double

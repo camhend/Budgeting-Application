@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.chart.AreaChart?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.chart.PieChart?>
-<?import javafx.scene.chart.StackedBarChart?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -11,38 +11,45 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane fx:id="dashboardPage" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="dashboardPage" prefHeight="600.0" prefWidth="680.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.application.budgeter.DashboardController">
    <children>
-      <PieChart layoutX="41.0" layoutY="232.0" minHeight="142.0" minWidth="150.0" prefHeight="142.0" prefWidth="150.0" title="Pie Chart" />
-      <Label layoutX="257.0" layoutY="29.0" text="Dashboard">
+      <PieChart labelLineLength="2.0" title="Pie Chart" fx:id="pieChart"/>
+
+      <Label text="Dashboard" fx:id="dashboardTitle">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#d1d6da" height="142.0" layoutX="222.0" layoutY="86.0" stroke="BLACK" strokeType="INSIDE" width="157.0" />
-      <TableView layoutX="398.0" layoutY="106.0" prefHeight="273.0" prefWidth="185.0">
-         <columns>
-            <TableColumn prefWidth="63.0" text="Name" />
-            <TableColumn prefWidth="58.0" text="Date" />
-            <TableColumn minWidth="5.0" prefWidth="63.0" text="Cost" />
-         </columns>
-      </TableView>
-      <Label layoutX="248.0" layoutY="141.0" text="\$1000/$3000 Spent" />
-      <Label layoutX="264.0" layoutY="175.0" text="33% spent" />
-      <Label layoutX="253.0" layoutY="106.0" text="22 days left (60%)" />
-      <Label layoutX="430.0" layoutY="77.0" text="Recent Transactions">
-         <font>
-            <Font name="System Bold" size="12.0" />
+
+      <!-- Center Section for current spending summary-->
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f8f8f8" height="164.0" layoutX="258.0" layoutY="103.0" stroke="BLACK" strokeType="INSIDE" width="173.0" fx:id="spendingsRect"/>
+      <Label text="\$1000/$3000 Spent" fx:id="flatAmountSpent" />
+      <Label text="33% spent" fx:id="percentAmountSpent" />
+      <Label text="22 days left (60%)" fx:id="daysLeft" />
+      <Label text="Recent Transactions" fx:id="transactionsTableTitle" >
+      <font>
+            <Font size="15.0" />
          </font>
       </Label>
-      <StackedBarChart layoutX="16.0" layoutY="66.0" prefHeight="142.0" prefWidth="125.0">
+
+      <!-- Table of recent transactions-->
+      <TableView fx:id="transactionsTable" >
+         <columns>
+            <TableColumn prefWidth="67.0" text="Name" fx:id="nameColumn" />
+            <TableColumn prefWidth="60.0" text="Date" fx:id="dateColumn" />
+            <TableColumn prefWidth="71.0" text="Cost" fx:id="costColumn" />
+         </columns>
+      </TableView>
+
+      <!-- Area chart for spending over time-->
+      <AreaChart layoutX="14.0" layoutY="295.0" prefHeight="281.0" prefWidth="417.0" title="Area Chart" fx:id="areaChart" >
         <xAxis>
-          <CategoryAxis side="BOTTOM" />
+          <CategoryAxis prefHeight="22.0" prefWidth="335.0" side="BOTTOM" />
         </xAxis>
         <yAxis>
           <NumberAxis side="LEFT" />
         </yAxis>
-      </StackedBarChart>
+      </AreaChart>
+
    </children>
 </AnchorPane>
