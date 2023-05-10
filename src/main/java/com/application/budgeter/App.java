@@ -58,7 +58,7 @@ import javafx.scene.image.Image;
     // proportional popup page size
     // less janky popup page repositioning
     // make add work for years under 4 digits
-    
+
 // test
     // data manipulation methods from controller
 
@@ -78,8 +78,8 @@ public class App extends Application {
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/com/application/budgeter/images/appIcon.jpg")));
 
         // set current size to min
-        stage.setMinWidth(900);
-        stage.setMinHeight(600);
+        stage.setMinWidth(1000);
+        stage.setMinHeight(700);
     
         stage.setScene(scene);
         stage.show();

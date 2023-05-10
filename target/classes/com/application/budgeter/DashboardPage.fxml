@@ -22,7 +22,7 @@
       </Label>
 
       <!-- Center Section for current spending summary-->
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f8f8f8" height="164.0" layoutX="258.0" layoutY="103.0" stroke="BLACK" strokeType="INSIDE" width="173.0" fx:id="spendingsRect"/>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f8f8f8" stroke="BLACK" strokeType="INSIDE" fx:id="spendingsRect"/>
       <Label text="\$1000/$3000 Spent" fx:id="flatAmountSpent" />
       <Label text="33% spent" fx:id="percentAmountSpent" />
       <Label text="22 days left (60%)" fx:id="daysLeft" />
@@ -35,16 +35,16 @@
       <!-- Table of recent transactions-->
       <TableView fx:id="transactionsTable" >
          <columns>
-            <TableColumn prefWidth="67.0" text="Name" fx:id="nameColumn" />
-            <TableColumn prefWidth="60.0" text="Date" fx:id="dateColumn" />
-            <TableColumn prefWidth="71.0" text="Cost" fx:id="costColumn" />
+            <TableColumn text="Name" fx:id="nameColumn" />
+            <TableColumn text="Date" fx:id="dateColumn" />
+            <TableColumn text="Cost" fx:id="costColumn" />
          </columns>
       </TableView>
 
       <!-- Area chart for spending over time-->
-      <AreaChart layoutX="14.0" layoutY="295.0" prefHeight="281.0" prefWidth="417.0" title="Area Chart" fx:id="areaChart" >
+      <AreaChart title="Area Chart" fx:id="areaChart" >
         <xAxis>
-          <CategoryAxis prefHeight="22.0" prefWidth="335.0" side="BOTTOM" />
+          <CategoryAxis side="BOTTOM" />
         </xAxis>
         <yAxis>
           <NumberAxis side="LEFT" />

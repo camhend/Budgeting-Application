@@ -306,6 +306,7 @@ public class ExpenseController implements Initializable {
                             Expense editedExpense = new Expense(nameField.getText(), categoryField.getText().toLowerCase(), LocalDate.parse(dateField.getText(), DateTimeFormatter.ofPattern("MM/dd/yyyy")), Double.parseDouble(costField.getText()));
                             // edit main expense list
                             expenseList.edit(selectedExpense, editedExpense);
+                            
                             // get index of edited expense
                             int index = expenseList.getIndex(editedExpense);
 
