@@ -56,6 +56,7 @@ import javafx.scene.image.Image;
     // info markers for each textfield
     // are you sure? before closing window
     // proportional popup page size
+    // less janky popup page repositioning
 
 // test
     // data manipulation methods from controller

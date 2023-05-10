@@ -234,6 +234,31 @@ public class ExpenseController implements Initializable {
                 expensePage.getScene().getRoot().setDisable(true);
 
                 // add listener to move popup when main window is moved or resized
+                expensePage.getScene().getWindow().xProperty().addListener(new ChangeListener<Number>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Number> observableValue, Number oldX, Number newX) {
+                        popup.setX(newX.doubleValue() + expensePage.getScene().getRoot().getLayoutBounds().getWidth() / 2 - layout.getPrefWidth() / 2);
+                    }
+                });
+                expensePage.getScene().getWindow().yProperty().addListener(new ChangeListener<Number>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Number> observableValue, Number oldY, Number newY) {
+                        popup.setY(newY.doubleValue() + expensePage.getScene().getRoot().getLayoutBounds().getHeight() / 2 - layout.getPrefHeight() / 2);
+                    }
+                });
+                expensePage.getScene().widthProperty().addListener(new ChangeListener<Number>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Number> observableValue, Number oldWidth, Number newWidth) {
+                        popup.setX(expensePage.getScene().getWindow().getX() + expensePage.getScene().getRoot().getLayoutBounds().getWidth() / 2 - layout.getPrefWidth() / 2);
+                    }
+                });
+                expensePage.getScene().heightProperty().addListener(new ChangeListener<Number>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Number> observableValue, Number oldHeight, Number newHeight) {
+                        popup.setY(expensePage.getScene().getWindow().getY() + expensePage.getScene().getRoot().getLayoutBounds().getHeight() / 2 - layout.getPrefHeight() / 2);
+                    }
+                });
+
                 
 
                 // on clicking close
