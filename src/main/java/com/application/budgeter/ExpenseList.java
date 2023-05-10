@@ -191,13 +191,22 @@ public class ExpenseList implements Iterable<Expense> {
                 } else {
                     ExpenseNode current = node;
                     // traverse until the current node date is before the updated date 
-                    while (updated.getLocalDate().isBefore(current.expense.getLocalDate())) {
+                    while (updated.getLocalDate().isBefore(current.expense.getLocalDate()) && 
+                           current.next != null) {
                         current = current.prev;
                     }
-                    node.next = current.next;
-                    node.prev = current;
-                    current.next.prev = node;
-                    current.next = node;  
+
+                    if (current.next == null) {
+                        current.next = node;
+                        node.prev = current;
+                        node.next = null;
+                        tail = node;
+                    } else {
+                        node.next = current.next;
+                        node.prev = current;
+                        current.next.prev = node;
+                        current.next = node;
+                    }
                 }
                 
                     

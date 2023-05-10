@@ -13,7 +13,7 @@ import javafx.scene.image.Image;
             // center in page
             // make alert appear above popup
             // test
-        // make add work for years under 4 digits
+        
         // make more than 2 decimals work
         // text shortening or wrap text when too long
 
@@ -52,12 +52,13 @@ import javafx.scene.image.Image;
     // slight page size difference between expense page and other pages (cuz of anchorpane constraints??)
 
 // QOL
-    // auto place mm/dd/yyyy borders in date textfield
+    // auto place mm/dd/yyyy indicator in date textfield
     // info markers for each textfield
     // are you sure? before closing window
     // proportional popup page size
     // less janky popup page repositioning
-
+    // make add work for years under 4 digits
+    
 // test
     // data manipulation methods from controller
 

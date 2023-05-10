@@ -156,10 +156,8 @@ public class ExpenseController implements Initializable {
                 // get selected row
                 Expense selectedExpense = expenseTable.getSelectionModel().getSelectedItem();
 
-                
                 AnchorPane layout = new AnchorPane();
                 layout.setPrefSize(300, 300);
-                
 
                 // Create a label with a message
                 Label name = new Label("Name:");
@@ -260,7 +258,6 @@ public class ExpenseController implements Initializable {
                 });
 
                 
-
                 // on clicking close
                 closeEditButton.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
@@ -280,46 +277,31 @@ public class ExpenseController implements Initializable {
                             alert.setTitle("Error");
                             alert.setHeaderText("Empty Fields");
                             alert.setContentText("Please fill in all fields");
+                            alert.initOwner(popup); 
                             alert.showAndWait();
                         }
                         // else if costfield is a number or is a number + $
-                        else if (!(costField.getText().matches("[0-9]+(\\.[0-9][0-9]?)?") || costField.getText().matches("\\$[0-9]+(\\.[0-9][0-9]?)?"))) {
+                        else if (!isValidCost(costField.getText())) {
                             // create alert
                             Alert alert = new Alert(AlertType.ERROR);
                             alert.setTitle("Error");
                             alert.setHeaderText("Invalid Cost");
-                            alert.setContentText("Please enter a valid cost");
+                            alert.setContentText("Please enter a valid cost (ex. $1.50)");
+                            alert.initOwner(popup); 
                             alert.showAndWait();
                         } 
                         // else if date is not mm/dd/yyyy 
-                        else if (!dateField.getText().matches("^(0[1-9]|1[012])/(0[1-9]|[12][0-9]|3[01])/[0-9]{4}$")) {
+                        else if (!isValidDate(dateField.getText())) {
                             // create alert
                             Alert alert = new Alert(AlertType.ERROR);
                             alert.setTitle("Error");
                             alert.setHeaderText("Invalid Date");
-                            alert.setContentText("Please enter a valid date");
+                            alert.setContentText("Please enter a valid date (mm/dd/yyyy)");
+                            alert.initOwner(popup); 
                             alert.showAndWait();
                         }
                         else {
-                            String readDate = dateField.getText();
-                            LocalDate parsedDate = LocalDate.parse(readDate, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-                            String formattedDate = parsedDate.format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-                            // if date in text field is equal to date parsed in LocalDate mm/dd/yyyy
-                            if (!(readDate.equals(formattedDate))) {
-                                // display error message
-                                Alert alert = new Alert(AlertType.ERROR);
-
-                                alert.setTitle("Error");
-                                alert.setHeaderText("Error");
-                                alert.setContentText("Please Enter a Date from the Gregorian Calendar");
-                                alert.showAndWait();
-                                return;
-                            }
-
-                            // if costfield start with $, remove it
-                            if (costField.getText().startsWith("$")) {
-                                costField.setText(costField.getText().substring(1));
-                            }
+                            costField.setText(costField.getText().replace("$", "")); // remove dollar sign
 
                             // get edited expense
                             Expense editedExpense = new Expense(nameField.getText(), categoryField.getText().toLowerCase(), LocalDate.parse(dateField.getText(), DateTimeFormatter.ofPattern("MM/dd/yyyy")), Double.parseDouble(costField.getText()));
@@ -327,6 +309,17 @@ public class ExpenseController implements Initializable {
                             expenseList.edit(selectedExpense, editedExpense);
                             // get index of edited expense
                             int index = expenseList.getIndex(editedExpense);
+
+                            if(index == -1) { // if expense not found
+                                // create alert
+                                Alert alert = new Alert(AlertType.ERROR);
+                                alert.setTitle("Error");
+                                alert.setHeaderText("ERROR");
+                                alert.setContentText("Expense not found");
+                                alert.initOwner(popup); 
+                                alert.showAndWait();
+                                return;
+                            }
 
                             // remove old expense from observable list
                             obsvExpenseList.remove(selectedExpense);
@@ -342,20 +335,9 @@ public class ExpenseController implements Initializable {
                             expensePage.getScene().getRoot().setDisable(false);
                         }
                     }
-                });
-                
-                // outline
-                    // get expense row
-                    // create popup
-                    // add textfields and button to popup
-                    // handle close and finish button
-                        // check if textfields are empty and correct data types
-                    // add edited expense to expenseList
-                    // get index new of edited expense
-                    // remove old expense from observable list
-                    // add edited expense to observable list at index
-            }
-        });
+                }); // end finishEditButton listener
+            } 
+        }); // end editButton listener
     } // end editListener method
 
 
@@ -583,8 +565,16 @@ public class ExpenseController implements Initializable {
             alert.setContentText("Please fill out all fields");
             alert.showAndWait();
         }
-        // if date is valid mm/dd/yyyy
-        else if (!addDateField.getText().matches("^(0[1-9]|1[012])/(0[1-9]|[12][0-9]|3[01])/[0-9]{4}$")) {
+        else if (!isValidCost(addCostField.getText())) {
+            // display error message
+            Alert alert = new Alert(AlertType.ERROR);
+
+            alert.setTitle("Error");
+            alert.setHeaderText("Error");
+            alert.setContentText("Please enter a valid cost (e.g. $1.50)");
+            alert.showAndWait();
+        }
+        else if (!isValidDate(addDateField.getText())) {
             // display error message
             Alert alert = new Alert(AlertType.ERROR);
 
@@ -620,7 +610,7 @@ public class ExpenseController implements Initializable {
 
                 alert.setTitle("Error");
                 alert.setHeaderText("Error");
-                alert.setContentText("Please Enter a Date from the Gregorian Calendar");
+                alert.setContentText("Please Enter a Real Date");
                 alert.showAndWait();
                 return;
             }
@@ -629,14 +619,14 @@ public class ExpenseController implements Initializable {
             if (addCostField.getText().charAt(0) == '$') {
                 addCostField.setText(addCostField.getText().substring(1));
             }
-            // add 2 decimal places to addCostField and add $ sign
-            addCostField.setText(String.format("$%.2f", Double.parseDouble(addCostField.getText())));
+            // add 2 decimal places to cost
+            addCostField.setText(String.format("%.2f", Double.parseDouble(addCostField.getText())));
 
             // add data to tableview
             String name = addExpenseField.getText();
             String category = addCategoryField.getText().toLowerCase(); // convert category to lowercase (easier to search)
             LocalDate date = LocalDate.parse(addDateField.getText(), DateTimeFormatter.ofPattern("MM/dd/yyyy")); 
-            double cost = Double.parseDouble(addCostField.getText().substring(1));
+            double cost = Double.parseDouble(addCostField.getText());
             Expense newExpense = new Expense(name, category, date, cost);
             
             expenseList.add(newExpense);
@@ -732,4 +722,35 @@ public class ExpenseController implements Initializable {
             alert.showAndWait();
         }
     } // end loadExpenses method
+
+
+    private boolean isValidDate(String date) {
+        // if date is mm/dd/yyyy format regex
+        if (!date.matches("^(0[1-9]|1[012])/(0[1-9]|[12][0-9]|3[01])/[0-9]{4}$")) {
+            return false;
+        }
+        
+        // check if date is in mm/dd/yyyy format
+        LocalDate parsedDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+        String formattedDate = parsedDate.format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+        
+        // check if text field date is equal to parsed date 
+        // LocalDate.format automatically readjusts fake dates (e.g. 02/30/2020) to real dates (e.g. 02/29/2020)
+        if (!(date.equals(formattedDate))) {
+            return false;
+        }
+        return true;
+    } // end isValidDate method
+
+    private boolean isValidCost(String cost) {
+        // check if cost is an integer or double
+        try {
+            // if cost without $ sign is an integer
+            double newCost = Double.parseDouble(cost.replace("$", ""));
+        }
+        catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
+    } // end isValidCost method
 } // end ExpenseController class
