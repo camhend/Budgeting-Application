@@ -41,6 +41,8 @@ import javafx.stage.Stage;
 import java.time.format.DateTimeParseException;
 import javafx.stage.Window;
 import java.lang.NumberFormatException;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 
 
 
@@ -153,42 +155,40 @@ public class ExpenseController implements Initializable {
             public void handle(ActionEvent event) {
                 // get selected row
                 Expense selectedExpense = expenseTable.getSelectionModel().getSelectedItem();
+
+                
+                AnchorPane layout = new AnchorPane();
+                layout.setPrefSize(300, 300);
+                
+
                 // Create a label with a message
                 Label name = new Label("Name:");
                 // place at x = 10 y = 10
                 name.setLayoutX(100);
-                name.setLayoutY(100);
+                name.setLayoutY(50);
                 Label category = new Label("Category:");
                 category.setLayoutX(100);
-                category.setLayoutY(150);
+                category.setLayoutY(100);
                 Label date = new Label("Date:");
                 date.setLayoutX(100);
-                date.setLayoutY(200);
+                date.setLayoutY(150);
                 Label cost = new Label("Cost:");
                 cost.setLayoutX(100);
-                cost.setLayoutY(250);
+                cost.setLayoutY(200);
 
                 // Create a text field each for name, category, date, and cost
                 TextField nameField = new TextField();
                 nameField.setLayoutX(200);
-                nameField.setLayoutY(100);
+                nameField.setLayoutY(50);
                 TextField categoryField = new TextField();
                 categoryField.setLayoutX(200);
-                categoryField.setLayoutY(150);
+                categoryField.setLayoutY(100);
                 TextField dateField = new TextField();
                 dateField.setLayoutX(200);
-                dateField.setLayoutY(200);
+                dateField.setLayoutY(150);
                 TextField costField = new TextField();
                 costField.setLayoutX(200);
-                costField.setLayoutY(250);
-
-                // fill text fields with selected expense's data
-                nameField.setText(selectedExpense.getName());
-                categoryField.setText(selectedExpense.getCategory());
-                // mm/dd/yyyy
-                dateField.setText(selectedExpense.getLocalDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
-                // 2 decimal places and add dollar sign
-                costField.setText(String.format("$%.2f", selectedExpense.getAmount()));
+                costField.setLayoutY(200);
 
                 // Create a button to finish editing
                 Button finishEditButton = new Button("Finish");
@@ -197,29 +197,44 @@ public class ExpenseController implements Initializable {
 
                 // close
                 Button closeEditButton = new Button("Close");
-                closeEditButton.setLayoutX(200);
+                closeEditButton.setLayoutX(300);
                 closeEditButton.setLayoutY(300);
 
 
+                // fill text fields with selected expense's data
+                nameField.setText(selectedExpense.getName());
+                categoryField.setText(selectedExpense.getCategory());
+                // mm/dd/yyyy
+                dateField.setText(selectedExpense.getLocalDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
+                // 2 decimal places and add dollar sign
+                costField.setText(String.format("$%.2f", selectedExpense.getAmount()));
+                
 
-                // Create a VBox layout to hold the label
-                AnchorPane layout = new AnchorPane();
+                // add all elements to layout
                 layout.getChildren().addAll(name, category, date, cost, nameField, categoryField, dateField, costField, finishEditButton, closeEditButton);
 
                 // Create a popup and set its content to the layout
                 Popup popup = new Popup();
                 popup.getContent().add(layout);
-                // make height and width of popup
-                layout.setPrefHeight(300);
-                layout.setPrefWidth(300);
-
-                
 
 
-                // Show the popup above the button
-                popup.show(expensePage.getScene().getWindow());
+                // get window coordinates of expensePage
+                double x = expensePage.getScene().getWindow().getX();
+                double y = expensePage.getScene().getWindow().getY();
+
+                // x = x + expensePage root's width / 2
+                x = x + expensePage.getScene().getRoot().getLayoutBounds().getWidth() / 2;
+                // y = y + expensePage root's height / 2
+                y = y + expensePage.getScene().getRoot().getLayoutBounds().getHeight() / 2;
+
+
+                // Show the popup in the center of the expensePage
+                popup.show(expensePage.getScene().getWindow(), x - layout.getPrefWidth() / 2, y - layout.getPrefHeight() / 2);
                 // disable main window
                 expensePage.getScene().getRoot().setDisable(true);
+
+                // add listener to move popup when main window is moved or resized
+                
 
                 // on clicking close
                 closeEditButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -282,7 +297,7 @@ public class ExpenseController implements Initializable {
                             }
 
                             // get edited expense
-                            Expense editedExpense = new Expense(nameField.getText(), categoryField.getText().toLowerCase(null), LocalDate.parse(dateField.getText(), DateTimeFormatter.ofPattern("MM/dd/yyyy")), Double.parseDouble(costField.getText()));
+                            Expense editedExpense = new Expense(nameField.getText(), categoryField.getText().toLowerCase(), LocalDate.parse(dateField.getText(), DateTimeFormatter.ofPattern("MM/dd/yyyy")), Double.parseDouble(costField.getText()));
                             // edit main expense list
                             expenseList.edit(selectedExpense, editedExpense);
                             // get index of edited expense

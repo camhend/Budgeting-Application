@@ -54,6 +54,11 @@ import javafx.scene.image.Image;
 // QOL
     // auto place mm/dd/yyyy borders in date textfield
     // info markers for each textfield
+    // are you sure? before closing window
+    // proportional popup page size
+
+// test
+    // data manipulation methods from controller
 
 
 public class App extends Application {
