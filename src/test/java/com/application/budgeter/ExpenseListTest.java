@@ -87,9 +87,9 @@ public class ExpenseListTest {
     
     @Test
     public void testAdd_IncrementsCounters() {
-        list.add("hotdog", "food", LocalDate.parse("2001-01-01"), 10);
+        list.add("hotdog", "food", LocalDate.parse("2001-01-01"), 10.0);
         assertEquals(1, list.size());
-        assertEquals(10, list.getTotalSpending());
+        assertEquals(10, list.getTotalSpending(), 0.001);
     }
 
     @Test
