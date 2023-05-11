@@ -17,7 +17,7 @@ import java.util.*;
 public class ExpenseList implements Iterable<Expense> {
     private ExpenseNode head;
     private ExpenseNode tail;
-    private int totalSpending;
+    private double totalSpending;
     private int size;
     private Map<String, Double> categorySpending;
 
@@ -51,8 +51,12 @@ public class ExpenseList implements Iterable<Expense> {
         return head == null;
     }
     
-    public int getTotalSpending() {
+    public double getTotalSpending() {
         return totalSpending;
+    }
+
+    public double getCategorySpending ( String category ) {
+        return categorySpending.get(category);
     }
 
     // Add new Expense to the list in sorted order by date
@@ -60,7 +64,6 @@ public class ExpenseList implements Iterable<Expense> {
     public void add ( String name, String category, LocalDate localDate, double amount) { 
         Expense newExpense = new Expense( name, category, localDate, amount);
         ExpenseNode newNode = new ExpenseNode (newExpense, null, null);
-        category = category.toLowerCase(null);
         // List is empty
         if ( this.isEmpty() ) { 
             head = newNode;
@@ -123,7 +126,7 @@ public class ExpenseList implements Iterable<Expense> {
             current.next = newNode;           
         }
         totalSpending += newExpense.getAmount();
-        categorySpending.put(newExpense.getCategory().toLowerCase(), newExpense.getAmount());
+        categorySpending.put(newExpense.getCategory(), newExpense.getAmount());
         size++;
     }
 
@@ -257,6 +260,7 @@ public class ExpenseList implements Iterable<Expense> {
         this.tail = null;
         size = 0;
         totalSpending = 0;
+        categorySpending.clear();
     }
 
     // Remove the ExpenseNode that contains the given Expense
@@ -281,6 +285,8 @@ public class ExpenseList implements Iterable<Expense> {
             }
             totalSpending -= expense.getAmount();
             size--;
+            categorySpending.replace(expense.getCategory(), 
+                categorySpending.get(expense.getCategory()) - expense.getAmount());
             return true;
         }
     }
