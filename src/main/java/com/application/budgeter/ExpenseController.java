@@ -86,7 +86,6 @@ public class ExpenseController implements Initializable {
     @Override
     public void initialize(java.net.URL arg0, java.util.ResourceBundle arg1) {
 
-
         // setup page
         setAnchorPaneConstraints(); 
         formatTableCells(); 
@@ -95,7 +94,12 @@ public class ExpenseController implements Initializable {
        
         // get expenselist (expense model) 
         
-        loadExpenses(); // load expenses from file?
+        loadExpenses(); // load expenses from file
+
+        // print expenseList to console
+        for (Expense expense : expenseList) {
+            System.out.println(expense);
+        }
 
         // add expenses to observable list
         for (Expense expense : expenseList) {
@@ -285,7 +289,7 @@ public class ExpenseController implements Initializable {
                             Alert alert = new Alert(AlertType.ERROR);
                             alert.setTitle("Error");
                             alert.setHeaderText("Invalid Cost");
-                            alert.setContentText("Please enter a valid cost (ex. $1.50)");
+                            alert.setContentText("Please enter a valid positive cost (ex. $1.50)");
                             alert.initOwner(popup); 
                             alert.showAndWait();
                         } 
@@ -306,7 +310,7 @@ public class ExpenseController implements Initializable {
                             Expense editedExpense = new Expense(nameField.getText(), categoryField.getText().toLowerCase(), LocalDate.parse(dateField.getText(), DateTimeFormatter.ofPattern("MM/dd/yyyy")), Double.parseDouble(costField.getText()));
                             // edit main expense list
                             expenseList.edit(selectedExpense, editedExpense);
-                            
+
                             // get index of edited expense
                             int index = expenseList.getIndex(editedExpense);
 
@@ -571,7 +575,7 @@ public class ExpenseController implements Initializable {
 
             alert.setTitle("Error");
             alert.setHeaderText("Error");
-            alert.setContentText("Please enter a valid cost (e.g. $1.50)");
+            alert.setContentText("Please enter a positive valid cost (e.g. $1.50)");
             alert.showAndWait();
         }
         else if (!isValidDate(addDateField.getText())) {
@@ -718,6 +722,9 @@ public class ExpenseController implements Initializable {
         try {
             // if cost without $ sign is an integer
             double newCost = Double.parseDouble(cost.replace("$", ""));
+            if (newCost < 0) { // if cost is negative
+                return false;
+            }
         }
         catch (NumberFormatException e) {
             return false;

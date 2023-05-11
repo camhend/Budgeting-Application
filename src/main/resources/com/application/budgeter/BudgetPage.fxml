@@ -18,50 +18,15 @@
 <?import javafx.scene.image.Image?>
 
 
-<!--Dashboard Section-->
-<!-- add resizble with parent-->
-<AnchorPane id="budgetPage" minHeight="600.0" minWidth="680.0" prefHeight="600.0" prefWidth="680.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.application.budgeter.BudgetController"> 
+
+<!-- Expense Tracker Section-->
+<AnchorPane fx:id="budgetPage" prefHeight="600.0" prefWidth="680.0" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml" fx:controller="com.application.budgeter.ExpenseController">
   <children>
-    <Label alignment="CENTER" font="$x1" layoutX="264.0" layoutY="20.0" minHeight="27.0" minWidth="144.0" style="&#10;" text="Budgeter" textAlignment="CENTER" textFill="#726d6d">
+    <Label fx:id="expenseTitle" alignment="CENTER" style="&#10;" text="Budget Planner" textAlignment="CENTER" textFill="#726d6d" >
       <font>
         <Font fx:id="x1" size="18.0" />                
       </font>
     </Label>
+
   </children>
-</AnchorPane>
-<AnchorPane fx:id="EditPage" maxHeight="180.0" maxWidth="186.0" minHeight="180.0" minWidth="186.0" prefHeight="180.0" prefWidth="186.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.application.budgeter.ExpenseController">
-   <children>
-
-      <!-- data textFields-->
-      <TextField layoutX="72.0" layoutY="15.0" prefHeight="25.0" prefWidth="104.0" fx:id="expensePopupField"/>
-      <TextField layoutX="72.0" layoutY="40.0" prefHeight="25.0" prefWidth="104.0" fx:id="categoryPopupField"/>
-      <TextField layoutX="72.0" layoutY="65.0" prefHeight="25.0" prefWidth="104.0" fx:id="datePopupField"/>
-      <TextField layoutX="72.0" layoutY="90.0" prefHeight="25.0" prefWidth="104.0" fx:id="costPopupField"/>
-
-      <!-- buttons -->
-      <Button layoutX="10.0" layoutY="137.0" mnemonicParsing="false" text="Finish" fx:id="finishEditButton"/>
-      <Button layoutX="131.0" layoutY="137.0" mnemonicParsing="false" text="Close" fx:id="closeEditButton"/>
-
-      <!-- labels -->
-      <Text layoutX="10.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name" wrappingWidth="38.13671875">
-         <font>
-            <Font name="System Bold" size="12.0" />
-         </font>
-      </Text>
-      <Text layoutX="10.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Category">
-         <font>
-            <Font name="System Bold" size="12.0" />
-         </font>
-      </Text>
-      <Text layoutX="10.0" layoutY="82.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date">
-         <font>
-            <Font name="System Bold" size="12.0" />
-         </font>
-      </Text>
-      <Text layoutX="10.0" layoutY="107.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Cost" wrappingWidth="24.861328125">
-         <font>
-            <Font name="System Bold" size="12.0" />
-         </font>
-      </Text>
-   </children>
 </AnchorPane>

@@ -21,6 +21,7 @@ import java.time.LocalDate;
     // calclulate data
     // border around center data
     // center alignment
+    // stop page overlap
 
 public class DashboardController implements Initializable {
     @FXML private AnchorPane dashboardPage;

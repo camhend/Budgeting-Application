@@ -39,6 +39,25 @@ public class ExpenseTest {
         assertEquals(15.0, expense.getAmount(), 0.001);
     }
 
+    @Test (expected = IllegalArgumentException.class)
+    public void testSetAmount_NegativeNumer() {
+        Expense expense = new Expense(
+            "testname", 
+            "food", 
+            LocalDate.parse("2001-01-01"), 
+            10);
+        expense.setAmount(-100);
+    }    
+
+    @Test (expected = IllegalArgumentException.class)
+    public void testConstructorAmount_NegativeNumber() {
+        Expense expense = new Expense(
+            "testname", 
+            "food", 
+            LocalDate.parse("2001-01-01"), 
+            -100);
+    }    
+
     @Test
     public void testEquals_ExpensesEqual() {
         Expense expense = new Expense(

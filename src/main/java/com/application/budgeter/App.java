@@ -9,43 +9,19 @@ import java.io.IOException;
 import javafx.scene.image.Image;
 
 // TODO
-        // edit method
-            // center in page
-            // make alert appear above popup
-            // test
-        
-        // make more than 2 decimals work
-        // text shortening or wrap text when too long
-
-        // write tests for expensecontroller 
-
-        // total method
+    // text shortening or wrap text when too long
+    // write tests for expensecontroller 
     // merge sort implementation
     // high res button images
         // different images when clicked on
     // searching total for x time period
     // search total for x category x time period
-
     // expenselist paramter
-
     // NORMALIZE naming
        // expense -> name
        // category -> category
        // localDate -> date
        // amount -> cost
-       // normalize data written into file
-         // 2 decimal places
-         // no dollar sign
-
-    // list not being added sortedly?
-
-    
-// DONE
-    // getIndex in Expense list
-    // check if date is real
-    // delete method
-    // seperate observable list for tableview 
-    // add method
 
 // known bugs
     // when resizing window, the divider position becomes moveable
