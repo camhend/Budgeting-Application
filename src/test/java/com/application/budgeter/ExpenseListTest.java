@@ -200,12 +200,12 @@ public class ExpenseListTest {
         list.add(exp3);
 
         assertEquals(3, list.size());
-        assertEquals(90, list.getTotalSpending());
+        assertEquals(90, list.getTotalSpending(), 0.001);
 
         list.remove( exp2 ); 
 
         assertEquals(2, list.size());
-        assertEquals(60, list.getTotalSpending());
+        assertEquals(60.0, list.getTotalSpending(), 0.001);
     }
 
     @Test
@@ -492,26 +492,68 @@ public class ExpenseListTest {
         }
     }
 
-        @Test
-        public void testToArray_emptyList() {
-            Expense[] actual = list.toArray();
-            Expense[] expected = {};
-            assertArrayEquals(expected, actual);
+    @Test
+    public void testToArray_emptyList() {
+        Expense[] actual = list.toArray();
+        Expense[] expected = {};
+        assertArrayEquals(expected, actual);
     }
 
-        @Test
-        public void testToArray() {
-            Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-02-01"), 10);
-            Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2001-04-14"), 50);
-            Expense exp3 = new Expense("groceries", "food", LocalDate.parse("2001-06-28"), 50);
+    @Test
+    public void testToArray() {
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-02-01"), 10);
+        Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2001-04-14"), 50);
+        Expense exp3 = new Expense("groceries", "food", LocalDate.parse("2001-06-28"), 50);
 
-            list.add(exp1);
-            list.add(exp2);
-            list.add(exp3);
-            Expense[] actual = list.toArray();
-            Expense[] expected = {exp1, exp2, exp3};
-            assertArrayEquals(expected, actual);
+        list.add(exp1);
+        list.add(exp2);
+        list.add(exp3);
+        Expense[] actual = list.toArray();
+        Expense[] expected = {exp1, exp2, exp3};
+        assertArrayEquals(expected, actual);
     }
+    
+    @Test
+    public void testgetCategorySpending_CategoryNotInList() {
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-02-01"), 10);
+        list.add(exp1);
+
+        Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2001-04-14"), 50);
+        assertEquals(-1.0, list.getCategorySpending("clothing"), 0.001);
+    }
+
+    /*
+    @Test
+    public void testgetCategorySpending_OneCategory() {
+        
+    }
+
+    @Test
+    public void testgetCategorySpending_AddToExistingCategory() {
+        
+    }
+
+    @Test
+    public void testgetCategorySpending_RemoveFromCategory() {
+        
+    }
+
+    @Test
+    public void testgetCategorySpending_CategoryNameNotExactMatch() {
+        
+    }
+
+    @Test
+    public void testgetCategorySpending_AfterEditAmountNOTChanged() {
+        
+    }
+
+
+    @Test
+    public void testgetCategorySpending_AfterEditAmountWasChanged() {
+        
+    }
+    */
 
 
 }

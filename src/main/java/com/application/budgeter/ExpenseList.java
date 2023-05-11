@@ -55,8 +55,15 @@ public class ExpenseList implements Iterable<Expense> {
         return totalSpending;
     }
 
+    // Get total spending for a given category. Matches word exactly.
+    // If the category isn't found, then returns negative number.
     public double getCategorySpending ( String category ) {
-        return categorySpending.get(category);
+        try {
+            return categorySpending.get(category);
+        } catch (NullPointerException e) {
+            return -1;
+        }
+        
     }
 
     // Add new Expense to the list in sorted order by date
@@ -174,6 +181,13 @@ public class ExpenseList implements Iterable<Expense> {
             return false; 
         }
         node.expense = updated;
+        totalSpending -= old.getAmount();
+        totalSpending += updated.getAmount();
+        double updateCategorySpending = 
+            categorySpending.get(old.getCategory()) 
+            + updated.getAmount() 
+            - old.getAmount();
+        categorySpending.replace(old.getCategory(), updateCategorySpending);
         // If expense date was changed, then move the node
         // to the correct sorted position.
         if ( !updated.getLocalDate().equals(old.getLocalDate()) ) {
@@ -297,8 +311,10 @@ public class ExpenseList implements Iterable<Expense> {
             }
             totalSpending -= expense.getAmount();
             size--;
-            categorySpending.replace(expense.getCategory(), 
-                categorySpending.get(expense.getCategory()) - expense.getAmount());
+            double updateCategorySpending = 
+                categorySpending.get(expense.getCategory())
+                - expense.getAmount();
+            categorySpending.replace(expense.getCategory(), updateCategorySpending);
             return true;
         }
     }
