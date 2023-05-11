@@ -168,9 +168,21 @@ public class ExpenseList implements Iterable<Expense> {
         if ( !updated.getLocalDate().equals(old.getLocalDate()) ) {
             // First, remove edited node from the current position
             if (node == head) {
-                node.next.prev = null;
-                head = node.next;
+                // If node is head and node should still be the head, 
+                // then do not move the node
+                if (updated.getLocalDate().isBefore(node.next.expense.getLocalDate()) ) {
+                    return true;
+                } else {
+                    node.next.prev = null;
+                    head = node.next;
+                }
+                // If node is the tail and node should still be the tail, 
+                // then do not move the node
             } else if (node == tail) {
+                if (updated.getLocalDate().isAfter(node.prev.expense.getLocalDate() )
+                    || updated.getLocalDate().equals(node.prev.expense.getLocalDate()) ) {
+                    return true;
+                }
                 node.prev.next = null;
                 tail = node.prev;
             } else {
