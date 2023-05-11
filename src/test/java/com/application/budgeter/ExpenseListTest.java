@@ -209,12 +209,15 @@ public class ExpenseListTest {
     }
 
     @Test
-    public void testRemove_OneElementInList() {
+    public void testRemove_TwoElementInList() {
         Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-01-01"), 10);
+        Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2002-12-14"), 30);
 
         list.add(exp1);
+        list.add(exp2);
+        list.remove(exp1);
 
-        Expense[] expected = {exp1};
+        Expense[] expected = {exp2};
         int index = 0;
         for (Expense expense : list) {
             assertEquals(expected[index], expense);
@@ -226,6 +229,23 @@ public class ExpenseListTest {
         while ( itPrev.hasNext() ) {
             assertEquals(expected[index], itPrev.next() );
             index--;
+        }
+    }
+
+    @Test
+    public void testRemove_OneElementInList() {
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-01-01"), 10);
+
+        list.add(exp1);
+        list.remove(exp1);
+
+        for (Expense expense : list) {
+            assertEquals(null, expense);
+        }
+
+        Iterator<Expense> itPrev = list.descendingIterator();
+        while ( itPrev.hasNext() ) {
+            assertEquals(null, itPrev.next() );
         }
     }
 
@@ -308,6 +328,28 @@ public class ExpenseListTest {
     }
 
     @Test
+    public void testEdit_ExpenseNotInList_ReturnFalse() {
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-01-01"), 10);
+        Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2002-12-14"), 50);
+        
+        list.add(exp1);
+        list.add(exp2);
+
+        Expense exp3 = new Expense("groceries", "food", LocalDate.parse("2010-02-28"), 50);
+        Expense updatedExp3 = new Expense("burger", "food", LocalDate.parse("2011-02-28"), 50);
+        
+        assertFalse(list.edit(exp3, updatedExp3));
+    }
+
+    @Test
+    public void testEdit_EmptyList_ReturnFalse() {
+        Expense exp3 = new Expense("groceries", "food", LocalDate.parse("2010-02-28"), 50);
+        Expense updatedExp3 = new Expense("burger", "food", LocalDate.parse("2011-02-28"), 50);
+        
+        assertFalse(list.edit(exp3, updatedExp3));
+    }
+
+    @Test
     public void testEdit_DateNotChanged_OrderingNotChanged() {
         Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-01-01"), 10);
         Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2002-12-14"), 50);
@@ -321,6 +363,64 @@ public class ExpenseListTest {
         list.edit(exp2, updatedExp2);
         
         Expense[] expected = {exp1, updatedExp2, exp3};
+
+        int index = 0;
+        for (Expense expense : list) {
+            assertEquals(expected[index], expense);
+            index++;
+        }
+
+        Iterator<Expense> itPrev = list.descendingIterator();
+        index = 2;
+        while ( itPrev.hasNext() ) {
+            assertEquals(expected[index], itPrev.next() );
+            index--;
+        }
+    }
+
+    @Test
+    public void testEdit_HeadNodeDateChangeOrderNotChanged_OrderingNotChanged() {
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-01-01"), 10);
+        Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2002-12-14"), 50);
+        Expense exp3 = new Expense("groceries", "food", LocalDate.parse("2010-02-28"), 50);
+
+        list.add(exp1);
+        list.add(exp2);
+        list.add(exp3);
+
+        Expense updatedExp1 = new Expense("hotdog", "food", LocalDate.parse("2001-01-02"), 10);
+        list.edit(exp1, updatedExp1);
+        
+        Expense[] expected = {updatedExp1, exp2, exp3};
+
+        int index = 0;
+        for (Expense expense : list) {
+            assertEquals(expected[index], expense);
+            index++;
+        }
+
+        Iterator<Expense> itPrev = list.descendingIterator();
+        index = 2;
+        while ( itPrev.hasNext() ) {
+            assertEquals(expected[index], itPrev.next() );
+            index--;
+        }
+    }
+
+    @Test
+    public void testEdit_TailNodeDateChangeOrderNotChanged_OrderingNotChanged() {
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-01-01"), 10);
+        Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2002-12-14"), 50);
+        Expense exp3 = new Expense("groceries", "food", LocalDate.parse("2010-02-28"), 50);
+
+        list.add(exp1);
+        list.add(exp2);
+        list.add(exp3);
+
+        Expense updatedExp3 = new Expense("groceries", "food", LocalDate.parse("2009-02-28"), 50);
+        list.edit(exp3, updatedExp3);
+        
+        Expense[] expected = {exp1, exp2, updatedExp3};
 
         int index = 0;
         for (Expense expense : list) {
