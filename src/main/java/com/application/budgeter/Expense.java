@@ -11,10 +11,14 @@ public class Expense {
 
     
     public Expense (String name, String category, LocalDate localDate, double amount) {
+        if (amount < 0) {
+            throw new IllegalArgumentException("Expense amount cannot be negative.");
+        } else {
+            this.amount = amount;
+        }
         this.name = name;
         this.category = category;
-        this.localDate =localDate;
-        this.amount = amount;
+        this.localDate =localDate;   
     }
 
     public boolean equals ( Expense other) {
@@ -35,10 +39,16 @@ public class Expense {
     public void setName(String name) { this.name = name; } 
 
     public void setCategory(String category) { this.category = category; } 
-    
+
     public void setLocalDate(LocalDate localDate) { this.localDate = localDate; } 
 
-    public void setAmount(double amount) { this.amount= amount; }
+    public void setAmount(double amount) { 
+        if (amount < 0) {
+            throw new IllegalArgumentException("Expense amount cannot be negative.");
+        } else {
+            this.amount = amount;
+        }
+    }
 
     public String toString () {
         String toString = 
