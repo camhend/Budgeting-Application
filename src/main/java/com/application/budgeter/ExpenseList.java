@@ -98,8 +98,12 @@ public class ExpenseList implements Iterable<Expense> {
             current.next = newNode;           
         }
         totalSpending += newExpense.getAmount();
-        categorySpending.put(category, amount);
         size++;
+        if (categorySpending.containsKey(category)) {
+            categorySpending.replace(category, categorySpending.get(category) + amount);
+        } else {
+            categorySpending.put(category, amount);
+        }
     }
 
     // Add new Expense to list in sorted order by date
@@ -133,8 +137,15 @@ public class ExpenseList implements Iterable<Expense> {
             current.next = newNode;           
         }
         totalSpending += newExpense.getAmount();
-        categorySpending.put(newExpense.getCategory(), newExpense.getAmount());
         size++;
+
+        String category = newExpense.getCategory();
+        double amount = newExpense.getAmount();
+        if (categorySpending.containsKey(category)) {
+            categorySpending.replace(category, categorySpending.get(category) + amount);
+        } else {
+            categorySpending.put(category, amount);
+        }
     }
 
     // Get the ExpenseNode that contains the given Expense
@@ -181,13 +192,19 @@ public class ExpenseList implements Iterable<Expense> {
             return false; 
         }
         node.expense = updated;
-        totalSpending -= old.getAmount();
-        totalSpending += updated.getAmount();
-        double updateCategorySpending = 
-            categorySpending.get(old.getCategory()) 
-            + updated.getAmount() 
-            - old.getAmount();
-        categorySpending.replace(old.getCategory(), updateCategorySpending);
+        totalSpending -= old.getAmount() + updated.getAmount();;
+        // Remove old Expense from categorySpending map
+        categorySpending.replace(old.getCategory(), 
+            categorySpending.get(old.getCategory()) - old.getAmount());
+        // Add updated Expense to categorySpending map. 
+        // Create new mapping if necessary
+        if (categorySpending.containsKey(updated.getCategory())) {
+            categorySpending.replace(updated.getCategory(), 
+                categorySpending.get(updated.getCategory()) + updated.getAmount());
+        } else {
+            categorySpending.put(updated.getCategory(), updated.getAmount());
+        }
+        
         // If expense date was changed, then move the node
         // to the correct sorted position.
         if ( !updated.getLocalDate().equals(old.getLocalDate()) ) {
