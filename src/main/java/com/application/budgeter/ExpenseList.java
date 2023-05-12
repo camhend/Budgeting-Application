@@ -195,7 +195,8 @@ public class ExpenseList implements Iterable<Expense> {
             if (node == head) {
                 // If node is head and node should still be the head, 
                 // then do not move the node
-                if (updated.getLocalDate().isBefore(node.next.expense.getLocalDate()) ) {
+                if (updated.getLocalDate().isBefore(node.next.expense.getLocalDate()) 
+                || updated.getLocalDate().equals(node.next.expense.getLocalDate())) {
                     return true;
                 } else {
                     node.next.prev = null;
@@ -231,10 +232,22 @@ public class ExpenseList implements Iterable<Expense> {
                     while (updated.getLocalDate().isBefore(current.expense.getLocalDate())) {
                         current = current.prev;
                     }
-                    node.next = current.next;
-                    node.prev = current;
-                    current.next.prev = node;
-                    current.next = node;  
+                    if (current.next == null) {
+                        node.next = current.next;
+                        node.prev = current;
+                        current.next = node;
+                        tail = current.next;
+                    }
+                    else {
+                        node.next = current.next;
+                        node.prev = current;
+                        current.next.prev = node;
+                        current.next = node;
+                    }
+                    
+                        
+                    
+                    
                 }
                 
                     

@@ -28,18 +28,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.DialogPane;
-import javafx.stage.Modality;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-import java.time.format.DateTimeParseException;
-import javafx.stage.Window;
 import java.lang.NumberFormatException;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -52,19 +41,22 @@ public class ExpenseController implements Initializable {
     @FXML private Label expenseTitle; // title of page
 
     @FXML private AnchorPane expensePage; // page that holds all the elements
+
     
+    // tableview
     @FXML private TableView<Expense> expenseTable;
-    @FXML private TableColumn<Expense, String> expenseColumn;
+    @FXML private TableColumn<Expense, String> nameColumn;
     @FXML private TableColumn<Expense, String> categoryColumn;
     @FXML private TableColumn<Expense, LocalDate> dateColumn;
-    @FXML private TableColumn<Expense, Double> costColumn;
+    @FXML private TableColumn<Expense, Double> amountColumn;
 
-    @FXML private MenuButton totalMenu; // menu for tracking different time periods 
+    // total section
+    @FXML private MenuButton totalMenu; // menu for choosing time periods
+    @FXML private Label total; // actual number
+    @FXML private Label totalTitle; 
 
-    @FXML private Label total; // total amount of money spent in time period
-    @FXML private Label totalTitle; // title of total section
-
-    @FXML private Button addExpenseButton; // + button
+    // add expense section
+    @FXML private Button addExpenseButton; 
     @FXML private TextField addExpenseField;
     @FXML private TextField addCategoryField;
     @FXML private TextField addDateField;
@@ -131,6 +123,51 @@ public class ExpenseController implements Initializable {
         editListener(editMenuItem);
     } // end initialize method
 
+
+
+    //***********************/
+    // Data Validation methods 
+    //***********************/
+
+    private boolean isValidDate(String date) {
+        // if date is mm/dd/yyyy format regex
+        if (!date.matches("^(0[1-9]|1[012])/(0[1-9]|[12][0-9]|3[01])/[0-9]{4}$")) {
+            return false;
+        }
+        
+        // check if date is in mm/dd/yyyy format
+        LocalDate parsedDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+        String formattedDate = parsedDate.format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+        
+        // check if text field date is equal to parsed date 
+        // LocalDate.format automatically readjusts fake dates (e.g. 02/30/2020) to real dates (e.g. 02/29/2020)
+        if (!(date.equals(formattedDate))) {
+            return false;
+        }
+        return true;
+    } // end isValidDate method
+
+
+    private boolean isValidCost(String cost) {
+        // check if cost is an integer or double
+        try {
+            // if cost without $ sign is an integer
+            double newCost = Double.parseDouble(cost.replace("$", ""));
+            if (newCost < 0) { // if cost is negative
+                return false;
+            }
+        }
+        catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
+    } // end isValidCost method
+
+
+
+    //*************************/
+    // Data Manipulation methods
+    //*************************/
 
     private void deleteListener(MenuItem deleteMenuItem) {
         // set event handler for when delete menu item is clicked
@@ -303,6 +340,16 @@ public class ExpenseController implements Initializable {
                             alert.initOwner(popup); 
                             alert.showAndWait();
                         }
+                        // commas
+                        else if (nameField.getText().contains(",") || categoryField.getText().contains(",")) {
+                            // create alert
+                            Alert alert = new Alert(AlertType.ERROR);
+                            alert.setTitle("Error");
+                            alert.setHeaderText("Error");
+                            alert.setContentText("Please do not use commas");
+                            alert.initOwner(popup); 
+                            alert.showAndWait();
+                        }
                         else {
                             costField.setText(costField.getText().replace("$", "")); // remove dollar sign
 
@@ -343,8 +390,241 @@ public class ExpenseController implements Initializable {
             } 
         }); // end editButton listener
     } // end editListener method
+    
+
+    // add data from text fields to tableview
+    public void addExpense() {
+        // if any fields are empty
+        if (addExpenseField.getText().isEmpty() || addCategoryField.getText().isEmpty() || addDateField.getText().isEmpty() || addCostField.getText().isEmpty()) {
+            // display error message
+            Alert alert = new Alert(AlertType.ERROR);
+
+            alert.setTitle("Error");
+            alert.setHeaderText("Error");
+            alert.setContentText("Please fill out all fields");
+            alert.showAndWait();
+        }
+        else if (!isValidCost(addCostField.getText())) {
+            // display error message
+            Alert alert = new Alert(AlertType.ERROR);
+
+            alert.setTitle("Error");
+            alert.setHeaderText("Error");
+            alert.setContentText("Please enter a positive valid cost (e.g. $1.50)");
+            alert.showAndWait();
+        }
+        else if (!isValidDate(addDateField.getText())) {
+            // display error message
+            Alert alert = new Alert(AlertType.ERROR);
+
+            alert.setTitle("Error");
+            alert.setHeaderText("Error");
+            alert.setContentText("Please enter a valid date (mm/dd/yyyy)");
+            alert.showAndWait();
+        }
+        // contains comas
+        else if (addExpenseField.getText().contains(",") || addCategoryField.getText().contains(",")) {
+            // display error message
+            Alert alert = new Alert(AlertType.ERROR);
+
+            alert.setTitle("Error");
+            alert.setHeaderText("Error");
+            alert.setContentText("Please do not use commas");
+            alert.showAndWait();
+        }
+        // else add data to tableview
+        else {
+            // remove $ sign from cost
+            addCostField.setText(addCostField.getText().replace("$", ""));
+            
+            // add 2 decimal places to cost
+            addCostField.setText(String.format("%.2f", Double.parseDouble(addCostField.getText())));
+
+            // add data to tableview
+            String name = addExpenseField.getText();
+            String category = addCategoryField.getText().toLowerCase(); // convert category to lowercase (easier to search)
+            LocalDate date = LocalDate.parse(addDateField.getText(), DateTimeFormatter.ofPattern("MM/dd/yyyy")); 
+            double cost = Double.parseDouble(addCostField.getText());
+            Expense newExpense = new Expense(name, category, date, cost);
+            
+            expenseList.add(newExpense);
+            obsvExpenseList.add(newExpense);
+
+            // add expense to tableview
+            expenseTable.refresh();
+
+            // clear text fields
+            addExpenseField.clear();
+            addCategoryField.clear();
+            addDateField.clear();
+            addCostField.clear();
+
+            updateTotal();
+            // sort 
+            expenseTable.getSortOrder().add(expenseTable.getColumns().get(2));
+        }
+    } // end addExpense method
 
 
+
+    //***************/
+    // File IO methods
+    //***************/
+
+    // save data from tableview to file
+    public void saveExpenses() {
+        // write data from expenseList to expenses.csv
+
+        try {
+            FileWriter csvWriter = new FileWriter("expenses.csv");
+
+
+            // write data to csv file
+            for (Expense expense : expenseList) {
+                csvWriter.append(expense.getName());
+                csvWriter.append(",");
+                csvWriter.append(expense.getCategory());
+                csvWriter.append(",");
+                csvWriter.append(expense.getLocalDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
+                csvWriter.append(",");
+                // get amount with 2 decimals
+                csvWriter.append(String.format("%.2f", expense.getAmount()));
+                csvWriter.append("\n");
+            }
+            csvWriter.flush();
+            csvWriter.close();
+
+            // display success message
+            Alert alert = new Alert(AlertType.INFORMATION);
+
+            alert.setTitle("Success");
+            alert.setHeaderText("Success");
+            alert.setContentText("Expenses have been saved");
+            alert.showAndWait();
+        }
+        catch (IOException e) {
+            // display error message
+            Alert alert = new Alert(AlertType.ERROR);
+
+            alert.setTitle("Error");
+            alert.setHeaderText("Error");
+            alert.setContentText("Error saving expenses");
+            alert.showAndWait();
+        }
+        
+    } // end saveExpenses 
+
+
+    public void loadExpenses() {
+        // read data from expenses.csv to expenseList
+        try {
+            // clear expenseList
+            expenseList.clear();
+
+            // read data from csv file
+            BufferedReader csvReader = new BufferedReader(new FileReader("expenses.csv"));
+            String row;
+            while ((row = csvReader.readLine()) != null) {
+                String[] data = row.split(",");
+                String name = data[0];
+                String category = data[1];
+                LocalDate date = LocalDate.parse(data[2], DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+                double cost = Double.parseDouble(data[3]);
+                Expense newExpense = new Expense(name, category, date, cost);
+                expenseList.add(newExpense);
+            }
+            csvReader.close();
+        }
+        catch (IOException e) {
+            // display error message
+            Alert alert = new Alert(AlertType.ERROR);
+
+            alert.setTitle("Error");
+            alert.setHeaderText("Error");
+            alert.setContentText("Error loading expenses");
+            alert.showAndWait();
+        }
+    } // end loadExpenses method
+
+
+
+    //**************/
+    // Total Methods 
+    //**************/
+
+    // if months = 0 then calculate all time
+    public String calcluateTotal(int months) {
+
+        double totalCost = 0;
+
+        if (months == 0) {
+            // adds all costs from list to totalCost removing the $ sign
+            for (Expense expense : expenseList) {
+                // if dollar sign is in front of cost then remove it
+                if (Double.toString(expense.getAmount()).charAt(0) == '$') {
+                    
+                }
+                else {
+                    totalCost += expense.getAmount();
+                }
+            }
+        }
+        else // if months != 0 then calculate past months
+        {
+            // get current date
+            LocalDate currentDate = LocalDate.now();
+            // get date from months ago
+            LocalDate pastDate = currentDate.minusMonths(months);
+            // 
+
+            // adds all costs from list to totalCost removing the $ sign
+            for (Expense expense : expenseList) {
+                // convert expense date to localDate
+                LocalDate expenseDate = expense.getLocalDate();
+                if (expenseDate.isAfter(pastDate) && expenseDate.isBefore(currentDate) || expenseDate.isEqual(currentDate))
+                {
+                    totalCost += expense.getAmount();
+                }
+            }
+        }
+
+        return String.format("%.2f", totalCost);
+    } // end calcluateTotal method
+ 
+
+    // changes menu button text to selected menu item
+    public void changeMenuButton(ActionEvent event) {
+        MenuItem menuItem = (MenuItem) event.getSource();
+        totalMenu.setText(menuItem.getText());
+        updateTotal();
+    } // end changeMenuButton method
+
+    
+    public void updateTotal() {
+        // read menu button text and update total accordingly
+        switch (totalMenu.getText()) {
+            case "Past Month":
+                total.setText("$" + calcluateTotal(1));
+                break;
+            case "Past 3 Months":
+                total.setText("$" + calcluateTotal(3));
+                break;
+            case "Past 6 Months":
+                total.setText("$" + calcluateTotal(6));
+                break;
+            case "Past 12 Months":
+                total.setText("$" + calcluateTotal(12));
+                break;
+            case "All Time":
+                total.setText("$" + calcluateTotal(0)); // 0 means all time
+                break;
+        }
+    } // end updateTotal method
+    
+
+
+
+    // Front End Design Methods
 
     private void setAnchorPaneConstraints() {
         // listener for adjusting elements' width when window is resized
@@ -422,12 +702,12 @@ public class ExpenseController implements Initializable {
             // save button above tableview
             AnchorPane.setBottomAnchor(saveExpenseButton, newVal.doubleValue() * .72); 
         });
-    }
+    } // end setAnchorPaneConstraints method
 
 
     private void formatTableCells() {
         // set cell factory for cost column to format cost to currency (adds $ and .00 to end of cost)
-        costColumn.setCellFactory(column -> new TableCell<>() {
+        amountColumn.setCellFactory(column -> new TableCell<>() {
             @Override
             protected void updateItem(Double item, boolean empty) {
                 super.updateItem(item, empty);
@@ -455,280 +735,28 @@ public class ExpenseController implements Initializable {
         });
 
         // align columns center
-        expenseColumn.setStyle("-fx-alignment: CENTER;");
+        nameColumn.setStyle("-fx-alignment: CENTER;");
         categoryColumn.setStyle("-fx-alignment: CENTER;");
         dateColumn.setStyle("-fx-alignment: CENTER;");
-        costColumn.setStyle("-fx-alignment: CENTER;");
+        amountColumn.setStyle("-fx-alignment: CENTER;");
     } // end of formatTableCells method
-
 
 
     private void formatTableColumns() {
         // set cell value factory for each column
-        expenseColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("name"));
+        nameColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("name"));
         categoryColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("category"));
         dateColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("localDate"));
-        costColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("amount"));
+        amountColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("amount"));
 
         // set tableview resize policy to it will not resize columns past the width of the tableview
         expenseTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         // add columns to tableview if not already added
-        if (!expenseTable.getColumns().contains(expenseColumn)) {
+        if (!expenseTable.getColumns().contains(nameColumn)) {
             // create list of columns to add
-            List<TableColumn<Expense, ?>> columns = Arrays.asList(expenseColumn, categoryColumn, dateColumn, costColumn);
+            List<TableColumn<Expense, ?>> columns = Arrays.asList(nameColumn, categoryColumn, dateColumn, amountColumn);
             expenseTable.getColumns().addAll(columns);
         }
     } // end of formatTableColumns method
-
-    
-
-    // adjust font size depending on length of text
-    // if months = 0 then calculate all time
-    public String calcluateTotal(int months) {
-
-        double totalCost = 0;
-
-        if (months == 0) {
-            // adds all costs from list to totalCost removing the $ sign
-            for (Expense expense : expenseList) {
-                // if dollar sign is in front of cost then remove it
-                if (Double.toString(expense.getAmount()).charAt(0) == '$') {
-                    
-                }
-                else {
-                    totalCost += expense.getAmount();
-                }
-            }
-        }
-        else // if months != 0 then calculate past months
-        {
-            // get current date
-            LocalDate currentDate = LocalDate.now();
-            // get date from months ago
-            LocalDate pastDate = currentDate.minusMonths(months);
-            // 
-
-            // adds all costs from list to totalCost removing the $ sign
-            for (Expense expense : expenseList) {
-                // convert expense date to localDate
-                LocalDate expenseDate = expense.getLocalDate();
-                if (expenseDate.isAfter(pastDate) && expenseDate.isBefore(currentDate) || expenseDate.isEqual(currentDate))
-                {
-                    totalCost += expense.getAmount();
-                }
-            }
-        }
-
-        return String.format("%.2f", totalCost);
-    } // end calcluateTotal method
- 
-
-
-    // changes menu button text to selected menu item
-    public void changeMenuButton(ActionEvent event) {
-        MenuItem menuItem = (MenuItem) event.getSource();
-        totalMenu.setText(menuItem.getText());
-        updateTotal();
-    } // end changeMenuButton method
-
-
-    
-    public void updateTotal() {
-        // read menu button text and update total accordingly
-        switch (totalMenu.getText()) {
-            case "Past Month":
-                total.setText("$" + calcluateTotal(1));
-                break;
-            case "Past 3 Months":
-                total.setText("$" + calcluateTotal(3));
-                break;
-            case "Past 6 Months":
-                total.setText("$" + calcluateTotal(6));
-                break;
-            case "Past 12 Months":
-                total.setText("$" + calcluateTotal(12));
-                break;
-            case "All Time":
-                total.setText("$" + calcluateTotal(0)); // 0 means all time
-                break;
-        }
-    } // end updateTotal method
-    
-
-    
-    // add data from text fields to tableview
-    public void addExpense() {
-        // if any fields are empty
-        if (addExpenseField.getText().isEmpty() || addCategoryField.getText().isEmpty() || addDateField.getText().isEmpty() || addCostField.getText().isEmpty()) {
-            // display error message
-            Alert alert = new Alert(AlertType.ERROR);
-
-            alert.setTitle("Error");
-            alert.setHeaderText("Error");
-            alert.setContentText("Please fill out all fields");
-            alert.showAndWait();
-        }
-        else if (!isValidCost(addCostField.getText())) {
-            // display error message
-            Alert alert = new Alert(AlertType.ERROR);
-
-            alert.setTitle("Error");
-            alert.setHeaderText("Error");
-            alert.setContentText("Please enter a positive valid cost (e.g. $1.50)");
-            alert.showAndWait();
-        }
-        else if (!isValidDate(addDateField.getText())) {
-            // display error message
-            Alert alert = new Alert(AlertType.ERROR);
-
-            alert.setTitle("Error");
-            alert.setHeaderText("Error");
-            alert.setContentText("Please enter a valid date (mm/dd/yyyy)");
-            alert.showAndWait();
-        }
-        // else add data to tableview
-        else {
-            // remove $ sign from cost
-            addCostField.setText(addCostField.getText().replace("$", ""));
-            
-            // add 2 decimal places to cost
-            addCostField.setText(String.format("%.2f", Double.parseDouble(addCostField.getText())));
-
-            // add data to tableview
-            String name = addExpenseField.getText();
-            String category = addCategoryField.getText().toLowerCase(); // convert category to lowercase (easier to search)
-            LocalDate date = LocalDate.parse(addDateField.getText(), DateTimeFormatter.ofPattern("MM/dd/yyyy")); 
-            double cost = Double.parseDouble(addCostField.getText());
-            Expense newExpense = new Expense(name, category, date, cost);
-            
-            expenseList.add(newExpense);
-            obsvExpenseList.add(newExpense);
-
-            // add expense to tableview
-            expenseTable.refresh();
-
-            // clear text fields
-            addExpenseField.clear();
-            addCategoryField.clear();
-            addDateField.clear();
-            addCostField.clear();
-
-            updateTotal();
-            // sort 
-            expenseTable.getSortOrder().add(expenseTable.getColumns().get(2));
-        }
-    } // end addExpense method
-
-
-
-    // save data from tableview to file
-    public void saveExpenses() {
-        // write data from expenseList to expenses.csv
-
-        try {
-            FileWriter csvWriter = new FileWriter("expenses.csv");
-
-
-            // write data to csv file
-            for (Expense expense : expenseList) {
-                csvWriter.append(expense.getName());
-                csvWriter.append(",");
-                csvWriter.append(expense.getCategory());
-                csvWriter.append(",");
-                csvWriter.append(expense.getLocalDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
-                csvWriter.append(",");
-                // get amount with 2 decimals
-                csvWriter.append(String.format("%.2f", expense.getAmount()));
-                csvWriter.append("\n");
-            }
-            csvWriter.flush();
-            csvWriter.close();
-
-            // display success message
-            Alert alert = new Alert(AlertType.INFORMATION);
-
-            alert.setTitle("Success");
-            alert.setHeaderText("Success");
-            alert.setContentText("Expenses have been saved");
-            alert.showAndWait();
-        }
-        catch (IOException e) {
-            // display error message
-            Alert alert = new Alert(AlertType.ERROR);
-
-            alert.setTitle("Error");
-            alert.setHeaderText("Error");
-            alert.setContentText("Error saving expenses");
-            alert.showAndWait();
-        }
-        
-    } // end saveExpenses 
-
-    public void loadExpenses() {
-        // read data from expenses.csv to expenseList
-        try {
-            // clear expenseList
-            expenseList.clear();
-
-            // read data from csv file
-            BufferedReader csvReader = new BufferedReader(new FileReader("expenses.csv"));
-            String row;
-            while ((row = csvReader.readLine()) != null) {
-                String[] data = row.split(",");
-                String name = data[0];
-                String category = data[1];
-                LocalDate date = LocalDate.parse(data[2], DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-                double cost = Double.parseDouble(data[3]);
-                Expense newExpense = new Expense(name, category, date, cost);
-                expenseList.add(newExpense);
-            }
-            csvReader.close();
-        }
-        catch (IOException e) {
-            // display error message
-            Alert alert = new Alert(AlertType.ERROR);
-
-            alert.setTitle("Error");
-            alert.setHeaderText("Error");
-            alert.setContentText("Error loading expenses");
-            alert.showAndWait();
-        }
-    } // end loadExpenses method
-
-
-    private boolean isValidDate(String date) {
-        // if date is mm/dd/yyyy format regex
-        if (!date.matches("^(0[1-9]|1[012])/(0[1-9]|[12][0-9]|3[01])/[0-9]{4}$")) {
-            return false;
-        }
-        
-        // check if date is in mm/dd/yyyy format
-        LocalDate parsedDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-        String formattedDate = parsedDate.format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-        
-        // check if text field date is equal to parsed date 
-        // LocalDate.format automatically readjusts fake dates (e.g. 02/30/2020) to real dates (e.g. 02/29/2020)
-        if (!(date.equals(formattedDate))) {
-            return false;
-        }
-        return true;
-    } // end isValidDate method
-
-
-
-    private boolean isValidCost(String cost) {
-        // check if cost is an integer or double
-        try {
-            // if cost without $ sign is an integer
-            double newCost = Double.parseDouble(cost.replace("$", ""));
-            if (newCost < 0) { // if cost is negative
-                return false;
-            }
-        }
-        catch (NumberFormatException e) {
-            return false;
-        }
-        return true;
-    } // end isValidCost method
 } // end ExpenseController class

@@ -17,9 +17,7 @@ import javafx.scene.image.Image;
     // searching total for x time period
     // search total for x category x time period
     // expenselist paramter
-    // NORMALIZE naming
-       // expense -> name
-       // category -> category
+
        // localDate -> date
        // amount -> cost
 
@@ -46,16 +44,14 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 
-
         scene = new Scene(loadFXML("MainPage"), 900, 615);
-        
 
         // set icon
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/com/application/budgeter/images/appIcon.jpg")));
 
         // set current size to min
-        stage.setMinWidth(1000);
-        stage.setMinHeight(700);
+        stage.setMinWidth(1200);
+        stage.setMinHeight(800);
     
         stage.setScene(scene);
         stage.show();
