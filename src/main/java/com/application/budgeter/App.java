@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.IOException;
+
 import javafx.scene.image.Image;
 
 /*
@@ -15,11 +16,17 @@ import javafx.scene.image.Image;
 public class App extends Application {
 
     private static Scene scene;
+
+    
     
     @Override
     public void start(Stage stage) throws IOException {
 
+        
+
         scene = new Scene(loadFXML("MainPage"), 900, 615);
+
+
 
         // set icon
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/com/application/budgeter/images/appIcon.jpg")));

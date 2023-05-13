@@ -45,7 +45,6 @@ public class ExpenseController implements Initializable {
     @FXML private Label expenseTitle; // title of page
 
     @FXML private AnchorPane expensePage; // page that holds all the elements
-
     
     // tableview
     @FXML private TableView<Expense> expenseTable;
@@ -75,9 +74,7 @@ public class ExpenseController implements Initializable {
     
     // add expenses to expenseList and display in tableview
 
-    // public ExpenseController(ExpenseList expenseList) {
-    //     this.expenseList = expenseList;
-    // }
+
 
     
 

@@ -23,7 +23,6 @@ public class MainPageController implements Initializable {
     @FXML private Button dashboardNavButton;
     @FXML private Button budgetNavButton;
     @FXML private Button expenseNavButton;
-    
 
 
     // add listener to reapply divider positions if window is resized

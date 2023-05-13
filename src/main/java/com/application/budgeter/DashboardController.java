@@ -1,11 +1,9 @@
 package com.application.budgeter;
 
-import java.io.IOException;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.PieChart;
-import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
@@ -14,32 +12,28 @@ import javafx.scene.control.Label;
 import java.time.LocalDate;
 
 
-// todo
-    // finalize elements
-        // sizes
-    // hook up data to charts and tables
-    // calclulate data
-    // border around center data
-    // center alignment
-    // stop page overlap
-
 public class DashboardController implements Initializable {
+    // page elements
     @FXML private AnchorPane dashboardPage;
     @FXML private Label dashboardTitle;
 
+    // charts
     @FXML private PieChart pieChart;
-    @FXML private AreaChart areaChart;
+    @FXML private AreaChart<String, Double> areaChart;
 
+    // center budget data elements
     @FXML private Rectangle spendingsRect;
     @FXML private Label flatAmountSpent;
     @FXML private Label percentAmountSpent;
     @FXML private Label daysLeft;
     @FXML private Label transactionsTableTitle;
 
+    // recent transaction table elements
     @FXML private TableView<Expense> transactionsTable;
     @FXML private TableColumn<Expense, String> nameColumn;
     @FXML private TableColumn<Expense, LocalDate> dateColumn;
     @FXML private TableColumn<Expense, Double> costColumn;
+
 
 
     @Override
