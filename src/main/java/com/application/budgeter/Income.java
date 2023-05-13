@@ -16,4 +16,12 @@ public class Income {
     public double getAmount() {
         return amount;
     }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
 }
