@@ -4,12 +4,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Scanner;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public class BudgetModel {
-    private ArrayList<Income> incomeList = new ArrayList<Income>();
-    private ArrayList<Budget> budgetList = new ArrayList<Budget>();
+    private ObservableList<Income> incomeList = FXCollections.observableArrayList();
+    private ObservableList<Budget> budgetList = FXCollections.observableArrayList();
+    
     private double totalIncome;
     private double totalSpent;
     private double totalRemaining;
@@ -19,35 +21,46 @@ public class BudgetModel {
         totalIncome += incomeAmount;
         incomeList.add(new Income(source, incomeAmount));
     }
-    
+
     public void addBudget(String category, double spent, double total) {
         totalSpent += spent;
         totalRemaining = totalIncome - totalSpent;
         budgetList.add(new Budget(category, spent, total));
     }
 
-    //can figure this out later 
-    public void updateTotalSpending() {
-        double totalSpent = 0.0;
-        for (Budget budget : budgetList) {
-            totalSpent += budget.getSpent();
-        }
-        //.setText(String.format("$%.2f", totalSpent));
-        
-        totalRemaining = totalIncome - totalSpent;
-        //.setText(String.format("$%.2f", totalRemaining));
-        
-        double percentageSpent = totalSpent / totalIncome * 100.0;
-        //.setText(String.format("%.1f%%", percentageSpent));
-        
-        double percentageRemaining = totalRemaining / totalIncome * 100.0;
-        //.setText(String.format("%.1f%%", percentageRemaining));
-        
-        // Update the progress bar with the percentage remaining
-        double percentageComplete = 100.0 - percentageSpent;
-        //progressBar.setProgress(percentageComplete / 100.0);
+    public void deleteIncome(Income income) {
+        totalIncome -= income.getAmount();
+        incomeList.remove(income);
     }
 
+    public void deleteBudget(Budget budget) {
+        totalSpent -= budget.getSpent();
+        totalRemaining = totalIncome - totalSpent;
+        budgetList.remove(budget);
+    }
+
+    
+
+    public void editIncomeCategory(Income income, String newSource) {
+        income.setSource(newSource);
+    }
+
+    public void editIncomeAmount(Income income, double newAmount) {
+        income.setAmount(newAmount);
+    }
+    
+    public void editBudgetCategory(Budget budget, String newCategory) {
+        budget.setCategory(newCategory);
+    }
+
+    public void editBudgetSpent(Budget budget, double newSpent) {
+        budget.setSpent(newSpent);
+    }
+
+    public void editBudgetTotal(Budget budget, double newTotal) {
+        budget.setTotal(newTotal);
+    }
+    
 
     //Note that when you write to a file in the resources directory, the file will be overwritten each time you run the program. 
     //If you want to persist the data across runs, you may want to consider writing the file to a separate directory such as the user's home directory.
@@ -66,10 +79,10 @@ public class BudgetModel {
             writer.close();
         } catch (IOException e) {
             System.out.println("Error writing to file: " + filename);
-        }
-    }
+        } // end of catch
+    } // end of writeCSV method
     
-    public void readCSV(String filename) {
+    public void readCSV(String filename) { 
         try {
             File file = new File(System.getProperty("user.home"), filename);
             Scanner scanner = new Scanner(file);
@@ -96,32 +109,20 @@ public class BudgetModel {
                     double total = Double.parseDouble(fields[2].trim());
                     Budget budget = new Budget(category, spent, total);
                     budgetList.add(budget);
-                }
-            }
+                } // end of if statement
+            } // end of while loop
             scanner.close();
-            updateTotalSpending(); // Update the total spending values after reading the CSV file
+            
         } catch (FileNotFoundException e) {
             System.out.println("File not found: " + filename);
-        }
-    }
-
-    public void editIncome() {
-
-    }
+        } // end of catch
+    } // end of readCSV method 
     
-    public void deleteIncome() {
-        
-    }
-
-    public void editBudget() {
-
-    }
     
-    public void deleteBudget() {
-
-    }
-
     
+    
+    
+    //for testing purposes
     public void print2() {
         System.out.println(totalSpent);
         System.out.println(totalIncome);
@@ -140,11 +141,5 @@ public class BudgetModel {
             System.out.println(budget.getCategory() + " - total: $" + budget.getTotal() + " - Spent: $" + budget.getSpent() + ", Remaining: $" + budget.getRemaining());
         }
     }
-    //read csv
-
-    //addExpense
-    //deleteIncome
-    //deleteExpense
-    //updateTotalSpending?
 
 }

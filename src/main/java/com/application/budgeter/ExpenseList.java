@@ -3,6 +3,7 @@ package com.application.budgeter;
 import java.util.Iterator;
 import java.time.*;
 import java.util.*;
+import java.util.*;
 
 // TODO: make CSV reader / writer
     // consider: how many expense to load? 
@@ -12,13 +13,17 @@ import java.util.*;
 
 // TODO: what happens if an expense is edited to have a very old date?
 
+// TODO: what happens if an expense is edited to have a very old date?
+
 // This class defines a LinkedList used for storing
 // Expense objects. Oldest items are at the head, newest at the tail.
 public class ExpenseList implements Iterable<Expense> {
     private ExpenseNode head;
     private ExpenseNode tail;
     private double totalSpending;
+    private double totalSpending;
     private int size;
+    private Map<String, Double> categorySpending;
     private Map<String, Double> categorySpending;
 
     // ExpenseList constructor
@@ -27,6 +32,7 @@ public class ExpenseList implements Iterable<Expense> {
         this.tail = null;
         this.size = 0;
         this.totalSpending = 0;
+        this.categorySpending = new HashMap<String, Double>();
         this.categorySpending = new HashMap<String, Double>();
     } 
 
@@ -52,7 +58,19 @@ public class ExpenseList implements Iterable<Expense> {
     }
     
     public double getTotalSpending() {
+    public double getTotalSpending() {
         return totalSpending;
+    }
+
+    // Get total spending for a given category. Matches word exactly.
+    // If the category isn't found, then returns negative number.
+    public double getCategorySpending ( String category ) {
+        try {
+            return categorySpending.get(category);
+        } catch (NullPointerException e) {
+            return -1;
+        }
+        
     }
 
     // Get total spending for a given category. Matches word exactly.
@@ -68,6 +86,7 @@ public class ExpenseList implements Iterable<Expense> {
 
     // Add new Expense to the list in sorted order by date
     // Takes Expense fields as parameters
+    public void add ( String name, String category, LocalDate localDate, double amount) { 
     public void add ( String name, String category, LocalDate localDate, double amount) { 
         Expense newExpense = new Expense( name, category, localDate, amount);
         ExpenseNode newNode = new ExpenseNode (newExpense, null, null);
@@ -100,6 +119,11 @@ public class ExpenseList implements Iterable<Expense> {
         totalSpending += newExpense.getAmount();
         categorySpending.put(category, amount);
         size++;
+        if (categorySpending.containsKey(category)) {
+            categorySpending.replace(category, categorySpending.get(category) + amount);
+        } else {
+            categorySpending.put(category, amount);
+        }
     }
 
     // Add new Expense to list in sorted order by date
@@ -135,6 +159,14 @@ public class ExpenseList implements Iterable<Expense> {
         totalSpending += newExpense.getAmount();
         categorySpending.put(newExpense.getCategory(), newExpense.getAmount());
         size++;
+
+        String category = newExpense.getCategory();
+        double amount = newExpense.getAmount();
+        if (categorySpending.containsKey(category)) {
+            categorySpending.replace(category, categorySpending.get(category) + amount);
+        } else {
+            categorySpending.put(category, amount);
+        }
     }
 
     // Get the ExpenseNode that contains the given Expense
@@ -181,13 +213,19 @@ public class ExpenseList implements Iterable<Expense> {
             return false; 
         }
         node.expense = updated;
-        totalSpending -= old.getAmount();
-        totalSpending += updated.getAmount();
-        double updateCategorySpending = 
-            categorySpending.get(old.getCategory()) 
-            + updated.getAmount() 
-            - old.getAmount();
-        categorySpending.replace(old.getCategory(), updateCategorySpending);
+        totalSpending -= old.getAmount() + updated.getAmount();;
+        // Remove old Expense from categorySpending map
+        categorySpending.replace(old.getCategory(), 
+            categorySpending.get(old.getCategory()) - old.getAmount());
+        // Add updated Expense to categorySpending map. 
+        // Create new mapping if necessary
+        if (categorySpending.containsKey(updated.getCategory())) {
+            categorySpending.replace(updated.getCategory(), 
+                categorySpending.get(updated.getCategory()) + updated.getAmount());
+        } else {
+            categorySpending.put(updated.getCategory(), updated.getAmount());
+        }
+        
         // If expense date was changed, then move the node
         // to the correct sorted position.
         if ( !updated.getLocalDate().equals(old.getLocalDate()) ) {
@@ -195,8 +233,7 @@ public class ExpenseList implements Iterable<Expense> {
             if (node == head) {
                 // If node is head and node should still be the head, 
                 // then do not move the node
-                if (updated.getLocalDate().isBefore(node.next.expense.getLocalDate()) 
-                || updated.getLocalDate().equals(node.next.expense.getLocalDate())) {
+                if (updated.getLocalDate().isBefore(node.next.expense.getLocalDate()) ) {
                     return true;
                 } else {
                     node.next.prev = null;
@@ -303,6 +340,7 @@ public class ExpenseList implements Iterable<Expense> {
         this.tail = null;
         size = 0;
         totalSpending = 0;
+        categorySpending.clear();
         categorySpending.clear();
     }
 

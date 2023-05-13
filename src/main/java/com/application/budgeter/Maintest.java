@@ -5,7 +5,7 @@ public class Maintest {
     public static void main(String[] args) {
         
         BudgetModel b = new BudgetModel();
-       /* 
+       
          b.addIncome("work", 50);
         b.print();
         
@@ -22,9 +22,9 @@ public class Maintest {
         b.print2();
         b.addBudget("utilities", 65, 200);
         b.print2();
-        b.writeCSV("test.csv");*/
+       // b.writeCSV("test.csv");
         
-       b.readCSV("test.csv");
+       //b.readCSV("test.csv");
         b.print();
     
     }
