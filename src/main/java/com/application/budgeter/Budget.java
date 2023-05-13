@@ -28,5 +28,19 @@ public class Budget {
     public double getTotal() {
         return total;
     }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public void setSpent(double spent) {
+        remaining = total-spent;
+        this.spent = spent;
+    }
+
+    public void setTotal(double total) {
+        remaining = total-spent;
+        this.total = total;
+    }
     
 }
