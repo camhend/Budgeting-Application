@@ -18,6 +18,7 @@ import javafx.scene.image.Image;
     // search total for x category x time period
     // expenselist paramter
 
+
        // localDate -> date
        // amount -> cost
 

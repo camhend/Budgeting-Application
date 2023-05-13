@@ -32,6 +32,10 @@ import javafx.stage.Popup;
 import java.lang.NumberFormatException;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+// window iconfied
+
 
 
 
@@ -71,6 +75,10 @@ public class ExpenseController implements Initializable {
     
     // add expenses to expenseList and display in tableview
 
+    // public ExpenseController(ExpenseList expenseList) {
+    //     this.expenseList = expenseList;
+    // }
+
     
 
 
@@ -88,15 +96,11 @@ public class ExpenseController implements Initializable {
         
         loadExpenses(); // load expenses from file
 
-        // print expenseList to console
-        for (Expense expense : expenseList) {
-            System.out.println(expense);
-        }
-
         // add expenses to observable list
         for (Expense expense : expenseList) {
             obsvExpenseList.add(expense);
         }
+
 
         // add observable list to tableview
         expenseTable.setItems(obsvExpenseList);
@@ -185,6 +189,7 @@ public class ExpenseController implements Initializable {
                 // update total
                 updateTotal();
             }
+            
         });
     } // end deleteListener method
 
@@ -243,9 +248,7 @@ public class ExpenseController implements Initializable {
                 // fill text fields with selected expense's data
                 nameField.setText(selectedExpense.getName());
                 categoryField.setText(selectedExpense.getCategory());
-                // mm/dd/yyyy
                 dateField.setText(selectedExpense.getLocalDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
-                // 2 decimal places and add dollar sign
                 costField.setText(String.format("$%.2f", selectedExpense.getAmount()));
                 
 
@@ -260,18 +263,14 @@ public class ExpenseController implements Initializable {
                 // get window coordinates of expensePage
                 double x = expensePage.getScene().getWindow().getX();
                 double y = expensePage.getScene().getWindow().getY();
-
-                // x = x + expensePage root's width / 2
                 x = x + expensePage.getScene().getRoot().getLayoutBounds().getWidth() / 2;
-                // y = y + expensePage root's height / 2
                 y = y + expensePage.getScene().getRoot().getLayoutBounds().getHeight() / 2;
 
                 // Show the popup in the center of the expensePage
                 popup.show(expensePage.getScene().getWindow(), x - layout.getPrefWidth() / 2, y - layout.getPrefHeight() / 2);
-                // disable main window
-                expensePage.getScene().getRoot().setDisable(true);
+                expensePage.getScene().getRoot().setDisable(true); // disable main window
 
-                // add listener to move popup when main window is moved or resized
+                // popup position event handlers
                 expensePage.getScene().getWindow().xProperty().addListener(new ChangeListener<Number>() {
                     @Override
                     public void changed(ObservableValue<? extends Number> observableValue, Number oldX, Number newX) {
@@ -298,7 +297,6 @@ public class ExpenseController implements Initializable {
                 });
 
                 
-                // on clicking close
                 closeEditButton.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
@@ -340,7 +338,7 @@ public class ExpenseController implements Initializable {
                             alert.initOwner(popup); 
                             alert.showAndWait();
                         }
-                        // commas
+                        // no commas
                         else if (nameField.getText().contains(",") || categoryField.getText().contains(",")) {
                             // create alert
                             Alert alert = new Alert(AlertType.ERROR);
@@ -353,10 +351,18 @@ public class ExpenseController implements Initializable {
                         else {
                             costField.setText(costField.getText().replace("$", "")); // remove dollar sign
 
+                            String name = nameField.getText();
+                            String category = categoryField.getText().toLowerCase();
+                            LocalDate date = LocalDate.parse(dateField.getText(), DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+                            double cost = Double.parseDouble(costField.getText());
+
                             // get edited expense
-                            Expense editedExpense = new Expense(nameField.getText(), categoryField.getText().toLowerCase(), LocalDate.parse(dateField.getText(), DateTimeFormatter.ofPattern("MM/dd/yyyy")), Double.parseDouble(costField.getText()));
+                            Expense editedExpense = new Expense(name, category, date, cost);
+
                             // edit main expense list
                             expenseList.edit(selectedExpense, editedExpense);
+
+
 
                             // get index of edited expense
                             int index = expenseList.getIndex(editedExpense);
@@ -387,6 +393,8 @@ public class ExpenseController implements Initializable {
                         }
                     }
                 }); // end finishEditButton listener
+
+                // minimize popup when main window is minimized
             } 
         }); // end editButton listener
     } // end editListener method
