@@ -221,33 +221,22 @@ public class ExpenseList implements Iterable<Expense> {
                 // If updated node is an earlier date than head, 
                 // then reassign head to be the updated node
                 if (updated.getLocalDate().isBefore(head.expense.getLocalDate())) {
-                    node.next = head;
-                    node.prev = null;
-                    head.prev = node;
-                    head = node;
+                    node.next = head; // node's next is the old head
+                    node.prev = null; // node's prev is null
+                    head.prev = node; // old head's prev is the node
+                    head = node; // node is the new head
                 // else traverse for the correct position
                 } else {
-                    ExpenseNode current = node;
-                    // traverse until the current node date is before the updated date 
+                    ExpenseNode current = node.prev; // start at the node before the updated node
+                    // go back until updated is before the current node
                     while (updated.getLocalDate().isBefore(current.expense.getLocalDate())) {
                         current = current.prev;
                     }
-                    if (current.next == null) {
-                        node.next = current.next;
-                        node.prev = current;
-                        current.next = node;
-                        tail = current.next;
-                    }
-                    else {
-                        node.next = current.next;
-                        node.prev = current;
-                        current.next.prev = node;
-                        current.next = node;
-                    }
                     
-                        
-                    
-                    
+                    node.next = current.next;
+                    node.prev = current;
+                    current.next.prev = node;
+                    current.next = node;
                 }
                 
                     
