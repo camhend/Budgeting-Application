@@ -23,11 +23,13 @@ public class MainPageController implements Initializable {
     @FXML private Button dashboardNavButton;
     @FXML private Button budgetNavButton;
     @FXML private Button expenseNavButton;
-    
 
 
     // add listener to reapply divider positions if window is resized
     public void initialize(java.net.URL arg0, java.util.ResourceBundle arg1) {
+
+        // set menuPage color to gray
+        menuPage.setStyle("-fx-background-color: #ECEAEA;");
 
         addButtonImages(); 
 
@@ -92,19 +94,19 @@ public class MainPageController implements Initializable {
     private void addButtonImages() {
         // set button images to DashboardButton.jpg, BudgetButton.jpg, and ExpenseButton.jpg set image to fit budgetNavButton
 
-        ImageView dashboardImageView = new ImageView(new Image(getClass().getResourceAsStream("/com/application/budgeter/images/DashboardButton.jpg")));
+        ImageView dashboardImageView = new ImageView(new Image(getClass().getResourceAsStream("/com/application/budgeter/images/dashboardButton.jpg")));
         dashboardNavButton.setGraphic(dashboardImageView);
         // fit width and height to button
         dashboardImageView.fitWidthProperty().bind(dashboardNavButton.widthProperty());
         dashboardImageView.fitHeightProperty().bind(dashboardNavButton.heightProperty());
 
-        ImageView budgetImageView = new ImageView(new Image(getClass().getResourceAsStream("/com/application/budgeter/images/BudgetButton.jpg")));
+        ImageView budgetImageView = new ImageView(new Image(getClass().getResourceAsStream("/com/application/budgeter/images/budgetButton.jpg")));
         budgetNavButton.setGraphic(budgetImageView);
         // fit width and height to button
         budgetImageView.fitWidthProperty().bind(budgetNavButton.widthProperty());
         budgetImageView.fitHeightProperty().bind(budgetNavButton.heightProperty());
 
-        ImageView expenseImageView = new ImageView(new Image(getClass().getResourceAsStream("/com/application/budgeter/images/ExpenseButton.jpg")));
+        ImageView expenseImageView = new ImageView(new Image(getClass().getResourceAsStream("/com/application/budgeter/images/expenseButton.jpg")));
         expenseNavButton.setGraphic(expenseImageView);
         // fit width and height to button
         expenseImageView.fitWidthProperty().bind(expenseNavButton.widthProperty());

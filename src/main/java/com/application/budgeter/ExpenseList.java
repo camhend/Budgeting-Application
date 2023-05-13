@@ -3,12 +3,15 @@ package com.application.budgeter;
 import java.util.Iterator;
 import java.time.*;
 import java.util.*;
+import java.util.*;
 
 // TODO: make CSV reader / writer
     // consider: how many expense to load? 
     // how far back to go?
     // How to add newly added expenses to CSV log? 
     // What if a really old date is added? How will the newly added date be added to the CSV in a sorted manner?
+
+// TODO: what happens if an expense is edited to have a very old date?
 
 // TODO: what happens if an expense is edited to have a very old date?
 
@@ -27,6 +30,7 @@ public class ExpenseList implements Iterable<Expense> {
         this.tail = null;
         this.size = 0;
         this.totalSpending = 0;
+        this.categorySpending = new HashMap<String, Double>();
         this.categorySpending = new HashMap<String, Double>();
     } 
 
@@ -51,6 +55,7 @@ public class ExpenseList implements Iterable<Expense> {
         return head == null;
     }
     
+
     public double getTotalSpending() {
         return totalSpending;
     }
@@ -65,6 +70,8 @@ public class ExpenseList implements Iterable<Expense> {
         }
         
     }
+
+
 
     // Add new Expense to the list in sorted order by date
     // Takes Expense fields as parameters
@@ -98,6 +105,7 @@ public class ExpenseList implements Iterable<Expense> {
             current.next = newNode;           
         }
         totalSpending += newExpense.getAmount();
+        categorySpending.put(category, amount);
         size++;
         if (categorySpending.containsKey(category)) {
             categorySpending.replace(category, categorySpending.get(category) + amount);
@@ -137,6 +145,7 @@ public class ExpenseList implements Iterable<Expense> {
             current.next = newNode;           
         }
         totalSpending += newExpense.getAmount();
+        categorySpending.put(newExpense.getCategory(), newExpense.getAmount());
         size++;
 
         String category = newExpense.getCategory();
@@ -237,21 +246,22 @@ public class ExpenseList implements Iterable<Expense> {
                 // If updated node is an earlier date than head, 
                 // then reassign head to be the updated node
                 if (updated.getLocalDate().isBefore(head.expense.getLocalDate())) {
-                    node.next = head;
-                    node.prev = null;
-                    head.prev = node;
-                    head = node;
+                    node.next = head; // node's next is the old head
+                    node.prev = null; // node's prev is null
+                    head.prev = node; // old head's prev is the node
+                    head = node; // node is the new head
                 // else traverse for the correct position
                 } else {
-                    ExpenseNode current = node;
-                    // traverse until the current node date is before the updated date 
+                    ExpenseNode current = node.prev; // start at the node before the updated node
+                    // go back until updated is before the current node
                     while (updated.getLocalDate().isBefore(current.expense.getLocalDate())) {
                         current = current.prev;
                     }
+                    
                     node.next = current.next;
                     node.prev = current;
                     current.next.prev = node;
-                    current.next = node;  
+                    current.next = node;
                 }
                 
                     
@@ -297,12 +307,28 @@ public class ExpenseList implements Iterable<Expense> {
         return false;
     }
 
+    public int getIndex( Expense expense ) {
+        ExpenseNode current = head;
+        int index = 0;
+        while (current != null) {
+            if (current.expense.equals( expense )) {
+                return index;
+            } else {
+                current = current.next;
+                index++;
+            }
+        }
+        return -1;
+    }
+
+
     // clear the list of all elements
     public void clear () {
         this.head = null;
         this.tail = null;
         size = 0;
         totalSpending = 0;
+        categorySpending.clear();
         categorySpending.clear();
     }
 
@@ -400,9 +426,4 @@ public class ExpenseList implements Iterable<Expense> {
             throw new UnsupportedOperationException(); 
         }  
     }
-    
-
-
-} 
-
-
+}  // End of ExpenseList class

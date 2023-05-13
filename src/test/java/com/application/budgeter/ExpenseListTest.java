@@ -649,4 +649,12 @@ public class ExpenseListTest {
 
 
     
+
+    /*
+    @Test
+    public void testgetCategorySpending_AfterEditAmountWasChanged() {
+        
+    }
+    */
+
 }

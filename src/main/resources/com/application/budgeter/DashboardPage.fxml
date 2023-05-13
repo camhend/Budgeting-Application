@@ -1,31 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
+<?import javafx.scene.chart.AreaChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.MenuButton?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.image.Image?>
 
+<AnchorPane fx:id="dashboardPage" prefHeight="600.0" prefWidth="680.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml" fx:controller="com.application.budgeter.DashboardController">
+   <children>
+      <PieChart labelLineLength="2.0" title="Pie Chart" fx:id="pieChart"/>
 
-<!--Dashboard Section-->
-<!-- add resizble with parent-->
-<AnchorPane id="dashboardPage" minHeight="600.0" minWidth="680.0" prefHeight="600.0" prefWidth="680.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.application.budgeter.DashboardController"> 
-  <children>
-    <Label alignment="CENTER" font="$x1" layoutX="264.0" layoutY="20.0" minHeight="27.0" minWidth="144.0" style="&#10;" text="Dashboard" textAlignment="CENTER" textFill="#726d6d">
+      <Label text="Dashboard" fx:id="dashboardTitle">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+
+      <!-- Center Section for current spending summary-->
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f8f8f8" stroke="BLACK" strokeType="INSIDE" fx:id="spendingsRect"/>
+      <Label text="\$1000/$3000 Spent" fx:id="flatAmountSpent" />
+      <Label text="33% spent" fx:id="percentAmountSpent" />
+      <Label text="22 days left (60%)" fx:id="daysLeft" />
+      <Label text="Recent Transactions" fx:id="transactionsTableTitle" >
       <font>
-        <Font fx:id="x1" size="18.0" />                
-      </font>
-    </Label>
-  </children>
+            <Font size="15.0" />
+         </font>
+      </Label>
+
+      <!-- Table of recent transactions-->
+      <TableView fx:id="transactionsTable" >
+         <columns>
+            <TableColumn text="Name" fx:id="nameColumn" />
+            <TableColumn text="Date" fx:id="dateColumn" />
+            <TableColumn text="Cost" fx:id="costColumn" />
+         </columns>
+      </TableView>
+
+      <!-- Area chart for spending over time-->
+      <AreaChart title="Area Chart" fx:id="areaChart" >
+        <xAxis>
+          <CategoryAxis side="BOTTOM" />
+        </xAxis>
+        <yAxis>
+          <NumberAxis side="LEFT" />
+        </yAxis>
+      </AreaChart>
+
+   </children>
 </AnchorPane>
