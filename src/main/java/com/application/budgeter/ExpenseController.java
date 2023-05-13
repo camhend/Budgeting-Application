@@ -78,7 +78,6 @@ public class ExpenseController implements Initializable {
 
     
 
-
     // initialize method (runs when ExpenseController is created)
     @Override
     public void initialize(java.net.URL arg0, java.util.ResourceBundle arg1) {
@@ -453,6 +452,7 @@ public class ExpenseController implements Initializable {
             Expense newExpense = new Expense(name, category, date, cost);
             
             expenseList.add(newExpense);
+            // implement add index instead of manual add
             obsvExpenseList.add(newExpense);
 
             // add expense to tableview
