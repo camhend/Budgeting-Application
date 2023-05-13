@@ -21,9 +21,7 @@ public class ExpenseList implements Iterable<Expense> {
     private ExpenseNode head;
     private ExpenseNode tail;
     private double totalSpending;
-    private double totalSpending;
     private int size;
-    private Map<String, Double> categorySpending;
     private Map<String, Double> categorySpending;
 
     // ExpenseList constructor
@@ -57,7 +55,7 @@ public class ExpenseList implements Iterable<Expense> {
         return head == null;
     }
     
-    public double getTotalSpending() {
+
     public double getTotalSpending() {
         return totalSpending;
     }
@@ -73,20 +71,10 @@ public class ExpenseList implements Iterable<Expense> {
         
     }
 
-    // Get total spending for a given category. Matches word exactly.
-    // If the category isn't found, then returns negative number.
-    public double getCategorySpending ( String category ) {
-        try {
-            return categorySpending.get(category);
-        } catch (NullPointerException e) {
-            return -1;
-        }
-        
-    }
+
 
     // Add new Expense to the list in sorted order by date
     // Takes Expense fields as parameters
-    public void add ( String name, String category, LocalDate localDate, double amount) { 
     public void add ( String name, String category, LocalDate localDate, double amount) { 
         Expense newExpense = new Expense( name, category, localDate, amount);
         ExpenseNode newNode = new ExpenseNode (newExpense, null, null);
