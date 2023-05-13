@@ -8,35 +8,9 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import javafx.scene.image.Image;
 
-// TODO
-    // text shortening or wrap text when too long
-    // write tests for expensecontroller 
-    // merge sort implementation
-    // high res button images
-        // different images when clicked on
-    // searching total for x time period
-    // search total for x category x time period
-    // expenselist paramter
-
-
-       // localDate -> date
-       // amount -> cost
-
-// known bugs
-    // when resizing window, the divider position becomes moveable
-    // slight page size difference between expense page and other pages (cuz of anchorpane constraints??)
-
-// QOL
-    // auto place mm/dd/yyyy indicator in date textfield
-    // info markers for each textfield
-    // are you sure? before closing window
-    // proportional popup page size
-    // less janky popup page repositioning
-    // make add work for years under 4 digits
-
-// test
-    // data manipulation methods from controller
-
+/*
+ TODO: 
+*/
 
 public class App extends Application {
 
