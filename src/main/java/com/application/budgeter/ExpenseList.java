@@ -379,8 +379,17 @@ public class ExpenseList implements Iterable<Expense> {
                 return false;
             }
         }
+        for (String key : categorySpending.keySet()) {
+            if (this.getCategorySpending(key) != other.getCategorySpending(key)) {
+                return false;
+            }
+        }
         return true;
     }
+
+    //public ExpenseList copyOf() {
+    //
+    //}
 
     // return Iterator instance
     public Iterator<Expense> iterator() {
