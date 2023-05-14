@@ -1006,6 +1006,30 @@ public class ExpenseListTest {
         assertFalse(checkBackwards);
     }
 
+    @Test
+    public void testCopy_EqualsAfterExpenseSetter_ExpectFalse() {
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-02-01"), 10);
+        
+        list.add(exp1);
+
+        ExpenseList other = list.copy();
+
+        for (Expense expense : list) {
+            expense.setName("name");
+        }
+
+        assertFalse(list.equals(other));
+
+        Iterator<Expense> copyItr = other.descendingIterator();
+        Iterator<Expense> listItr = list.descendingIterator();
+        boolean checkBackwards = true;
+        while (listItr.hasNext()) {
+            if ( !listItr.next().equals(copyItr.next()) ) {
+                checkBackwards = false;
+            }
+        }
+        assertFalse(checkBackwards);
+    }
 
 
 

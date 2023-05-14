@@ -399,7 +399,7 @@ public class ExpenseList implements Iterable<Expense> {
             copy.categorySpending.put(key, this.getCategorySpending(key));
         }
 
-        copy.head = new ExpenseNode(this.head.expense, null, null);
+        copy.head = new ExpenseNode(this.head.expense.copy(), null, null);
         // this ExpenseList has ONE node
         if (this.head.next == null) {
             copy.tail = copy.head;
@@ -411,7 +411,7 @@ public class ExpenseList implements Iterable<Expense> {
         ExpenseNode copyCurrent = copy.head;
         
         while (thisCurrent.next != null) {
-            copyCurrent.next = new ExpenseNode(thisCurrent.next.expense, null, copyCurrent);
+            copyCurrent.next = new ExpenseNode(thisCurrent.next.expense.copy(), null, copyCurrent);
             thisCurrent = thisCurrent.next;
             copyCurrent = copyCurrent.next;
         }
