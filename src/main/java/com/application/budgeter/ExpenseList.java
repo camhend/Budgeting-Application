@@ -368,6 +368,21 @@ public class ExpenseList implements Iterable<Expense> {
         return arr;
     }
 
+    // Return boolean for if this ExpenseList equals the other ExpenseList
+    public boolean equals (ExpenseList other) {
+        if (this.size != other.size()
+        || totalSpending != other.getTotalSpending()) {
+            return false;
+        }
+        Iterator itr = other.iterator();
+        for (Expense expense : this) {
+            if ( !expense.equals(itr.next()) ) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     // return Iterator instance
     public Iterator<Expense> iterator() {
         return new ExpenseListIterator();
