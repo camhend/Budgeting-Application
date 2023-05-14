@@ -767,14 +767,13 @@ public class ExpenseListTest {
         Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2001-04-14"), 50);
         Expense exp3 = new Expense("groceries", "food", LocalDate.parse("2001-06-28"), 50);
 
-        for (Expense expense : list) {
-            assertEquals(null, expense);
-        }
+        list.add(exp1);
+        list.add(exp2);
+        list.add(exp3);
 
-        Iterator<Expense> itPrev = list.descendingIterator();
-        while ( itPrev.hasNext() ) {
-            assertEquals(null, itPrev.next() );
-        }
+        list.clear();
+        
+        assertTrue(list.isEmpty());
         assertEquals(0, list.size());
         assertEquals(0, list.getTotalSpending(), 0.001);
         assertEquals(-1.0, list.getCategorySpending("food"), 0.001);
