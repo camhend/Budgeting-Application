@@ -387,9 +387,37 @@ public class ExpenseList implements Iterable<Expense> {
         return true;
     }
 
-    //public ExpenseList copyOf() {
-    //
-    //}
+    public ExpenseList copy() {
+        ExpenseList copy = new ExpenseList();
+        // this ExpenseList is empty
+        if (this.isEmpty()) {
+            return copy;
+        }
+        copy.totalSpending = this.totalSpending;
+        copy.size = this.size;
+        for (String key : this.categorySpending.keySet()) {
+            copy.categorySpending.put(key, this.getCategorySpending(key));
+        }
+
+        copy.head = new ExpenseNode(this.head.expense, null, null);
+        // this ExpenseList has ONE node
+        if (this.head.next == null) {
+            copy.tail = copy.head;
+            return copy;
+        }
+
+        
+        ExpenseNode thisCurrent = this.head;
+        ExpenseNode copyCurrent = copy.head;
+        
+        while (thisCurrent.next != null) {
+            copyCurrent.next = new ExpenseNode(thisCurrent.next.expense, null, copyCurrent);
+            thisCurrent = thisCurrent.next;
+            copyCurrent = copyCurrent.next;
+        }
+        copy.tail = copyCurrent;
+        return copy;
+    }
 
     // return Iterator instance
     public Iterator<Expense> iterator() {

@@ -827,13 +827,11 @@ public class ExpenseListTest {
         other.remove(exp1);
         assertFalse(list.equals(other));
 
-        other.add(new Expense("hotdog", "food", LocalDate.parse("2001-02-01"), 10));
+        other.add("hotdog", "food", LocalDate.parse("2001-02-01"), 10);
         assertTrue(list.equals(other));
         
     }
     
-    
-
     @Test
     public void testEqualsAfterEdit_ExpectFalse() {
         Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-02-01"), 10);
@@ -855,6 +853,160 @@ public class ExpenseListTest {
 
         assertFalse(list.equals(other));
     }
+
+    @Test
+    public void testCopy_EmptyList() {
+        ExpenseList other = list.copy();
+        assertTrue(list.equals(other));
+
+        Iterator<Expense> copyItr = other.descendingIterator();
+        Iterator<Expense> listItr = list.descendingIterator();
+        while (listItr.hasNext()) {
+            assertTrue(listItr.next().equals(copyItr.next()));
+        }
+
+    }
+
+    @Test
+    public void testCopy_OneNode() {
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-02-01"), 10);
+        list.add(exp1);
+
+        ExpenseList other = list.copy();
+        assertTrue(list.equals(other));
+
+        Iterator<Expense> copyItr = other.descendingIterator();
+        Iterator<Expense> listItr = list.descendingIterator();
+        while (listItr.hasNext()) {
+            assertTrue(listItr.next().equals(copyItr.next()));
+        }
+    }
+
+    @Test
+    public void testCopy_MultipleNodes() {
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-02-01"), 10);
+        Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2001-04-14"), 50);
+        Expense exp3 = new Expense("groceries", "food", LocalDate.parse("2001-06-28"), 50);
+        
+        list.add(exp1);
+        list.add(exp2);
+        list.add(exp3);
+
+        ExpenseList other = list.copy();
+        assertTrue(list.equals(other));
+
+        Iterator<Expense> copyItr = other.descendingIterator();
+        Iterator<Expense> listItr = list.descendingIterator();
+        while (listItr.hasNext()) {
+            assertTrue(listItr.next().equals(copyItr.next()));
+        }
+    }
+
+    @Test
+    public void testCopy_EqualsAfterAdd_ExpectFalse() {
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-02-01"), 10);
+        Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2001-04-14"), 50);
+        Expense exp3 = new Expense("groceries", "food", LocalDate.parse("2001-06-28"), 50);
+        
+        list.add(exp1);
+        list.add(exp2);
+        list.add(exp3);
+
+        ExpenseList other = list.copy();
+
+        list.add("hotdog", "food", LocalDate.parse("2001-02-01"), 10);
+
+        assertFalse(list.equals(other));
+
+        Iterator<Expense> copyItr = other.descendingIterator();
+        Iterator<Expense> listItr = list.descendingIterator();
+        
+        boolean checkBackwards = true;
+        while (listItr.hasNext()) {
+            if ( !listItr.next().equals(copyItr.next()) ) {
+                checkBackwards = false;
+            }
+            if ( !copyItr.hasNext() ) {
+                checkBackwards = false;
+                break;
+            }
+        }
+        assertFalse(checkBackwards);
+    }
+
+    @Test
+    public void testCopy_EqualsAfterAddSameExpenseDifferentMethods_ExpectTrue() {
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-02-01"), 10);
+        Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2001-04-14"), 50);
+        Expense exp3 = new Expense("groceries", "food", LocalDate.parse("2001-06-28"), 50);
+        
+        list.add(exp1);
+        list.add(exp2);
+        list.add(exp3);
+
+        ExpenseList other = list.copy();
+
+        list.add("hotdog", "food", LocalDate.parse("2001-02-01"), 10);
+        other.add(exp1);
+
+        assertTrue(list.equals(other));
+    }
+
+    @Test
+    public void testCopy_EqualsAfterEdit_ExpectFalse() {
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-02-01"), 10);
+        Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2001-04-14"), 50);
+        Expense exp3 = new Expense("groceries", "food", LocalDate.parse("2001-06-28"), 50);
+        
+        list.add(exp1);
+        list.add(exp2);
+        list.add(exp3);
+
+        ExpenseList other = list.copy();
+
+        list.edit(exp1, new Expense("restaurant", "food", LocalDate.parse("2001-02-01"), 10));
+
+        assertFalse(list.equals(other));
+
+        Iterator<Expense> copyItr = other.descendingIterator();
+        Iterator<Expense> listItr = list.descendingIterator();
+        boolean checkBackwards = true;
+        while (listItr.hasNext()) {
+            if ( !listItr.next().equals(copyItr.next()) ) {
+                checkBackwards = false;
+            }
+        }
+        assertFalse(checkBackwards);
+    }
+
+    @Test
+    public void testCopy_EqualsAfterRemove_ExpectFalse() {
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-02-01"), 10);
+        Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2001-04-14"), 50);
+        Expense exp3 = new Expense("groceries", "food", LocalDate.parse("2001-06-28"), 50);
+        
+        list.add(exp1);
+        list.add(exp2);
+        list.add(exp3);
+
+        ExpenseList other = list.copy();
+
+        list.remove(exp2);
+
+        assertFalse(list.equals(other));
+
+        Iterator<Expense> copyItr = other.descendingIterator();
+        Iterator<Expense> listItr = list.descendingIterator();
+        boolean checkBackwards = true;
+        while (listItr.hasNext()) {
+            if ( !listItr.next().equals(copyItr.next()) ) {
+                checkBackwards = false;
+            }
+        }
+        assertFalse(checkBackwards);
+    }
+
+
 
 
 }
