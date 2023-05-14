@@ -143,7 +143,6 @@ public class ExpenseList implements Iterable<Expense> {
         }
         totalSpending += newExpense.getAmount();
         size++;
-
         String category = newExpense.getCategory();
         double amount = newExpense.getAmount();
         if (categorySpending.containsKey(category)) {
@@ -374,7 +373,7 @@ public class ExpenseList implements Iterable<Expense> {
         || totalSpending != other.getTotalSpending()) {
             return false;
         }
-        Iterator itr = other.iterator();
+        Iterator<Expense> itr = other.iterator();
         for (Expense expense : this) {
             if ( !expense.equals(itr.next()) ) {
                 return false;

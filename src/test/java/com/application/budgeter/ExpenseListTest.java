@@ -823,6 +823,12 @@ public class ExpenseListTest {
 
         other.add(exp1);
         assertTrue(list.equals(other));
+
+        other.remove(exp1);
+        assertFalse(list.equals(other));
+
+        other.add(new Expense("hotdog", "food", LocalDate.parse("2001-02-01"), 10));
+        assertTrue(list.equals(other));
         
     }
     
