@@ -3,7 +3,6 @@ package com.application.budgeter;
 import java.util.Iterator;
 import java.time.*;
 import java.util.*;
-import java.util.*;
 
 // TODO: make CSV reader / writer
     // consider: how many expense to load? 
@@ -30,7 +29,6 @@ public class ExpenseList implements Iterable<Expense> {
         this.tail = null;
         this.size = 0;
         this.totalSpending = 0;
-        this.categorySpending = new HashMap<String, Double>();
         this.categorySpending = new HashMap<String, Double>();
     } 
 
@@ -105,7 +103,6 @@ public class ExpenseList implements Iterable<Expense> {
             current.next = newNode;           
         }
         totalSpending += newExpense.getAmount();
-        categorySpending.put(category, amount);
         size++;
         if (categorySpending.containsKey(category)) {
             categorySpending.replace(category, categorySpending.get(category) + amount);
@@ -145,7 +142,6 @@ public class ExpenseList implements Iterable<Expense> {
             current.next = newNode;           
         }
         totalSpending += newExpense.getAmount();
-        categorySpending.put(newExpense.getCategory(), newExpense.getAmount());
         size++;
 
         String category = newExpense.getCategory();
@@ -328,7 +324,6 @@ public class ExpenseList implements Iterable<Expense> {
         this.tail = null;
         size = 0;
         totalSpending = 0;
-        categorySpending.clear();
         categorySpending.clear();
     }
 
