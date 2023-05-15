@@ -22,6 +22,7 @@ public class ExpenseList implements Iterable<Expense> {
     private double totalSpending;
     private int size;
     private Map<String, Double> categorySpending;
+    private ExpenseList copy; // copy of current list used for reverting changes
 
     // ExpenseList constructor
     public ExpenseList () {
@@ -30,6 +31,7 @@ public class ExpenseList implements Iterable<Expense> {
         this.size = 0;
         this.totalSpending = 0;
         this.categorySpending = new HashMap<String, Double>();
+        this.copy = null;
     } 
 
     // Nested class for LinkedList Nodes
@@ -74,6 +76,10 @@ public class ExpenseList implements Iterable<Expense> {
     // Add new Expense to the list in sorted order by date
     // Takes Expense fields as parameters
     public void add ( String name, String category, LocalDate localDate, double amount) { 
+        // if backup copy wasn't made, create it now
+        if (this.copy == null) {
+            this.copy = this.copy();
+        }        
         Expense newExpense = new Expense( name, category, localDate, amount);
         ExpenseNode newNode = new ExpenseNode (newExpense, null, null);
         // List is empty
@@ -114,6 +120,10 @@ public class ExpenseList implements Iterable<Expense> {
     // Add new Expense to list in sorted order by date
     // Takes Expense object as parameter
     public void add ( Expense newExpense) { 
+        // if backup copy wasn't made, create it now
+        if (this.copy == null) {
+            this.copy = this.copy();
+        }  
         ExpenseNode newNode = new ExpenseNode (newExpense, null, null);
         // List is empty
         if ( this.isEmpty() ) {
@@ -191,6 +201,10 @@ public class ExpenseList implements Iterable<Expense> {
     // the correct position in the sorted list.
     // If the given Expense is not in the list, then return false.
     public boolean edit( Expense old, Expense updated) {
+        // if backup copy wasn't made, create it now
+        if (this.copy == null) {
+            this.copy = this.copy();
+        }
         ExpenseNode node = this.getNode(old);
         if (node == null) { // expense not found in list
             return false; 
@@ -329,6 +343,10 @@ public class ExpenseList implements Iterable<Expense> {
     // Remove the ExpenseNode that contains the given Expense
     // Return true if successfully removed.
     public boolean remove( Expense expense ) {
+        // if backup copy wasn't made, create it now
+        if (this.copy == null) {
+            this.copy = this.copy();
+        }
         ExpenseNode node = this.getNode(expense);
         if (node == null) {
             return false;
@@ -417,6 +435,19 @@ public class ExpenseList implements Iterable<Expense> {
         }
         copy.tail = copyCurrent;
         return copy;
+    }
+
+    public void saveChanges (boolean confirmed) {
+        if ( confirmed ) {
+            // save to CSV
+        } else {
+            this.head = copy.head;
+            this.tail = copy.tail;
+            this.totalSpending = copy.totalSpending;
+            this.size = copy.size;
+            this.categorySpending = copy.categorySpending;
+        }
+        this.copy = null;
     }
 
     // return Iterator instance

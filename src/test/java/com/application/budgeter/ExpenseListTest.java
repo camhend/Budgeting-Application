@@ -206,6 +206,9 @@ public class ExpenseListTest {
 
         assertEquals(2, list.size());
         assertEquals(60.0, list.getTotalSpending(), 0.001);
+        assertEquals(0, list.getCategorySpending("clothing"), 0.001);
+        assertEquals(60, list.getCategorySpending("food"), 0.001);
+
     }
 
     @Test
@@ -654,7 +657,6 @@ public class ExpenseListTest {
         Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-02-01"), 10);
         list.add(exp1);
 
-        Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2001-04-14"), 50);
         assertEquals(-1.0, list.getCategorySpending("clothing"), 0.001);
     }
 
@@ -1030,6 +1032,48 @@ public class ExpenseListTest {
         assertFalse(checkBackwards);
     }
 
+    @Test
+    public void testSaveChanges_ConfirmChanges() {
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-02-01"), 10);
+        Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2001-04-14"), 50);
+        Expense exp3 = new Expense("groceries", "food", LocalDate.parse("2001-06-28"), 50);
+        
+        list.add(exp1);
+        list.add(exp2);
+        list.add(exp3);
+
+        list.saveChanges(false);
+        assertTrue(list.isEmpty());
+    }
+
+    @Test
+    public void testSaveChanges_RevertChanges() {
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-02-01"), 10);
+        Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2001-04-14"), 50);
+        Expense exp3 = new Expense("groceries", "food", LocalDate.parse("2001-06-28"), 50);
+        
+        list.add(exp1);
+        list.add(exp2);
+        list.add(exp3);
+        list.saveChanges(true);
+        
+        list.remove(exp1);
+        list.saveChanges(false);
+
+        Expense[] expected = {exp1, exp2, exp3};
+        int index = 0;
+        for (Expense expense : list) {
+            assertTrue(expected[index].equals(expense));
+            index++;
+        }
+
+        Iterator<Expense> itPrev = list.descendingIterator();
+        index = 2;
+        while ( itPrev.hasNext() ) {
+            assertTrue(expected[index].equals(itPrev.next()));
+            index--;
+        }
+    }
 
 
 }
