@@ -49,6 +49,12 @@ public class ExpenseControllerTest {
         ExpenseController expenseController = new ExpenseController();
         // testing boundaries
         assertTrue(expenseController.isValidCost("0"));
+        assertTrue(expenseController.isValidCost("12.000000000000000000000000004"));
+        assertFalse(expenseController.isValidCost("-1"));
+        // with dollar sign tests same stuff
+        assertTrue(expenseController.isValidCost("$0"));
+        assertTrue(expenseController.isValidCost("$12.000000000000000000000000004"));
+        assertFalse(expenseController.isValidCost("-$1"));
     }
     
 }
