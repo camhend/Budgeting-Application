@@ -58,9 +58,9 @@ public class DashboardController implements Initializable {
         // make spendingsRect background blue
         spendingsRect.setStyle("-fx-fill: #0000FF;");
         // center align flatAmountSpent, percentAmountSpent, and daysLeft
-        flatAmountSpent.setStyle("-fx-alignment: CENTER;");
-        percentAmountSpent.setStyle("-fx-alignment: CENTER;");
-        daysLeft.setStyle("-fx-alignment: CENTER;");
+        flatAmountSpent.setStyle("-fx-text-alignment: center;");
+        percentAmountSpent.setStyle("-fx-text-alignment: center;");
+        daysLeft.setStyle("-fx-text-alignment: center;");
 
 
     }
