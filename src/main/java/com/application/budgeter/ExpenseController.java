@@ -44,10 +44,8 @@ import javafx.scene.paint.Color;
 
 
 // TODO
-    // paramterize
     // setMenu Items
-    // update month total (need map of months in expensemodel)
-    // make more presentable
+                                // make more presentable
     // integrate budget model
     // get months from budgetmodel
     // button icons 
@@ -59,6 +57,12 @@ import javafx.scene.paint.Color;
         // for isValid methods (DONE)
     // text shortening for overflow (DONE)
     // file/io in expense model
+    // paramterize
+
+
+// Test
+    // file io
+    // model parameters
 
 
 public class ExpenseController implements Initializable {
@@ -104,6 +108,14 @@ public class ExpenseController implements Initializable {
         // pass expenseList to MainPageController
         this.expenseList = expenseList;
         this.budgetModel = budgetModel;
+
+        // add expenses to observable list
+        for (Expense expense : expenseList) {
+        obsvExpenseList.add(expense);
+        }
+        // calc and set total
+        totalMenu.setText("All");
+        updateTotal();
     }
     
 
@@ -113,30 +125,19 @@ public class ExpenseController implements Initializable {
 
         // setup page
         setAnchorPaneConstraints(); 
+        setMenuItems();
         formatTableCells(); 
         formatTableColumns();
         expenseTable.setPlaceholder(new Label("No Expenses Added")); 
-       
-        // get expenselist (expense model) 
         
-        loadExpenses(); // load expenses from file
-
-        // add expenses to observable list
-        for (Expense expense : expenseList) {
-            obsvExpenseList.add(expense);
-        }
-
-
         // add observable list to tableview
         expenseTable.setItems(obsvExpenseList);
 
     
-        // calc all time total
-        totalMenu.setText("All");
-        updateTotal();
+        
 
 
-        // delete and edit menu items
+        // create the delete and edit menu items
         ContextMenu editingContextMenu = new ContextMenu();
         expenseTable.setContextMenu(editingContextMenu); // set context menu to tableview
 
@@ -151,6 +152,8 @@ public class ExpenseController implements Initializable {
         deleteListener(deleteMenuItem); 
         editListener(editMenuItem);
 
+
+        // popup total value when mouse hovers over total
         Popup popup = new Popup();
         Label totalPopupLabel = new Label(total.getText());
         BackgroundFill backgroundFill = new BackgroundFill(Color.rgb(200, 200, 200), null, null);
@@ -553,6 +556,7 @@ public class ExpenseController implements Initializable {
         updateTotal();
     }
 
+
     public void updateTotal() {
         // if total menu = all
         if (totalMenu.getText().equals("All")) {
@@ -567,7 +571,7 @@ public class ExpenseController implements Initializable {
 
 
     //***************/
-    // File IO methods
+    // File IO method
     //***************/
 
     // save data from tableview to file
@@ -593,22 +597,6 @@ public class ExpenseController implements Initializable {
             alert.showAndWait();
         }
     } // end saveExpenses method
-
-
-    public void loadExpenses() {
-        boolean isLoaded = expenseList.loadFromCSV("expenses.csv");
-
-        if (!isLoaded) {
-            // display error message
-            Alert alert = new Alert(AlertType.ERROR);
-
-            alert.setTitle("Error");
-            alert.setHeaderText("Error");
-            alert.setContentText("Error loading expenses");
-            alert.showAndWait();
-        }
-    } // end loadExpenses method
-
     
 
 
@@ -684,6 +672,17 @@ public class ExpenseController implements Initializable {
         // set month to newest month
 
         // what if no months????
+
+        // add food to addcategoryfield menuitem
+        MenuItem food = new MenuItem("Food");
+        // add to addcategoryfield menuitem
+        addCategoryField.getItems().add(food);
+        // on action changemenu button
+        food.setOnAction(this::changeMenuButton);
+
+        // MenuItem jan23 = new MenuItem("January 2023");
+        // monthMenu.getItems().add(jan23);
+        // jan23.setOnAction(this::changeMenuButton);
 
     }
 
