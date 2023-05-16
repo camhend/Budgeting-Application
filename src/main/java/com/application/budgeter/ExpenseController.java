@@ -50,13 +50,14 @@ import javafx.scene.paint.Color;
     // make more presentable
     // file/io in expense model
     // integrate budget model
-    // write tests (DONE)
-        // for isValid methods (DONE)
     // get months from budgetmodel
     // button icons 
+    // how will new file be created for new months
+
+// Done
+    // write tests (DONE)
+        // for isValid methods (DONE)
     // text shortening for overflow (DONE)
-
-
 
 public class ExpenseController implements Initializable {
 
@@ -564,27 +565,9 @@ public class ExpenseController implements Initializable {
 
     // save data from tableview to file
     public void saveExpenses() {
-        // write data from expenseList to expenses.csv
+        boolean isSaved = expenseList.saveToCSV("expenses.csv");
 
-        try {
-            FileWriter csvWriter = new FileWriter("expenses.csv");
-
-
-            // write data to csv file
-            for (Expense expense : expenseList) {
-                csvWriter.append(expense.getName());
-                csvWriter.append(",");
-                csvWriter.append(expense.getCategory());
-                csvWriter.append(",");
-                csvWriter.append(expense.getLocalDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
-                csvWriter.append(",");
-                // get amount with 2 decimals
-                csvWriter.append(String.format("%.2f", expense.getAmount()));
-                csvWriter.append("\n");
-            }
-            csvWriter.flush();
-            csvWriter.close();
-
+        if(isSaved) {
             // display success message
             Alert alert = new Alert(AlertType.INFORMATION);
 
@@ -593,7 +576,7 @@ public class ExpenseController implements Initializable {
             alert.setContentText("Expenses have been saved");
             alert.showAndWait();
         }
-        catch (IOException e) {
+        else {
             // display error message
             Alert alert = new Alert(AlertType.ERROR);
 
@@ -602,31 +585,13 @@ public class ExpenseController implements Initializable {
             alert.setContentText("Error saving expenses");
             alert.showAndWait();
         }
-        
-    } // end saveExpenses 
+    } // end saveExpenses method
 
 
     public void loadExpenses() {
-        // read data from expenses.csv to expenseList
-        try {
-            // clear expenseList
-            expenseList.clear();
+        boolean isLoaded = expenseList.loadFromCSV("expenses.csv");
 
-            // read data from csv file
-            BufferedReader csvReader = new BufferedReader(new FileReader("expenses.csv"));
-            String row;
-            while ((row = csvReader.readLine()) != null) {
-                String[] data = row.split(",");
-                String name = data[0];
-                String category = data[1];
-                LocalDate date = LocalDate.parse(data[2], DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-                double cost = Double.parseDouble(data[3]);
-                Expense newExpense = new Expense(name, category, date, cost);
-                expenseList.add(newExpense);
-            }
-            csvReader.close();
-        }
-        catch (IOException e) {
+        if (!isLoaded) {
             // display error message
             Alert alert = new Alert(AlertType.ERROR);
 

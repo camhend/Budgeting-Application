@@ -3,6 +3,9 @@ package com.application.budgeter;
 import java.util.Iterator;
 import java.time.*;
 import java.util.*;
+import java.io.*;
+import java.io.FileWriter;
+import java.time.format.DateTimeFormatter;
 
 // TODO: make CSV reader / writer
     // consider: how many expense to load? 
@@ -366,6 +369,52 @@ public class ExpenseList implements Iterable<Expense> {
             current = current.next;
         }
         return arr;
+    }
+
+    // write to csv, return true if successful, each line is an expense, each comma is a field
+    public boolean saveToCSV(String filename) {
+        try {
+            FileWriter writer = new FileWriter(filename);
+            ExpenseNode current = head;
+            while (current != null) {
+                String name = current.expense.getName();
+                String category = current.expense.getCategory();
+                String date = current.expense.getLocalDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+                String amount = String.format("%.2f", current.expense.getAmount());
+                writer.write(name + "," + category + "," + date + "," + amount);
+                
+                writer.write("\n");
+                current = current.next;
+            }
+            writer.close();
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+
+    public boolean loadFromCSV(String filename) {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(filename));
+            String line = reader.readLine();
+            while (line != null) {
+                String[] fields = line.split(","); // create array of fields split by comma
+                // add fields to expense
+                String name = fields[0]; 
+                String category = fields[1];
+                LocalDate date = LocalDate.parse(fields[2], DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+                double amount = Double.parseDouble(fields[3]);
+                // create expense and add to list
+                Expense expense = new Expense(name, category, date, amount);
+                this.add(expense); 
+                line = reader.readLine();
+            }
+            reader.close();
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
     }
 
     // return Iterator instance
