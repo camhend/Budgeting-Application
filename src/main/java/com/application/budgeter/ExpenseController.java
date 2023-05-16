@@ -34,6 +34,12 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.paint.Color;
+
 
 
 
@@ -44,11 +50,11 @@ import javafx.stage.WindowEvent;
     // make more presentable
     // file/io in expense model
     // integrate budget model
-    // write tests
-        // for isValid methods
+    // write tests (DONE)
+        // for isValid methods (DONE)
     // get months from budgetmodel
-    // button icons
-    // text shortening for overflow
+    // button icons 
+    // text shortening for overflow (DONE)
 
 
 
@@ -136,6 +142,24 @@ public class ExpenseController implements Initializable {
         // listeners to handle each menu item
         deleteListener(deleteMenuItem); 
         editListener(editMenuItem);
+
+        Popup popup = new Popup();
+        Label totalPopupLabel = new Label(total.getText());
+        BackgroundFill backgroundFill = new BackgroundFill(Color.rgb(200, 200, 200), null, null);
+        Background background = new Background(backgroundFill);
+        totalPopupLabel.setBackground(background);
+        popup.getContent().add(totalPopupLabel);
+
+        total.setOnMouseEntered(event -> {
+            totalPopupLabel.setText(total.getText());
+            double x = event.getScreenX();
+            double y = event.getScreenY();
+            popup.show(total, x, y);
+        });
+
+        total.setOnMouseExited(event -> {
+            popup.hide();
+        });
     } // end initialize method
 
 
@@ -403,6 +427,14 @@ public class ExpenseController implements Initializable {
                         }
                     }
                 }); // end finishEditButton listener
+
+                // close popup when escape is pressed
+                popup.addEventFilter(KeyEvent.KEY_PRESSED, eventTwo -> {
+                    if (eventTwo.getCode() == KeyCode.ESCAPE) {
+                        popup.hide();
+                        expensePage.getScene().getRoot().setDisable(false);
+                    }
+                });
             } 
         }); // end editButton listener
     } // end editListener method
