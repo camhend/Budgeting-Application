@@ -50,17 +50,11 @@ public class DashboardController implements Initializable {
         setAnchorPaneContraints();
         formatTable();
         // set pie chart background to orange
-        pieChart.setStyle("-fx-background-color: #FFA500;");
+        pieChart.setStyle("-fx-background-color: #CEC9BF;");
 
-        // set transaction table title center
-        transactionsTableTitle.setStyle("-fx-alignment: CENTER;");
+ 
 
-        // make spendingsRect background blue
-        spendingsRect.setStyle("-fx-fill: #0000FF;");
-        // center align flatAmountSpent, percentAmountSpent, and daysLeft
-        flatAmountSpent.setStyle("-fx-text-alignment: center;");
-        percentAmountSpent.setStyle("-fx-text-alignment: center;");
-        daysLeft.setStyle("-fx-text-alignment: center;");
+
 
 
     }
@@ -69,8 +63,8 @@ public class DashboardController implements Initializable {
         // listener for adjusting elements' width when window is resized
         dashboardPage.widthProperty().addListener((obs, oldVal, newVal) -> {
             // set width of dashboardTitle
-            AnchorPane.setRightAnchor(dashboardTitle, newVal.doubleValue() * .4);
-            AnchorPane.setLeftAnchor(dashboardTitle, newVal.doubleValue() * .4 );
+            AnchorPane.setRightAnchor(dashboardTitle, newVal.doubleValue() * .40);
+            AnchorPane.setLeftAnchor(dashboardTitle, newVal.doubleValue() * .40);
 
             // set width of pieChart
             // 5% left, 60% right
@@ -168,11 +162,6 @@ public class DashboardController implements Initializable {
 
 
     public void formatTable() {
-        // set column alignment center
-        nameColumn.setStyle("-fx-alignment: CENTER;");
-        dateColumn.setStyle("-fx-alignment: CENTER;");
-        costColumn.setStyle("-fx-alignment: CENTER;");
-
         // set table column resize policy
         transactionsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         

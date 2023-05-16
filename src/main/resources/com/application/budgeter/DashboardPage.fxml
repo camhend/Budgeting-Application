@@ -15,7 +15,7 @@
    <children>
       <PieChart labelLineLength="2.0" title="Pie Chart" fx:id="pieChart"/>
 
-      <Label text="Dashboard" fx:id="dashboardTitle">
+      <Label text="Dashboard" fx:id="dashboardTitle" style="-fx-alignment: CENTER;">
          <font>
             <Font size="18.0" />
          </font>
@@ -23,10 +23,11 @@
 
       <!-- Center Section for current spending summary-->
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f8f8f8" stroke="BLACK" strokeType="INSIDE" fx:id="spendingsRect"/>
-      <Label text="\$1000/$3000 Spent" fx:id="flatAmountSpent" />
-      <Label text="33% spent" fx:id="percentAmountSpent" />
-      <Label text="22 days left (60%)" fx:id="daysLeft" />
-      <Label text="Recent Transactions" fx:id="transactionsTableTitle" >
+      
+      <Label text="\$1000/$3000 Spent" fx:id="flatAmountSpent" style="-fx-alignment: CENTER;" />
+      <Label text="33% spent" fx:id="percentAmountSpent" style="-fx-alignment: CENTER;" />
+      <Label text="22 days left (60%)" fx:id="daysLeft" style="-fx-alignment: CENTER;" />
+      <Label text="Recent Transactions" fx:id="transactionsTableTitle" style="-fx-alignment: CENTER;" >
       <font>
             <Font size="15.0" />
          </font>
@@ -35,9 +36,9 @@
       <!-- Table of recent transactions-->
       <TableView fx:id="transactionsTable" >
          <columns>
-            <TableColumn text="Name" fx:id="nameColumn" />
-            <TableColumn text="Date" fx:id="dateColumn" />
-            <TableColumn text="Cost" fx:id="costColumn" />
+            <TableColumn text="Name" fx:id="nameColumn" style="-fx-text-alignment: center;"/>
+            <TableColumn text="Date" fx:id="dateColumn" style="-fx-text-alignment: center;"/>
+            <TableColumn text="Cost" fx:id="costColumn" style="-fx-text-alignment: center;"/>
          </columns>
       </TableView>
 
