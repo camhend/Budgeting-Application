@@ -52,6 +52,8 @@ public class DashboardController implements Initializable {
         // set pie chart background to orange
         pieChart.setStyle("-fx-background-color: #CEC9BF;");
 
+        
+
  
 
 
@@ -69,7 +71,7 @@ public class DashboardController implements Initializable {
             // set width of pieChart
             // 5% left, 60% right
             AnchorPane.setLeftAnchor(pieChart, newVal.doubleValue() * .05);
-            AnchorPane.setRightAnchor(pieChart, newVal.doubleValue() * .7);
+            AnchorPane.setRightAnchor(pieChart, newVal.doubleValue() * .65);
 
             // set width of areaChart
             // 5% left, 40% right

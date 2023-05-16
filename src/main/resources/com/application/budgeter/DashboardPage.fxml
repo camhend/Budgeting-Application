@@ -22,7 +22,7 @@
       </Label>
 
       <!-- Center Section for current spending summary-->
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f8f8f8" stroke="BLACK" strokeType="INSIDE" fx:id="spendingsRect"/>
+      <Rectangle arcHeight="55.0" arcWidth="55.0" fill="#f8f8f8" stroke="BLACK" strokeType="INSIDE" fx:id="spendingsRect"/>
       
       <Label text="\$1000/$3000 Spent" fx:id="flatAmountSpent" style="-fx-alignment: CENTER;" />
       <Label text="33% spent" fx:id="percentAmountSpent" style="-fx-alignment: CENTER;" />
