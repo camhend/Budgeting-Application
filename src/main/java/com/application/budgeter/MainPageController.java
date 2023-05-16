@@ -25,6 +25,15 @@ public class MainPageController implements Initializable {
     @FXML private Button budgetNavButton;
     @FXML private Button expenseNavButton;
 
+    ExpenseList expenseList;
+    BudgetModel budgetModel;
+
+    public void SetModels(ExpenseList expenseList, BudgetModel budgetModel) {
+        // pass expenseList to MainPageController
+        this.expenseList = expenseList;
+        this.budgetModel = budgetModel;
+    }
+
 
     // add listener to reapply divider positions if window is resized
     public void initialize(java.net.URL arg0, java.util.ResourceBundle arg1) {
@@ -62,6 +71,18 @@ public class MainPageController implements Initializable {
 
         // set the content page to the loaded fxml file
         mainPage.getItems().set(1, newPage);
+
+        // add models to controller
+        if (fileName.equals("DashboardPage")) {
+            DashboardController controller = loader.getController();
+            controller.SetModels(expenseList, budgetModel);
+        } else if (fileName.equals("BudgetPage")) {
+            BudgetController controller = loader.getController();
+            controller.SetModels(expenseList, budgetModel);
+        } else if (fileName.equals("ExpensePage")) {
+            ExpenseController controller = loader.getController();
+            controller.SetModels(expenseList, budgetModel);
+        }
     }
 
 
@@ -114,7 +135,7 @@ public class MainPageController implements Initializable {
         dashboardImageView.fitWidthProperty().bind(dashboardNavButton.widthProperty());
         dashboardImageView.fitHeightProperty().bind(dashboardNavButton.heightProperty());
 
-        ImageView budgetImageView = new ImageView(new Image(getClass().getResourceAsStream("/com/application/budgeter/images/budgetButton1.jpg")));
+        ImageView budgetImageView = new ImageView(new Image(getClass().getResourceAsStream("/com/application/budgeter/images/budgetButton.jpg")));
         budgetNavButton.setGraphic(budgetImageView);
         // fit width and height to button
         budgetImageView.fitWidthProperty().bind(budgetNavButton.widthProperty());

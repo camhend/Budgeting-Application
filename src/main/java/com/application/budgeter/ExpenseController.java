@@ -93,13 +93,18 @@ public class ExpenseController implements Initializable {
 
     
     ExpenseList expenseList = new ExpenseList(); // list of expenses
+    BudgetModel budgetModel = new BudgetModel(); // budget model
 
     ObservableList<Expense> obsvExpenseList = FXCollections.observableArrayList(); // list of expenses to display in tableview
     
     // add expenses to expenseList and display in tableview
 
 
-
+    public void SetModels(ExpenseList expenseList, BudgetModel budgetModel) {
+        // pass expenseList to MainPageController
+        this.expenseList = expenseList;
+        this.budgetModel = budgetModel;
+    }
     
 
     // initialize method (runs when ExpenseController is created)

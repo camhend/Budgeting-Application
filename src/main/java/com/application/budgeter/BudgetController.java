@@ -32,6 +32,15 @@ public class BudgetController implements Initializable {
     // progress bar
     @FXML private ProgressBar SpendingBar;
 
+    BudgetModel budgetModel = new BudgetModel();
+    ExpenseList expenseList = new ExpenseList();
+
+    public void SetModels(ExpenseList expenseList, BudgetModel budgetModel) {
+        // pass expenseList to MainPageController
+        this.expenseList = expenseList;
+        this.budgetModel = budgetModel;
+    }
+
     public void submit(ActionEvent event) {
         try {
             String categoryName = categoryTextField.getText();

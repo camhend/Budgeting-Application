@@ -34,6 +34,15 @@ public class DashboardController implements Initializable {
     @FXML private TableColumn<Expense, LocalDate> dateColumn;
     @FXML private TableColumn<Expense, Double> costColumn;
 
+    ExpenseList expenseList = new ExpenseList();
+    BudgetModel budgetModel = new BudgetModel();
+
+    public void SetModels(ExpenseList expenseList, BudgetModel budgetModel) {
+        // pass expenseList to MainPageController
+        this.expenseList = expenseList;
+        this.budgetModel = budgetModel;
+    }
+
 
 
     @Override

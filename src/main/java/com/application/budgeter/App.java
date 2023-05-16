@@ -9,24 +9,25 @@ import java.io.IOException;
 
 import javafx.scene.image.Image;
 
-/*
- TODO: 
-*/
 
 public class App extends Application {
 
     private static Scene scene;
 
-    
+    private ExpenseList expenseList = new ExpenseList();
+    private BudgetModel budgetModel = new BudgetModel();
+
     
     @Override
     public void start(Stage stage) throws IOException {
+        FXMLLoader loader = new FXMLLoader(App.class.getResource("MainPage.fxml"));
 
-        
+        scene = new Scene(loader.load(), 900, 615);
 
-        scene = new Scene(loadFXML("MainPage"), 900, 615);
-
-
+        expenseList.loadFromCSV("expenses.csv");
+        // pass expenseList to MainPageController
+        MainPageController controller = loader.getController();
+        controller.SetModels(expenseList, budgetModel);
 
         // set icon
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/com/application/budgeter/images/appIcon.jpg")));
