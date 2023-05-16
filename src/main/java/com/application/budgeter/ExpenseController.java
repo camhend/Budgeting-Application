@@ -48,16 +48,18 @@ import javafx.scene.paint.Color;
     // setMenu Items
     // update month total (need map of months in expensemodel)
     // make more presentable
-    // file/io in expense model
     // integrate budget model
     // get months from budgetmodel
     // button icons 
     // how will new file be created for new months
+    // new expensemodel for each month
 
 // Done
     // write tests (DONE)
         // for isValid methods (DONE)
     // text shortening for overflow (DONE)
+    // file/io in expense model
+
 
 public class ExpenseController implements Initializable {
 
