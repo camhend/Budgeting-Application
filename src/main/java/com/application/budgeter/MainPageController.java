@@ -100,7 +100,7 @@ public class MainPageController implements Initializable {
         dashboardImageView.fitWidthProperty().bind(dashboardNavButton.widthProperty());
         dashboardImageView.fitHeightProperty().bind(dashboardNavButton.heightProperty());
 
-        ImageView budgetImageView = new ImageView(new Image(getClass().getResourceAsStream("/com/application/budgeter/images/budgetButton.jpg")));
+        ImageView budgetImageView = new ImageView(new Image(getClass().getResourceAsStream("/com/application/budgeter/images/budgetButton1.jpg")));
         budgetNavButton.setGraphic(budgetImageView);
         // fit width and height to button
         budgetImageView.fitWidthProperty().bind(budgetNavButton.widthProperty());

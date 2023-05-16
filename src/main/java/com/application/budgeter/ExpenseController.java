@@ -34,9 +34,21 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-// window iconfied
 
 
+
+// TODO
+    // paramterize
+    // setMenu Items
+    // update month total (need map of months in expensemodel)
+    // make more presentable
+    // file/io in expense model
+    // integrate budget model
+    // write tests
+        // for isValid methods
+    // get months from budgetmodel
+    // button icons
+    // text shortening for overflow
 
 
 
@@ -57,15 +69,18 @@ public class ExpenseController implements Initializable {
     @FXML private MenuButton totalMenu; // menu for choosing time periods
     @FXML private Label total; // actual number
     @FXML private Label totalTitle; 
+    @FXML private Label totalMenuTitle;
 
     // add expense section
     @FXML private Button addExpenseButton; 
     @FXML private TextField addExpenseField;
-    @FXML private TextField addCategoryField;
+    @FXML private MenuButton addCategoryField;
     @FXML private TextField addDateField;
     @FXML private TextField addCostField;
 
     @FXML private Button saveExpenseButton; // saves expense to file
+
+    @FXML MenuButton monthMenu; // menu for choosing month
 
     
     ExpenseList expenseList = new ExpenseList(); // list of expenses
@@ -103,7 +118,7 @@ public class ExpenseController implements Initializable {
 
     
         // calc all time total
-        totalMenu.setText("All Time");
+        totalMenu.setText("All");
         updateTotal();
 
 
@@ -129,7 +144,7 @@ public class ExpenseController implements Initializable {
     // Data Validation methods 
     //***********************/
 
-    private boolean isValidDate(String date) {
+    public boolean isValidDate(String date) {
         // if date is mm/dd/yyyy format regex
         if (!date.matches("^(0[1-9]|1[012])/(0[1-9]|[12][0-9]|3[01])/[0-9]{4}$")) {
             return false;
@@ -148,7 +163,7 @@ public class ExpenseController implements Initializable {
     } // end isValidDate method
 
 
-    private boolean isValidCost(String cost) {
+    public boolean isValidCost(String cost) {
         // check if cost is an integer or double
         try {
             // if cost without $ sign is an integer
@@ -220,9 +235,10 @@ public class ExpenseController implements Initializable {
                 TextField nameField = new TextField();
                 nameField.setLayoutX(200);
                 nameField.setLayoutY(50);
-                TextField categoryField = new TextField();
+                MenuButton categoryField = new MenuButton();
                 categoryField.setLayoutX(200);
                 categoryField.setLayoutY(100);
+                categoryField.setPrefWidth(150);
                 TextField dateField = new TextField();
                 dateField.setLayoutX(200);
                 dateField.setLayoutY(150);
@@ -348,7 +364,7 @@ public class ExpenseController implements Initializable {
                             costField.setText(costField.getText().replace("$", "")); // remove dollar sign
 
                             String name = nameField.getText();
-                            String category = categoryField.getText().toLowerCase();
+                            String category = categoryField.getText();
                             LocalDate date = LocalDate.parse(dateField.getText(), DateTimeFormatter.ofPattern("MM/dd/yyyy"));
                             double cost = Double.parseDouble(costField.getText());
 
@@ -358,8 +374,6 @@ public class ExpenseController implements Initializable {
                             // edit main expense list
                             expenseList.edit(selectedExpense, editedExpense);
 
-
-
                             // get index of edited expense
                             int index = expenseList.getIndex(editedExpense);
 
@@ -367,8 +381,8 @@ public class ExpenseController implements Initializable {
                                 // create alert
                                 Alert alert = new Alert(AlertType.ERROR);
                                 alert.setTitle("Error");
-                                alert.setHeaderText("ERROR");
-                                alert.setContentText("Expense not found");
+                                alert.setHeaderText("Expense Not Found");
+                                alert.setContentText("An error with the program has occured. Please contact the developer.");
                                 alert.initOwner(popup); 
                                 alert.showAndWait();
                                 return;
@@ -380,7 +394,7 @@ public class ExpenseController implements Initializable {
                             obsvExpenseList.add(index, editedExpense);
 
                             // update tableview
-                            expenseTable.setItems(obsvExpenseList);
+                            expenseTable.refresh();
                             // update total
                             updateTotal();
                             // close popup
@@ -389,8 +403,6 @@ public class ExpenseController implements Initializable {
                         }
                     }
                 }); // end finishEditButton listener
-
-                // minimize popup when main window is minimized
             } 
         }); // end editButton listener
     } // end editListener method
@@ -446,21 +458,37 @@ public class ExpenseController implements Initializable {
 
             // add data to tableview
             String name = addExpenseField.getText();
-            String category = addCategoryField.getText().toLowerCase(); // convert category to lowercase (easier to search)
+            String category = addCategoryField.getText(); // convert category to lowercase (easier to search)
             LocalDate date = LocalDate.parse(addDateField.getText(), DateTimeFormatter.ofPattern("MM/dd/yyyy")); 
             double cost = Double.parseDouble(addCostField.getText());
             Expense newExpense = new Expense(name, category, date, cost);
             
             expenseList.add(newExpense);
-            // implement add index instead of manual add
-            obsvExpenseList.add(newExpense);
+
+            // get index
+            int index = expenseList.getIndex(newExpense);
+
+
+            if(index == -1) { // if expense not found
+                // create alert
+                Alert alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Expense Not Found");
+                alert.setContentText("An error with the program has occured. Please contact the developer.");
+                alert.showAndWait();
+                return;
+            }
+
+            // add at index
+            obsvExpenseList.add(index, newExpense);
+
+            
 
             // add expense to tableview
             expenseTable.refresh();
 
             // clear text fields
             addExpenseField.clear();
-            addCategoryField.clear();
             addDateField.clear();
             addCostField.clear();
 
@@ -469,6 +497,32 @@ public class ExpenseController implements Initializable {
             expenseTable.getSortOrder().add(expenseTable.getColumns().get(2));
         }
     } // end addExpense method
+
+
+    private void updateMonth() {
+        // get month from month menu
+        String month = monthMenu.getText();
+
+        // set expenselist to month via expensemodel
+
+        obsvExpenseList.clear(); // clear observable list
+        for (Expense expense : expenseList) { // update observable list
+            obsvExpenseList.add(expense); 
+        }
+        expenseTable.refresh();
+        updateTotal();
+    }
+
+    public void updateTotal() {
+        // if total menu = all
+        if (totalMenu.getText().equals("All")) {
+            total.setText(String.format("$%.2f", expenseList.getTotalSpending()));
+        }
+        // else find total for selected category
+        else { 
+            total.setText(String.format("$%.2f", expenseList.getCategorySpending(totalMenu.getText())));
+        }
+    } // end updateTotal method
 
 
 
@@ -551,164 +605,12 @@ public class ExpenseController implements Initializable {
         }
     } // end loadExpenses method
 
-
-
-    //**************/
-    // Total Methods 
-    //**************/
-
-    // if months = 0 then calculate all time
-    public String calcluateTotal(int months) {
-
-        double totalCost = 0;
-
-        if (months == 0) {
-            // adds all costs from list to totalCost removing the $ sign
-            for (Expense expense : expenseList) {
-                // if dollar sign is in front of cost then remove it
-                if (Double.toString(expense.getAmount()).charAt(0) == '$') {
-                    
-                }
-                else {
-                    totalCost += expense.getAmount();
-                }
-            }
-        }
-        else // if months != 0 then calculate past months
-        {
-            // get current date
-            LocalDate currentDate = LocalDate.now();
-            // get date from months ago
-            LocalDate pastDate = currentDate.minusMonths(months);
-            // 
-
-            // adds all costs from list to totalCost removing the $ sign
-            for (Expense expense : expenseList) {
-                // convert expense date to localDate
-                LocalDate expenseDate = expense.getLocalDate();
-                if (expenseDate.isAfter(pastDate) && expenseDate.isBefore(currentDate) || expenseDate.isEqual(currentDate))
-                {
-                    totalCost += expense.getAmount();
-                }
-            }
-        }
-
-        return String.format("%.2f", totalCost);
-    } // end calcluateTotal method
- 
-
-    // changes menu button text to selected menu item
-    public void changeMenuButton(ActionEvent event) {
-        MenuItem menuItem = (MenuItem) event.getSource();
-        totalMenu.setText(menuItem.getText());
-        updateTotal();
-    } // end changeMenuButton method
-
-    
-    public void updateTotal() {
-        // read menu button text and update total accordingly
-        switch (totalMenu.getText()) {
-            case "Past Month":
-                total.setText("$" + calcluateTotal(1));
-                break;
-            case "Past 3 Months":
-                total.setText("$" + calcluateTotal(3));
-                break;
-            case "Past 6 Months":
-                total.setText("$" + calcluateTotal(6));
-                break;
-            case "Past 12 Months":
-                total.setText("$" + calcluateTotal(12));
-                break;
-            case "All Time":
-                total.setText("$" + calcluateTotal(0)); // 0 means all time
-                break;
-        }
-    } // end updateTotal method
     
 
 
-
+    //************************/
     // Front End Design Methods
-
-    private void setAnchorPaneConstraints() {
-        // listener for adjusting elements' width when window is resized
-        expensePage.widthProperty().addListener((obs, oldVal, newVal) -> {
-            
-            // page title centered
-            AnchorPane.setLeftAnchor(expenseTitle, newVal.doubleValue() * .40); 
-            AnchorPane.setRightAnchor(expenseTitle, newVal.doubleValue() * .40); 
-
-            // total takes up 10% of window width 
-            AnchorPane.setRightAnchor(total, newVal.doubleValue() * .1); 
-            AnchorPane.setLeftAnchor(total, newVal.doubleValue() * .8); 
-            total.setPrefWidth(newVal.doubleValue() * .1);
-
-            AnchorPane.setLeftAnchor(totalTitle, newVal.doubleValue() * 0.8);
-            AnchorPane.setRightAnchor(totalTitle, newVal.doubleValue() * 0.1);  
-            totalTitle.setPrefWidth(newVal.doubleValue() * .1);
-            AnchorPane.setRightAnchor(totalMenu, total.getWidth() + newVal.doubleValue() * .1);  // total menu next to total label
-            // runs after total is resized
-            Platform.runLater(() -> {
-                AnchorPane.setLeftAnchor(totalTitle, newVal.doubleValue() * 0.8);
-                AnchorPane.setRightAnchor(totalTitle, newVal.doubleValue() * 0.1);  
-                totalTitle.setPrefWidth(newVal.doubleValue() * .1);
-                AnchorPane.setRightAnchor(totalMenu, total.getWidth() + newVal.doubleValue() * .1);  // total menu next to total label
-            });
-
-            // tableview takes up 80% of window width centered
-            AnchorPane.setLeftAnchor(expenseTable, newVal.doubleValue() * .1);
-            AnchorPane.setRightAnchor(expenseTable, newVal.doubleValue() * .1);
-
-            // add buttons above tableview 10% of window each 
-            AnchorPane.setLeftAnchor(addExpenseField, newVal.doubleValue() * .1);
-            AnchorPane.setRightAnchor(addExpenseField, newVal.doubleValue() * .8);
-
-            AnchorPane.setLeftAnchor(addCategoryField, newVal.doubleValue() * .2);
-            AnchorPane.setRightAnchor(addCategoryField, newVal.doubleValue() * .7);
-
-            AnchorPane.setLeftAnchor(addDateField, newVal.doubleValue() * .3);
-            AnchorPane.setRightAnchor(addDateField, newVal.doubleValue() * .6);
-
-            AnchorPane.setLeftAnchor(addCostField, newVal.doubleValue() * .4);
-            AnchorPane.setRightAnchor(addCostField, newVal.doubleValue() * .5);
-
-            AnchorPane.setLeftAnchor(addExpenseButton, newVal.doubleValue() * .5);
-            AnchorPane.setRightAnchor(addExpenseButton, newVal.doubleValue() * .46);
-
-            // save button at right 10% of window
-            AnchorPane.setLeftAnchor(saveExpenseButton, newVal.doubleValue() * .8);
-            AnchorPane.setRightAnchor(saveExpenseButton, newVal.doubleValue() * .1);    
-
-            
-        });
-
-        // listener for adjusting elements' height when window is resized
-        expensePage.heightProperty().addListener((obs, oldVal, newVal) -> {
-            // page title at top 5% of window
-            AnchorPane.setTopAnchor(expenseTitle, newVal.doubleValue() * .03); 
-            AnchorPane.setBottomAnchor(expenseTitle, newVal.doubleValue() * .92); 
-
-            AnchorPane.setTopAnchor(total, newVal.doubleValue() * .1); // total cost at top 10% of window
-            AnchorPane.setTopAnchor(totalTitle, newVal.doubleValue() * .075); // total title at top 10% of window
-            AnchorPane.setTopAnchor(totalMenu, newVal.doubleValue() * .1); // total menu at top 10% of window
-            
-            // tableview anchorpane takes up 70% of window height
-            AnchorPane.setBottomAnchor(expenseTable, 0.0);
-            AnchorPane.setTopAnchor(expenseTable, newVal.doubleValue() * .3);
-
-            // add buttons above tableview
-            AnchorPane.setBottomAnchor(addExpenseField, newVal.doubleValue() * .72);
-            AnchorPane.setBottomAnchor(addCategoryField, newVal.doubleValue() * .72);
-            AnchorPane.setBottomAnchor(addDateField, newVal.doubleValue() * .72);
-            AnchorPane.setBottomAnchor(addCostField, newVal.doubleValue() * .72);
-            AnchorPane.setBottomAnchor(addExpenseButton, newVal.doubleValue() * .72);
-
-            // save button above tableview
-            AnchorPane.setBottomAnchor(saveExpenseButton, newVal.doubleValue() * .72); 
-        });
-    } // end setAnchorPaneConstraints method
-
+    //************************/
 
     private void formatTableCells() {
         // set cell factory for cost column to format cost to currency (adds $ and .00 to end of cost)
@@ -764,4 +666,124 @@ public class ExpenseController implements Initializable {
             expenseTable.getColumns().addAll(columns);
         }
     } // end of formatTableColumns method
+
+
+    private void setMenuItems() {
+        // get categories from budgetmodel
+        // add categories to total menu
+        // add categories to addcategory menu
+        // add categories to popup addcategory menu (edit expense)
+
+        // get months from budgetmodel and expense model 
+        // add months to month menu
+
+        // set month to newest month
+
+        // what if no months????
+
+    }
+
+
+    // changes menu button text to selected menu item
+    public void changeMenuButton(ActionEvent event) {
+        MenuItem menuItem = (MenuItem) event.getSource();
+        MenuButton menuButton = (MenuButton) menuItem.getParentPopup().getOwnerNode();
+        menuButton.setText(menuItem.getText());
+        // update tableview based on menu button clicked
+        if (menuButton == monthMenu) {
+            updateMonth();
+        }
+        else if (menuButton == totalMenu) {
+            updateTotal();
+        }
+    } // end changeMenuButton method
+
+
+    private void setAnchorPaneConstraints() {
+        // listener for adjusting elements' width when window is resized
+        expensePage.widthProperty().addListener((obs, oldVal, newVal) -> {
+            
+            // page title centered
+            AnchorPane.setLeftAnchor(expenseTitle, newVal.doubleValue() * .40); 
+            AnchorPane.setRightAnchor(expenseTitle, newVal.doubleValue() * .40); 
+
+            // month menu 5% of left 90% of right
+            AnchorPane.setLeftAnchor(monthMenu, newVal.doubleValue() * .1);
+            AnchorPane.setRightAnchor(monthMenu, newVal.doubleValue() * .79);
+
+            // total takes up 10% of window width 
+            AnchorPane.setRightAnchor(total, newVal.doubleValue() * .1); 
+            AnchorPane.setLeftAnchor(total, newVal.doubleValue() * .8); 
+            total.setPrefWidth(newVal.doubleValue() * .1);
+
+            // runs after total is resized
+            Platform.runLater(() -> {
+                // set totalTitle on top of total label
+                AnchorPane.setLeftAnchor(totalTitle, newVal.doubleValue() * 0.8);
+                AnchorPane.setRightAnchor(totalTitle, newVal.doubleValue() * 0.1);  
+                totalTitle.setPrefWidth(newVal.doubleValue() * .1);
+                // set totalMenu next to total label
+                AnchorPane.setRightAnchor(totalMenu, total.getWidth() + newVal.doubleValue() * .1);  // total menu next to total label
+                // set totalMenuTitle on top of totalMenu (centered)
+                AnchorPane.setRightAnchor(totalMenuTitle, total.getWidth()+totalMenuTitle.getWidth()/2 + newVal.doubleValue() * .1);
+                
+            });
+
+            // tableview takes up 80% of window width centered
+            AnchorPane.setLeftAnchor(expenseTable, newVal.doubleValue() * .1);
+            AnchorPane.setRightAnchor(expenseTable, newVal.doubleValue() * .1);
+
+            // add buttons above tableview 10% of window each 
+            AnchorPane.setLeftAnchor(addExpenseField, newVal.doubleValue() * .1);
+            AnchorPane.setRightAnchor(addExpenseField, newVal.doubleValue() * .8);
+
+            AnchorPane.setLeftAnchor(addCategoryField, newVal.doubleValue() * .2);
+            AnchorPane.setRightAnchor(addCategoryField, newVal.doubleValue() * .7);
+
+            AnchorPane.setLeftAnchor(addDateField, newVal.doubleValue() * .3);
+            AnchorPane.setRightAnchor(addDateField, newVal.doubleValue() * .6);
+
+            AnchorPane.setLeftAnchor(addCostField, newVal.doubleValue() * .4);
+            AnchorPane.setRightAnchor(addCostField, newVal.doubleValue() * .5);
+
+            AnchorPane.setLeftAnchor(addExpenseButton, newVal.doubleValue() * .5);
+            AnchorPane.setRightAnchor(addExpenseButton, newVal.doubleValue() * .46);
+
+            // save button at right 10% of window
+            AnchorPane.setLeftAnchor(saveExpenseButton, newVal.doubleValue() * .8);
+            AnchorPane.setRightAnchor(saveExpenseButton, newVal.doubleValue() * .1);    
+
+            
+        });
+
+        // listener for adjusting elements' height when window is resized
+        expensePage.heightProperty().addListener((obs, oldVal, newVal) -> {
+            // page title at top 5% of window
+            AnchorPane.setTopAnchor(expenseTitle, newVal.doubleValue() * .03); 
+            AnchorPane.setBottomAnchor(expenseTitle, newVal.doubleValue() * .92); 
+
+            // month menu at top 10% of window
+            AnchorPane.setTopAnchor(monthMenu, newVal.doubleValue() * .1);
+
+
+            AnchorPane.setTopAnchor(total, newVal.doubleValue() * .1); // total cost at top 10% of window
+            AnchorPane.setTopAnchor(totalTitle, newVal.doubleValue() * .075); // total title at top 10% of window
+            AnchorPane.setTopAnchor(totalMenu, newVal.doubleValue() * .1); // total menu at top 10% of window
+            AnchorPane.setTopAnchor(totalMenuTitle, newVal.doubleValue() * .075);
+            
+            // tableview anchorpane takes up 70% of window height
+            AnchorPane.setBottomAnchor(expenseTable, 0.0);
+            AnchorPane.setTopAnchor(expenseTable, newVal.doubleValue() * .3);
+
+            // add buttons above tableview
+            AnchorPane.setBottomAnchor(addExpenseField, newVal.doubleValue() * .72);
+            AnchorPane.setBottomAnchor(addCategoryField, newVal.doubleValue() * .72);
+            AnchorPane.setBottomAnchor(addDateField, newVal.doubleValue() * .72);
+            AnchorPane.setBottomAnchor(addCostField, newVal.doubleValue() * .72);
+            AnchorPane.setBottomAnchor(addExpenseButton, newVal.doubleValue() * .72);
+
+            // save button above tableview
+            AnchorPane.setBottomAnchor(saveExpenseButton, newVal.doubleValue() * .72); 
+        });
+    } // end setAnchorPaneConstraints method
 } // end ExpenseController class
