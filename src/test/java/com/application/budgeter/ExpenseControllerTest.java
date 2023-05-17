@@ -47,7 +47,7 @@ public class ExpenseControllerTest {
     @Test
     public void isValidCostTest() {
         ExpenseController expenseController = new ExpenseController();
-        // testing boundaries
+        // testing boundaries (0, more than 2 decimal places, negative)
         assertTrue(expenseController.isValidCost("0"));
         assertTrue(expenseController.isValidCost("12.000000000000000000000000004"));
         assertFalse(expenseController.isValidCost("-1"));

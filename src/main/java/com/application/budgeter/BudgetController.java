@@ -110,7 +110,7 @@ public class BudgetController implements Initializable {
 
         // height property listener
         budgetPage.heightProperty().addListener((obs, oldVal, newVal) -> {
-            setHeightConstraints(BudgetTable, newVal, 0.40, 0.10);
+            setHeightConstraints(BudgetTable, newVal, 0.40, 0.05);
             setHeightConstraints(SpendingBar, newVal, 0.20, 0.77);
             setHeightConstraints(budgetTitle, newVal, 0.03, 0.92);
             setHeightConstraints(progressTitle, newVal, 0.15, 0.80);

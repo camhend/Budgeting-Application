@@ -637,7 +637,7 @@ public class ExpenseController implements Initializable {
 
 
     private void formatTableColumns() {
-        // set cell value factory for each column
+        // set each expense field to its respective column
         nameColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("name"));
         categoryColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("category"));
         dateColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("localDate"));
@@ -700,87 +700,54 @@ public class ExpenseController implements Initializable {
     private void setAnchorPaneConstraints() {
         // listener for adjusting elements' width when window is resized
         expensePage.widthProperty().addListener((obs, oldVal, newVal) -> {
-            
-            // page title centered
-            AnchorPane.setLeftAnchor(expenseTitle, newVal.doubleValue() * .40); 
-            AnchorPane.setRightAnchor(expenseTitle, newVal.doubleValue() * .40); 
-
-            // month menu 5% of left 90% of right
-            AnchorPane.setLeftAnchor(monthMenu, newVal.doubleValue() * .1);
-            AnchorPane.setRightAnchor(monthMenu, newVal.doubleValue() * .79);
-
-            // total takes up 10% of window width 
-            AnchorPane.setRightAnchor(total, newVal.doubleValue() * .1); 
-            AnchorPane.setLeftAnchor(total, newVal.doubleValue() * .8); 
+            setWidthConstraints(expenseTitle, newVal, 0.4, 0.4);
+            setWidthConstraints(monthMenu, newVal, .1, .79);
+            setWidthConstraints(total, newVal, .8, .1);
             total.setPrefWidth(newVal.doubleValue() * .1);
 
             // runs after total is resized
             Platform.runLater(() -> {
-                // set totalTitle on top of total label
-                AnchorPane.setLeftAnchor(totalTitle, newVal.doubleValue() * 0.8);
-                AnchorPane.setRightAnchor(totalTitle, newVal.doubleValue() * 0.1);  
+                setWidthConstraints(totalTitle, newVal, .8, .1);
                 totalTitle.setPrefWidth(newVal.doubleValue() * .1);
+
                 // set totalMenu next to total label
                 AnchorPane.setRightAnchor(totalMenu, total.getWidth() + newVal.doubleValue() * .1);  // total menu next to total label
                 // set totalMenuTitle on top of totalMenu (centered)
                 AnchorPane.setRightAnchor(totalMenuTitle, total.getWidth()+totalMenuTitle.getWidth()/2 + newVal.doubleValue() * .1);
-                
             });
 
-            // tableview takes up 80% of window width centered
-            AnchorPane.setLeftAnchor(expenseTable, newVal.doubleValue() * .1);
-            AnchorPane.setRightAnchor(expenseTable, newVal.doubleValue() * .1);
+            setWidthConstraints(expenseTable, newVal, .1, .1);
 
-            // add buttons above tableview 10% of window each 
-            AnchorPane.setLeftAnchor(addExpenseField, newVal.doubleValue() * .1);
-            AnchorPane.setRightAnchor(addExpenseField, newVal.doubleValue() * .8);
-
-            AnchorPane.setLeftAnchor(addCategoryField, newVal.doubleValue() * .2);
-            AnchorPane.setRightAnchor(addCategoryField, newVal.doubleValue() * .7);
-
-            AnchorPane.setLeftAnchor(addDateField, newVal.doubleValue() * .3);
-            AnchorPane.setRightAnchor(addDateField, newVal.doubleValue() * .6);
-
-            AnchorPane.setLeftAnchor(addCostField, newVal.doubleValue() * .4);
-            AnchorPane.setRightAnchor(addCostField, newVal.doubleValue() * .5);
-
-            AnchorPane.setLeftAnchor(addExpenseButton, newVal.doubleValue() * .5);
-            AnchorPane.setRightAnchor(addExpenseButton, newVal.doubleValue() * .46);
+            // add buttons above tableview 10% of window each
+            setWidthConstraints(addExpenseField, newVal, .1, .8); 
+            setWidthConstraints(addCategoryField, newVal, .2, .7);
+            setWidthConstraints(addDateField, newVal, .3, .6);
+            setWidthConstraints(addCostField, newVal, .4, .5);
+            setWidthConstraints(addExpenseButton, newVal, .5, .46);
 
             // save button at right 10% of window
-            AnchorPane.setLeftAnchor(saveExpenseButton, newVal.doubleValue() * .8);
-            AnchorPane.setRightAnchor(saveExpenseButton, newVal.doubleValue() * .1);    
-
-            
+            setWidthConstraints(saveExpenseButton, newVal, .8, .1);   
         });
 
         // listener for adjusting elements' height when window is resized
         expensePage.heightProperty().addListener((obs, oldVal, newVal) -> {
-            // page title at top 5% of window
-            AnchorPane.setTopAnchor(expenseTitle, newVal.doubleValue() * .03); 
-            AnchorPane.setBottomAnchor(expenseTitle, newVal.doubleValue() * .92); 
+            setHeightConstraints(expenseTitle, newVal, .03, 0.92);
 
-            // month menu at top 10% of window
             AnchorPane.setTopAnchor(monthMenu, newVal.doubleValue() * .1);
-
 
             AnchorPane.setTopAnchor(total, newVal.doubleValue() * .1); // total cost at top 10% of window
             AnchorPane.setTopAnchor(totalTitle, newVal.doubleValue() * .075); // total title at top 10% of window
             AnchorPane.setTopAnchor(totalMenu, newVal.doubleValue() * .1); // total menu at top 10% of window
             AnchorPane.setTopAnchor(totalMenuTitle, newVal.doubleValue() * .075);
             
-            // tableview anchorpane takes up 70% of window height
-            AnchorPane.setBottomAnchor(expenseTable, 0.0);
-            AnchorPane.setTopAnchor(expenseTable, newVal.doubleValue() * .3);
+            setHeightConstraints(expenseTable, newVal, .32, .05);
 
-            // add buttons above tableview
             AnchorPane.setBottomAnchor(addExpenseField, newVal.doubleValue() * .72);
             AnchorPane.setBottomAnchor(addCategoryField, newVal.doubleValue() * .72);
             AnchorPane.setBottomAnchor(addDateField, newVal.doubleValue() * .72);
             AnchorPane.setBottomAnchor(addCostField, newVal.doubleValue() * .72);
             AnchorPane.setBottomAnchor(addExpenseButton, newVal.doubleValue() * .72);
 
-            // save button above tableview
             AnchorPane.setBottomAnchor(saveExpenseButton, newVal.doubleValue() * .72); 
         });
     } // end setAnchorPaneConstraints method

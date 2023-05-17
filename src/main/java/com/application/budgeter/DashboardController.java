@@ -10,6 +10,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.control.Label;
 import java.time.LocalDate;
+import javafx.scene.Node;
 
 
 public class DashboardController implements Initializable {
@@ -52,7 +53,7 @@ public class DashboardController implements Initializable {
         // set pie chart background to orange
         pieChart.setStyle("-fx-background-color: #CEC9BF;");
 
-        
+
 
  
 
@@ -64,103 +65,42 @@ public class DashboardController implements Initializable {
     public void setAnchorPaneContraints() {
         // listener for adjusting elements' width when window is resized
         dashboardPage.widthProperty().addListener((obs, oldVal, newVal) -> {
-            // set width of dashboardTitle
-            AnchorPane.setRightAnchor(dashboardTitle, newVal.doubleValue() * .40);
-            AnchorPane.setLeftAnchor(dashboardTitle, newVal.doubleValue() * .40);
-
-            // set width of pieChart
-            // 5% left, 60% right
-            AnchorPane.setLeftAnchor(pieChart, newVal.doubleValue() * .05);
-            AnchorPane.setRightAnchor(pieChart, newVal.doubleValue() * .65);
-
-            // set width of areaChart
-            // 5% left, 40% right
-            AnchorPane.setLeftAnchor(areaChart, newVal.doubleValue() * .05);
-            AnchorPane.setRightAnchor(areaChart, newVal.doubleValue() * .4);
-
-            // set width of spendingsRect
-            // 40% left, 40% right
-            AnchorPane.setLeftAnchor(spendingsRect, newVal.doubleValue() * .4);
-            AnchorPane.setRightAnchor(spendingsRect, newVal.doubleValue() * .4);
-
-            // set width of flatAmountSpent
-            // 40% left, 40% right
-            AnchorPane.setLeftAnchor(flatAmountSpent, newVal.doubleValue() * .4);
-            AnchorPane.setRightAnchor(flatAmountSpent, newVal.doubleValue() * .4);
-
-            // set width of percentAmountSpent
-            // 40% left, 40% right
-            AnchorPane.setLeftAnchor(percentAmountSpent, newVal.doubleValue() * .4);
-            AnchorPane.setRightAnchor(percentAmountSpent, newVal.doubleValue() * .4);
-
-            // set width of daysLeft
-            // 40% left, 40% right
-            AnchorPane.setLeftAnchor(daysLeft, newVal.doubleValue() * .4);
-            AnchorPane.setRightAnchor(daysLeft, newVal.doubleValue() * .4);
-
-            // set width of transactionsTableTitle
-            // 55% left, 20% right
-            AnchorPane.setLeftAnchor(transactionsTableTitle, newVal.doubleValue() * .65);
-            AnchorPane.setRightAnchor(transactionsTableTitle, newVal.doubleValue() * .05);
-
-            // set width of transactionsTable
-            // 55% left, 20% right
-            AnchorPane.setLeftAnchor(transactionsTable, newVal.doubleValue() * .65);
-            AnchorPane.setRightAnchor(transactionsTable, newVal.doubleValue() * .05);
+            setWidthConstraints(dashboardTitle, newVal, .4, .4);
+            setWidthConstraints(pieChart, newVal, .05, .6);
+            setWidthConstraints(areaChart, newVal, .05, .4);
+            setWidthConstraints(spendingsRect, newVal, .4, .4);
+            setWidthConstraints(flatAmountSpent, newVal, .4, .4);
+            setWidthConstraints(percentAmountSpent, newVal, .4, .4);
+            setWidthConstraints(daysLeft, newVal, .4, .4);
+            setWidthConstraints(transactionsTableTitle, newVal, .65, .05);
+            setWidthConstraints(transactionsTable, newVal, .65, .05);
         });
-
 
         // listener for adjusting elements' height when window is resized
         dashboardPage.heightProperty().addListener((obs, oldVal, newVal) -> {
-            // set height of dashboardTitle
-            // 3% top, 92% bottom
-            AnchorPane.setTopAnchor(dashboardTitle, newVal.doubleValue() * .03);
-            AnchorPane.setBottomAnchor(dashboardTitle, newVal.doubleValue() * .92);
-
-            // pieChart
-            // 10% top, 55% bottom
-            AnchorPane.setTopAnchor(pieChart, newVal.doubleValue() * .1);
-            AnchorPane.setBottomAnchor(pieChart, newVal.doubleValue() * .55);
-
-            // areaChart
-            // 60% top, 5% bottom
-            AnchorPane.setTopAnchor(areaChart, newVal.doubleValue() * .5);
-            AnchorPane.setBottomAnchor(areaChart, newVal.doubleValue() * .05);
-
-            // spendingsRect
-            // 30% top, 50% bottom
-            AnchorPane.setTopAnchor(spendingsRect, newVal.doubleValue() * .3);
-            AnchorPane.setBottomAnchor(spendingsRect, newVal.doubleValue() * .5);
-
-            // flatAmountSpent
-                // 20% top, 70% bottom
-            AnchorPane.setTopAnchor(flatAmountSpent, newVal.doubleValue() * .2);
-            AnchorPane.setBottomAnchor(flatAmountSpent, newVal.doubleValue() * .7);
-
-            // percentAmountSpent
-                // 25% top, 65% bottom
-            AnchorPane.setTopAnchor(percentAmountSpent, newVal.doubleValue() * .25);
-            AnchorPane.setBottomAnchor(percentAmountSpent, newVal.doubleValue() * .65);
-
-            // daysLeft
-                // 30% top, 60% bottom
-            AnchorPane.setTopAnchor(daysLeft, newVal.doubleValue() * .3);
-            AnchorPane.setBottomAnchor(daysLeft, newVal.doubleValue() * .6);
-
-            // transactionsTableTitle
-            // 10% top 85% bottom
-            AnchorPane.setTopAnchor(transactionsTableTitle, newVal.doubleValue() * .07);
-            AnchorPane.setBottomAnchor(transactionsTableTitle, newVal.doubleValue() * .88);
-            
-            // transactionsTable
-            // 12% top, 5% bottom
-            AnchorPane.setTopAnchor(transactionsTable, newVal.doubleValue() * .12);
-            AnchorPane.setBottomAnchor(transactionsTable, newVal.doubleValue() * .05);
-
-
-
+            setHeightConstraints(dashboardTitle, newVal, .03, .92);
+            setHeightConstraints(pieChart, newVal, .1, .55);
+            setHeightConstraints(areaChart, newVal, .5, .05);
+            setHeightConstraints(spendingsRect, newVal, .3, .5);
+            setHeightConstraints(flatAmountSpent, newVal, .2, .7);
+            setHeightConstraints(percentAmountSpent, newVal, .25, .65);
+            setHeightConstraints(daysLeft, newVal, .3, .6);
+            setHeightConstraints(transactionsTableTitle, newVal, .07, .88);
+            setHeightConstraints(transactionsTable, newVal, .12, .05);
         });
     } // end of setAnchorPaneContraints method
+
+
+    private void setWidthConstraints(Node element, Number newVal,  double left, double right) {
+        AnchorPane.setLeftAnchor(element, newVal.doubleValue() * left);
+        AnchorPane.setRightAnchor(element, newVal.doubleValue() * right);
+    } // end setWidthConstraints method
+
+
+    private void setHeightConstraints(Node element, Number newVal,  double top, double bottom) {
+        AnchorPane.setTopAnchor(element, newVal.doubleValue() * top);
+        AnchorPane.setBottomAnchor(element, newVal.doubleValue() * bottom);
+    } // end setHeightConstraints method
 
 
     public void formatTable() {
