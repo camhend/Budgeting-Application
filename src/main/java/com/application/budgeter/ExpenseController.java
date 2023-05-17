@@ -39,6 +39,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
+import javafx.scene.Node;
 
 
 
@@ -632,12 +633,6 @@ public class ExpenseController implements Initializable {
                 }
             }
         });
-
-        // align columns center
-        nameColumn.setStyle("-fx-alignment: CENTER;");
-        categoryColumn.setStyle("-fx-alignment: CENTER;");
-        dateColumn.setStyle("-fx-alignment: CENTER;");
-        amountColumn.setStyle("-fx-alignment: CENTER;");
     } // end of formatTableCells method
 
 
@@ -789,4 +784,14 @@ public class ExpenseController implements Initializable {
             AnchorPane.setBottomAnchor(saveExpenseButton, newVal.doubleValue() * .72); 
         });
     } // end setAnchorPaneConstraints method
+
+    private void setWidthConstraints(Node element, Number newVal,  double left, double right) {
+        AnchorPane.setLeftAnchor(element, newVal.doubleValue() * left);
+        AnchorPane.setRightAnchor(element, newVal.doubleValue() * right);
+    } // end setWidthConstraints method
+
+    private void setHeightConstraints(Node element, Number newVal,  double top, double bottom) {
+        AnchorPane.setTopAnchor(element, newVal.doubleValue() * top);
+        AnchorPane.setBottomAnchor(element, newVal.doubleValue() * bottom);
+    } // end setHeightConstraints method
 } // end ExpenseController class

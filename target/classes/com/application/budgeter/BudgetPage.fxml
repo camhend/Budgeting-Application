@@ -9,28 +9,33 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<!--Dashboard Section-->
-<!-- add resizble with parent-->
 
-<AnchorPane id="budgetPage" minHeight="600.0" minWidth="680.0" prefHeight="600.0" prefWidth="680.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.application.budgeter.BudgetController"> 
+<AnchorPane fx:id="budgetPage" minHeight="600.0" minWidth="680.0" prefHeight="600.0" prefWidth="680.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.application.budgeter.BudgetController"> 
   <children>
+    <!-- Title of page-->
     <Label fx:id="budgetTitle" alignment="CENTER" style="&#10;" text="Budget Planner" textAlignment="CENTER" textFill="#726d6d" >
       <font>
         <Font size="18.0" fx:id="x1" />                
       </font>
     </Label>
-      <TableView fx:id="BudgetTable" layoutX="103.0" layoutY="260.0" prefHeight="308.0" prefWidth="465.0">
+
+    <!-- Budget Table -->
+      <TableView fx:id="BudgetTable">
         <columns>
-          <TableColumn fx:id="category" prefWidth="75.0" text="Category" />
-          <TableColumn fx:id="total" prefWidth="132.0" text="Budget" />
-            <TableColumn fx:id="spent" prefWidth="102.4000244140625" text="Current" />
-            <TableColumn fx:id="remaining" prefWidth="156.0" text="Remaining" />
+          <TableColumn fx:id="category" text="Category" style="-fx-alignment: CENTER;"  />
+          <TableColumn fx:id="total" text="Budget" style="-fx-alignment: CENTER;"  />
+          <TableColumn fx:id="spent" text="Current" style="-fx-alignment: CENTER;"  />
+          <TableColumn fx:id="remaining" text="Remaining" style="-fx-alignment: CENTER;"  />
         </columns>
       </TableView>
-      <ProgressBar fx:id="SpendingBar" layoutX="240.0" layoutY="148.0" prefWidth="200.0" progress="0.0" />
-      <Label layoutX="240.0" layoutY="124.0" text="Progress" />
-      <TextField fx:id="categoryTextField" layoutX="192.0" layoutY="219.0" prefHeight="26.0" prefWidth="144.0" />
-      <TextField fx:id="limitTextField" layoutX="348.0" layoutY="219.0" prefHeight="26.0" prefWidth="144.0" />
-      <Button fx:id="categoryButton" layoutX="511.0" layoutY="219.0" mnemonicParsing="false" onAction="#submit" text="Add" />
+
+      <!-- spending progress bar-->
+      <ProgressBar fx:id="SpendingBar" progress="0.0" />
+      <Label fx:id="progressTitle" text="Progress" alignment="CENTER" />
+
+      <!-- add category section-->
+      <TextField fx:id="categoryTextField" promptText="Category..."/>
+      <TextField fx:id="limitTextField" promptText="Cost Limit..."/>
+      <Button fx:id="categoryButton" mnemonicParsing="false" onAction="#submit" text="Add" />
   </children>
 </AnchorPane>

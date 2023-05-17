@@ -10,6 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.Label;
+import javafx.scene.Node;
 
 
 public class MainPageController implements Initializable {
@@ -197,8 +198,13 @@ public class MainPageController implements Initializable {
 
 
 
-    // set anchorpane constraints for menu buttons and title
-    private void setHeightAnchorConstraints() {
-        
-    } // end of setAnchorConstraints method 
+    private void setWidthConstraints(Node element, Number newVal,  double left, double right) {
+        AnchorPane.setLeftAnchor(element, newVal.doubleValue() * left);
+        AnchorPane.setRightAnchor(element, newVal.doubleValue() * right);
+    }
+
+    private void setHeightConstraints(Node element, Number newVal,  double top, double bottom) {
+        AnchorPane.setTopAnchor(element, newVal.doubleValue() * top);
+        AnchorPane.setBottomAnchor(element, newVal.doubleValue() * bottom);
+    }
 } // end of MainPageController class

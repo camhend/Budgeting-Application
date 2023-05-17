@@ -14,9 +14,17 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.control.Label;
+import javafx.scene.Node;
+
+
 
 public class BudgetController implements Initializable {
     
+    @FXML AnchorPane budgetPage;
+    @FXML private Label budgetTitle;
+
     // Budget Table
     @FXML TableView<Budget> BudgetTable;
     @FXML private TableColumn<Budget, String> category;
@@ -31,6 +39,7 @@ public class BudgetController implements Initializable {
 
     // progress bar
     @FXML private ProgressBar SpendingBar;
+    @FXML private Label progressTitle;
 
     BudgetModel budgetModel = new BudgetModel();
     ExpenseList expenseList = new ExpenseList();
@@ -80,5 +89,44 @@ public class BudgetController implements Initializable {
         remaining.setCellValueFactory(new PropertyValueFactory<Budget, Double>("remaining"));
         BudgetTable.setItems(budgetlist);
         setProgressBar();
+
+        // formatting page elements
+        setAnchorPaneConstraints();
+        BudgetTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
-}
+
+
+    private void setAnchorPaneConstraints() {
+        // width property listener
+        budgetPage.widthProperty().addListener((obs, oldVal, newVal) -> {
+            setWidthConstraints(budgetTitle, newVal, 0.40, 0.40); 
+            setWidthConstraints(BudgetTable, newVal, 0.10, 0.10); 
+            setWidthConstraints(SpendingBar, newVal, 0.30, 0.30); 
+            setWidthConstraints(progressTitle, newVal, 0.40, 0.40); 
+            setWidthConstraints(categoryTextField, newVal, 0.275, 0.55);  
+            setWidthConstraints(limitTextField, newVal, 0.475, 0.35); 
+            setWidthConstraints(categoryButton, newVal, 0.675, 0.275); 
+        });
+
+        // height property listener
+        budgetPage.heightProperty().addListener((obs, oldVal, newVal) -> {
+            setHeightConstraints(BudgetTable, newVal, 0.40, 0.10);
+            setHeightConstraints(SpendingBar, newVal, 0.20, 0.77);
+            setHeightConstraints(budgetTitle, newVal, 0.03, 0.92);
+            setHeightConstraints(progressTitle, newVal, 0.15, 0.80);
+            AnchorPane.setTopAnchor(limitTextField, newVal.doubleValue() * .30);
+            AnchorPane.setTopAnchor(categoryTextField, newVal.doubleValue() * .30);
+            AnchorPane.setTopAnchor(categoryButton, newVal.doubleValue() * .30);
+        });
+    }
+
+    private void setWidthConstraints(Node element, Number newVal,  double left, double right) {
+        AnchorPane.setLeftAnchor(element, newVal.doubleValue() * left);
+        AnchorPane.setRightAnchor(element, newVal.doubleValue() * right);
+    }
+
+    private void setHeightConstraints(Node element, Number newVal,  double top, double bottom) {
+        AnchorPane.setTopAnchor(element, newVal.doubleValue() * top);
+        AnchorPane.setBottomAnchor(element, newVal.doubleValue() * bottom);
+    }
+} // end of budget controller class
