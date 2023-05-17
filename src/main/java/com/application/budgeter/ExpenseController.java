@@ -47,6 +47,7 @@ import javafx.scene.Node;
 // TODO
     // setMenu Items
                                 // make more presentable
+                                    // seperate add/editnode methods to make more readable
     // integrate budget model
     // get months from budgetmodel
     // button icons 
@@ -565,7 +566,12 @@ public class ExpenseController implements Initializable {
         }
         // else find total for selected category
         else { 
-            total.setText(String.format("$%.2f", expenseList.getCategorySpending(totalMenu.getText())));
+            if (expenseList.getCategorySpending(totalMenu.getText()) == -1) {
+                total.setText("$0.00");
+            }
+            else {
+                total.setText(String.format("$%.2f", expenseList.getCategorySpending(totalMenu.getText())));
+            }
         }
     } // end updateTotal method
 
@@ -675,9 +681,17 @@ public class ExpenseController implements Initializable {
         // on action changemenu button
         food.setOnAction(this::changeMenuButton);
 
-        // MenuItem jan23 = new MenuItem("January 2023");
-        // monthMenu.getItems().add(jan23);
-        // jan23.setOnAction(this::changeMenuButton);
+        MenuItem food2 = new MenuItem("Food");
+        totalMenu.getItems().add(food2);
+        food2.setOnAction(this::changeMenuButton);
+
+        MenuItem All = new MenuItem("All");
+        totalMenu.getItems().add(All);
+        All.setOnAction(this::changeMenuButton);
+
+        MenuItem jan23 = new MenuItem("January 2023");
+        monthMenu.getItems().add(jan23);
+        jan23.setOnAction(this::changeMenuButton);
 
     }
 
