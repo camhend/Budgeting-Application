@@ -3,6 +3,9 @@ package com.application.budgeter;
 import java.util.Iterator;
 import java.time.*;
 import java.util.*;
+import java.io.*;
+import java.io.FileWriter;
+import java.time.format.DateTimeFormatter;
 
 // TODO: make CSV reader / writer
     // consider: how many expense to load? 
@@ -23,15 +26,17 @@ public class ExpenseList implements Iterable<Expense> {
     private int size;
     private Map<String, Double> categorySpending;
     private ExpenseList copy; // copy of current list used for reverting changes
+    private final LocalDate monthYear;
 
     // ExpenseList constructor
-    public ExpenseList () {
+    public ExpenseList (LocalDate monthYear) {
         this.head  = null;
         this.tail = null;
         this.size = 0;
         this.totalSpending = 0;
         this.categorySpending = new HashMap<String, Double>();
         this.copy = null;
+        this.monthYear = monthYear;
     } 
 
     // Nested class for LinkedList Nodes
@@ -406,7 +411,7 @@ public class ExpenseList implements Iterable<Expense> {
     }
 
     public ExpenseList copy() {
-        ExpenseList copy = new ExpenseList();
+        ExpenseList copy = new ExpenseList(this.monthYear);
         // this ExpenseList is empty
         if (this.isEmpty()) {
             return copy;
@@ -439,7 +444,8 @@ public class ExpenseList implements Iterable<Expense> {
 
     public void saveChanges (boolean confirmed) {
         if ( confirmed ) {
-            // save to CSV
+            saveToCSV("Budgeter/src/main/resources/com/application/budgeter/expensedata/" 
+                + monthYear.getYear() + "-" + monthYear.getMonthValue() + ".csv");
         } else {
             this.head = copy.head;
             this.tail = copy.tail;
@@ -448,6 +454,59 @@ public class ExpenseList implements Iterable<Expense> {
             this.categorySpending = copy.categorySpending;
         }
         this.copy = null;
+    }
+
+    // write to csv, return true if successful, each line is an expense, each comma is a field
+    private boolean saveToCSV(String filename) {
+        try {
+            FileWriter writer = new FileWriter(filename);
+            writer.write("Name,Category,Date,Amount\n");
+            ExpenseNode current = head;
+            while (current != null) {
+                String name = current.expense.getName();
+                String category = current.expense.getCategory();
+                String date = current.expense.getLocalDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+                String amount = String.format("%.2f", current.expense.getAmount());
+                writer.write(name + "," + category + "," + date + "," + amount);
+                
+                writer.write("\n");
+                current = current.next;
+            }
+            writer.close();
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    public boolean loadFromCSV(LocalDate monthYear) {
+        return loadFromCSV("Budgeter/src/main/resources/com/application/budgeter/expensedata/" 
+            + this.monthYear.getYear() + "-" + this.monthYear.getMonthValue() + ".csv");
+        
+    }
+
+    private boolean loadFromCSV(String filename) {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(filename));
+            String line = reader.readLine();
+            line = reader.readLine();
+            while (line != null) {
+                String[] fields = line.split(","); // create array of fields split by comma
+                // add fields to expense
+                String name = fields[0]; 
+                String category = fields[1];
+                LocalDate date = LocalDate.parse(fields[2], DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+                double amount = Double.parseDouble(fields[3]);
+                // create expense and add to list
+                Expense expense = new Expense(name, category, date, amount);
+                this.add(expense); 
+                line = reader.readLine();
+            }
+            reader.close();
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
     }
 
     // return Iterator instance
