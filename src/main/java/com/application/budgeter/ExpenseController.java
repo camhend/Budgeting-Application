@@ -133,7 +133,7 @@ public class ExpenseController implements Initializable {
         // calc and set total
         totalMenu.setText("All");
         updateTotal();
-    }
+    } // end setModels method
     
 
     // initialize method (runs when ExpenseController is created)
@@ -636,7 +636,7 @@ public class ExpenseController implements Initializable {
             //     monthMenu.getItems().add(menuItem);
             //     menuItem.setOnAction(this::changeMenuButton);
             // }
-    }
+    } // end setMenuItems method
 
 
     // changes menu button text to selected menu item

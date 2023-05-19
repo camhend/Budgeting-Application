@@ -10,10 +10,13 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.control.Label;
+import java.lang.reflect.Array;
 import java.time.LocalDate;
 import javafx.scene.Node;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
+import javafx.scene.control.SplitPane;
+import javafx.fxml.FXMLLoader;
 
 
 public class DashboardController implements Initializable {
@@ -50,12 +53,11 @@ public class DashboardController implements Initializable {
         ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
         for (Budget budget : budgetModel.getBudgetList()) {
             pieChartData.add(new PieChart.Data(budget.getCategory(), budget.getSpent()));
-            // print hey
-            System.out.println("hey");
         }
 
-        pieChart = new PieChart(pieChartData);
-    }
+        // set pie chart data
+        pieChart.setData(pieChartData);
+    } // end of setModels method
 
 
 
@@ -63,8 +65,14 @@ public class DashboardController implements Initializable {
     public void initialize(java.net.URL arg0, java.util.ResourceBundle arg1) {
         setAnchorPaneContraints();
         formatTable();
-    }
+    } // end of initialize method
 
+
+
+    //************************/
+    // Front End Design Methods
+    //************************/
+    
     public void setAnchorPaneContraints() {
         // listener for adjusting elements' width when window is resized
         dashboardPage.widthProperty().addListener((obs, oldVal, newVal) -> {

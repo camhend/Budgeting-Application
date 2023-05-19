@@ -38,6 +38,15 @@ public class MainPageController implements Initializable {
     public void setModels(ExpenseList expenseList, BudgetModel budgetModel) {
         this.expenseList = expenseList;
         this.budgetModel = budgetModel;
+
+
+        // temporary fix to dashboard not getting models on startup
+        try {
+            switchContentPage("BudgetPage");
+            switchContentPage("DashboardPage"); // set default page to dashboard
+        } catch (IOException e) {
+            System.out.println("Error loading default page");
+        }
     }
 
 
@@ -52,7 +61,6 @@ public class MainPageController implements Initializable {
         setAnchorConstraints(); // apply anchorpane constraints to page elements
         selectButton(dashboardNavButton); // select dashboard button by default
     } 
-
 
 
     //***********************/
