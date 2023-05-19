@@ -22,11 +22,10 @@
       </Label>
 
       <!-- Center Section for current spending summary-->
-      <Rectangle arcHeight="55.0" arcWidth="55.0" fill="#f8f8f8" stroke="BLACK" strokeType="INSIDE" fx:id="spendingsRect"/>
       
-      <Label text="\$1000/$3000 Spent" fx:id="flatAmountSpent" style="-fx-alignment: CENTER;" />
-      <Label text="33% spent" fx:id="percentAmountSpent" style="-fx-alignment: CENTER;" />
-      <Label text="22 days left (60%)" fx:id="daysLeft" style="-fx-alignment: CENTER;" />
+      <Label text="\$1000/$3000 Spent" fx:id="flatAmountSpent" style="-fx-alignment: CENTER; -fx-background-color: #DDD6D6;" />
+      <Label text="33% spent" fx:id="percentAmountSpent" style="-fx-alignment: CENTER; -fx-background-color: #DDD6D6;" />
+      <Label text="22 days left (60%)" fx:id="daysLeft" style="-fx-alignment: CENTER; -fx-background-color: #DDD6D6;" />
       <Label text="Recent Transactions" fx:id="transactionsTableTitle" style="-fx-alignment: CENTER;" >
       <font>
             <Font size="15.0" />
@@ -36,9 +35,9 @@
       <!-- Table of recent transactions-->
       <TableView fx:id="transactionsTable" >
          <columns>
-            <TableColumn text="Name" fx:id="nameColumn" style="-fx-text-alignment: center;"/>
-            <TableColumn text="Date" fx:id="dateColumn" style="-fx-text-alignment: center;"/>
-            <TableColumn text="Cost" fx:id="costColumn" style="-fx-text-alignment: center;"/>
+            <TableColumn text="Name" fx:id="nameColumn" style="-fx-alignment: CENTER;" />
+            <TableColumn text="Date" fx:id="dateColumn" style="-fx-alignment: CENTER;" />
+            <TableColumn text="Cost" fx:id="amountColumn" style="-fx-alignment: CENTER;" />
          </columns>
       </TableView>
 

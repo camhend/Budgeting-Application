@@ -19,6 +19,18 @@ public class BudgetModel {
     private double totalSpent;
     private double totalRemaining;
 
+    public double getTotalSpent() {
+        return totalSpent;
+    }
+
+    public double getTotalRemaining() {
+        return totalRemaining;
+    }
+
+    public double getTotalIncome() {
+        return totalIncome;
+    }
+
     public ArrayList<String> getCategoryList() {
         ArrayList<String> categoryList = new ArrayList<String>();
         // creates list of unique categories

@@ -88,7 +88,12 @@ public class BudgetController implements Initializable {
            totalBudget += budget.total;
         }
         SpendingBar.setProgress(totalSpent/totalBudget);
-        progressTitle.setText("Spent: $" + totalSpent + " / $" + totalBudget + " (" + (int)(totalSpent/totalBudget * 100) + "%)");
+
+        // format totalSpent and totalBudget to 2 decimal places 
+        String spent =  String.format("%.2f", totalSpent);
+        String total = String.format("%.2f", totalBudget);
+
+        progressTitle.setText("Spent: $" + spent + " / $" + total + " (" + (int)(totalSpent/totalBudget * 100) + "%)");
     }
     
     @Override
