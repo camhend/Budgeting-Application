@@ -40,6 +40,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
 import javafx.scene.Node;
+import java.util.ArrayList;
 
 
 
@@ -97,7 +98,19 @@ public class ExpenseController implements Initializable {
 
     @FXML MenuButton monthMenu; // menu for choosing month
 
-    
+    // edit expense section
+    private TextField nameField;
+    private MenuButton categoryField;
+    private TextField dateField;
+    private TextField costField;
+    private Label name;
+    private Label category;
+    private Label date;
+    private Label cost;
+    private Button finishEditButton;
+    private Button closeEditButton;
+
+
     ExpenseList expenseList = new ExpenseList(); // list of expenses
     BudgetModel budgetModel = new BudgetModel(); // budget model
 
@@ -106,14 +119,16 @@ public class ExpenseController implements Initializable {
     // add expenses to expenseList and display in tableview
 
 
-    public void SetModels(ExpenseList expenseList, BudgetModel budgetModel) {
+    public void setModels(ExpenseList expenseList, BudgetModel budgetModel) {
         // pass expenseList to MainPageController
         this.expenseList = expenseList;
         this.budgetModel = budgetModel;
 
+        setMenuItems();
+
         // add expenses to observable list
         for (Expense expense : expenseList) {
-        obsvExpenseList.add(expense);
+            obsvExpenseList.add(expense);
         }
         // calc and set total
         totalMenu.setText("All");
@@ -127,16 +142,14 @@ public class ExpenseController implements Initializable {
 
         // setup page
         setAnchorPaneConstraints(); 
-        setMenuItems();
+        createEditMenu();
+        
         formatTableCells(); 
         formatTableColumns();
         expenseTable.setPlaceholder(new Label("No Expenses Added")); 
         
         // add observable list to tableview
         expenseTable.setItems(obsvExpenseList);
-
-    
-        
 
 
         // create the delete and edit menu items
@@ -253,46 +266,6 @@ public class ExpenseController implements Initializable {
                 AnchorPane layout = new AnchorPane();
                 layout.setPrefSize(300, 300);
 
-                // Create a label with a message
-                Label name = new Label("Name:");
-                // place at x = 10 y = 10
-                name.setLayoutX(100);
-                name.setLayoutY(50);
-                Label category = new Label("Category:");
-                category.setLayoutX(100);
-                category.setLayoutY(100);
-                Label date = new Label("Date:");
-                date.setLayoutX(100);
-                date.setLayoutY(150);
-                Label cost = new Label("Cost:");
-                cost.setLayoutX(100);
-                cost.setLayoutY(200);
-
-                // Create a text field each for name, category, date, and cost
-                TextField nameField = new TextField();
-                nameField.setLayoutX(200);
-                nameField.setLayoutY(50);
-                MenuButton categoryField = new MenuButton();
-                categoryField.setLayoutX(200);
-                categoryField.setLayoutY(100);
-                categoryField.setPrefWidth(150);
-                TextField dateField = new TextField();
-                dateField.setLayoutX(200);
-                dateField.setLayoutY(150);
-                TextField costField = new TextField();
-                costField.setLayoutX(200);
-                costField.setLayoutY(200);
-
-                // Create a button to finish editing
-                Button finishEditButton = new Button("Finish");
-                finishEditButton.setLayoutX(100);
-                finishEditButton.setLayoutY(300);
-
-                // close
-                Button closeEditButton = new Button("Close");
-                closeEditButton.setLayoutX(300);
-                closeEditButton.setLayoutY(300);
-
 
                 // fill text fields with selected expense's data
                 nameField.setText(selectedExpense.getName());
@@ -319,36 +292,21 @@ public class ExpenseController implements Initializable {
                 popup.show(expensePage.getScene().getWindow(), x - layout.getPrefWidth() / 2, y - layout.getPrefHeight() / 2);
                 expensePage.getScene().getRoot().setDisable(true); // disable main window
 
-                // popup position event handlers
-                expensePage.getScene().getWindow().xProperty().addListener(new ChangeListener<Number>() {
-                    @Override
-                    public void changed(ObservableValue<? extends Number> observableValue, Number oldX, Number newX) {
-                        popup.setX(newX.doubleValue() + expensePage.getScene().getRoot().getLayoutBounds().getWidth() / 2 - layout.getPrefWidth() / 2);
-                    }
-                });
-                expensePage.getScene().getWindow().yProperty().addListener(new ChangeListener<Number>() {
-                    @Override
-                    public void changed(ObservableValue<? extends Number> observableValue, Number oldY, Number newY) {
-                        popup.setY(newY.doubleValue() + expensePage.getScene().getRoot().getLayoutBounds().getHeight() / 2 - layout.getPrefHeight() / 2);
-                    }
-                });
-                expensePage.getScene().widthProperty().addListener(new ChangeListener<Number>() {
-                    @Override
-                    public void changed(ObservableValue<? extends Number> observableValue, Number oldWidth, Number newWidth) {
-                        popup.setX(expensePage.getScene().getWindow().getX() + expensePage.getScene().getRoot().getLayoutBounds().getWidth() / 2 - layout.getPrefWidth() / 2);
-                    }
-                });
-                expensePage.getScene().heightProperty().addListener(new ChangeListener<Number>() {
-                    @Override
-                    public void changed(ObservableValue<? extends Number> observableValue, Number oldHeight, Number newHeight) {
-                        popup.setY(expensePage.getScene().getWindow().getY() + expensePage.getScene().getRoot().getLayoutBounds().getHeight() / 2 - layout.getPrefHeight() / 2);
-                    }
-                });
-
+                // popup position event handler
+                centerEditPopup(popup, layout);
                 
+                // reenable main window when popup is closed
                 closeEditButton.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
+                        popup.hide();
+                        expensePage.getScene().getRoot().setDisable(false);
+                    }
+                });
+
+                // close popup when escape is pressed
+                popup.addEventFilter(KeyEvent.KEY_PRESSED, eventTwo -> {
+                    if (eventTwo.getCode() == KeyCode.ESCAPE) {
                         popup.hide();
                         expensePage.getScene().getRoot().setDisable(false);
                     }
@@ -414,17 +372,6 @@ public class ExpenseController implements Initializable {
                             // get index of edited expense
                             int index = expenseList.getIndex(editedExpense);
 
-                            if(index == -1) { // if expense not found
-                                // create alert
-                                Alert alert = new Alert(AlertType.ERROR);
-                                alert.setTitle("Error");
-                                alert.setHeaderText("Expense Not Found");
-                                alert.setContentText("An error with the program has occured. Please contact the developer.");
-                                alert.initOwner(popup); 
-                                alert.showAndWait();
-                                return;
-                            }
-
                             // remove old expense from observable list
                             obsvExpenseList.remove(selectedExpense);
                             // add edited expense to observable list at index
@@ -441,13 +388,7 @@ public class ExpenseController implements Initializable {
                     }
                 }); // end finishEditButton listener
 
-                // close popup when escape is pressed
-                popup.addEventFilter(KeyEvent.KEY_PRESSED, eventTwo -> {
-                    if (eventTwo.getCode() == KeyCode.ESCAPE) {
-                        popup.hide();
-                        expensePage.getScene().getRoot().setDisable(false);
-                    }
-                });
+                
             } 
         }); // end editButton listener
     } // end editListener method
@@ -549,6 +490,8 @@ public class ExpenseController implements Initializable {
         String month = monthMenu.getText();
 
         // set expenselist to month via expensemodel
+            // expenseList = expenseModel.getMonth(month);
+
 
         obsvExpenseList.clear(); // clear observable list
         for (Expense expense : expenseList) { // update observable list
@@ -566,10 +509,10 @@ public class ExpenseController implements Initializable {
         }
         // else find total for selected category
         else { 
-            if (expenseList.getCategorySpending(totalMenu.getText()) == -1) {
-                total.setText("$0.00");
+            if (expenseList.getCategorySpending(totalMenu.getText()) == -1) { // if category not found
+                total.setText("$0.00"); // set total to 0
             }
-            else {
+            else { // else set total to category total
                 total.setText(String.format("$%.2f", expenseList.getCategorySpending(totalMenu.getText())));
             }
         }
@@ -663,36 +606,36 @@ public class ExpenseController implements Initializable {
 
     private void setMenuItems() {
         // get categories from budgetmodel
+        ArrayList<String> categoryList = budgetModel.getCategoryList();
+        
         // add categories to total menu
+        for (String category : categoryList) {
+            MenuItem menuItem = new MenuItem(category);
+            totalMenu.getItems().add(menuItem);
+            menuItem.setOnAction(this::changeMenuButton);
+        }
         // add categories to addcategory menu
+        for (String category : categoryList) {
+            MenuItem menuItem = new MenuItem(category);
+            addCategoryField.getItems().add(menuItem);
+            menuItem.setOnAction(this::changeMenuButton);
+        }
         // add categories to popup addcategory menu (edit expense)
+        for (String category : categoryList) {
+            MenuItem menuItem = new MenuItem(category);
+            categoryField.getItems().add(menuItem);
+            menuItem.setOnAction(this::changeMenuButton);
+        }
+
 
         // get months from budgetmodel and expense model 
-        // add months to month menu
-
-        // set month to newest month
-
-        // what if no months????
-
-        // add food to addcategoryfield menuitem
-        MenuItem food = new MenuItem("Food");
-        // add to addcategoryfield menuitem
-        addCategoryField.getItems().add(food);
-        // on action changemenu button
-        food.setOnAction(this::changeMenuButton);
-
-        MenuItem food2 = new MenuItem("Food");
-        totalMenu.getItems().add(food2);
-        food2.setOnAction(this::changeMenuButton);
-
-        MenuItem All = new MenuItem("All");
-        totalMenu.getItems().add(All);
-        All.setOnAction(this::changeMenuButton);
-
-        MenuItem jan23 = new MenuItem("January 2023");
-        monthMenu.getItems().add(jan23);
-        jan23.setOnAction(this::changeMenuButton);
-
+            // ArrayList<String> monthList = budgetModel.getMonthList();
+            // // add months to month menu
+            // for (String month : monthList) {
+            //     MenuItem menuItem = new MenuItem(month);
+            //     monthMenu.getItems().add(menuItem);
+            //     menuItem.setOnAction(this::changeMenuButton);
+            // }
     }
 
 
@@ -709,6 +652,79 @@ public class ExpenseController implements Initializable {
             updateTotal();
         }
     } // end changeMenuButton method
+
+
+    private void createEditMenu() {
+
+        nameField = new TextField();
+        categoryField = new MenuButton();
+        dateField = new TextField();
+        costField = new TextField();
+        name = new Label("Name:");
+        category = new Label("Category:");
+        date = new Label("Date:");
+        cost = new Label("Cost:");
+        finishEditButton = new Button("Finish");
+        closeEditButton = new Button("Close");
+
+        // place each label 
+        name.setLayoutX(100);
+        name.setLayoutY(50);
+        category.setLayoutX(100);
+        category.setLayoutY(100);
+        date.setLayoutX(100);
+        date.setLayoutY(150);
+        cost.setLayoutX(100);
+        cost.setLayoutY(200);
+
+        // place each textfield
+        nameField.setLayoutX(200);
+        nameField.setLayoutY(50);
+        categoryField.setLayoutX(200);
+        categoryField.setLayoutY(100);
+        categoryField.setPrefWidth(150);
+        dateField.setLayoutX(200);
+        dateField.setLayoutY(150);
+        costField.setLayoutX(200);
+        costField.setLayoutY(200);
+
+        // Create a button to finish editing
+        finishEditButton.setLayoutX(100);
+        finishEditButton.setLayoutY(300);
+
+        // close
+        closeEditButton.setLayoutX(300);
+        closeEditButton.setLayoutY(300);
+    }
+
+
+    private void centerEditPopup(Popup popup, AnchorPane layout) {
+        // popup position event handlers
+        expensePage.getScene().getWindow().xProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number oldX, Number newX) {
+                popup.setX(newX.doubleValue() + expensePage.getScene().getRoot().getLayoutBounds().getWidth() / 2 - layout.getPrefWidth() / 2);
+            }
+        });
+        expensePage.getScene().getWindow().yProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number oldY, Number newY) {
+                popup.setY(newY.doubleValue() + expensePage.getScene().getRoot().getLayoutBounds().getHeight() / 2 - layout.getPrefHeight() / 2);
+            }
+        });
+        expensePage.getScene().widthProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number oldWidth, Number newWidth) {
+                popup.setX(expensePage.getScene().getWindow().getX() + expensePage.getScene().getRoot().getLayoutBounds().getWidth() / 2 - layout.getPrefWidth() / 2);
+            }
+        });
+        expensePage.getScene().heightProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number oldHeight, Number newHeight) {
+                popup.setY(expensePage.getScene().getWindow().getY() + expensePage.getScene().getRoot().getLayoutBounds().getHeight() / 2 - layout.getPrefHeight() / 2);
+            }
+        });
+    }
 
 
     private void setAnchorPaneConstraints() {

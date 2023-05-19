@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.util.Scanner;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 public class BudgetModel {
     private ObservableList<Income> incomeList = FXCollections.observableArrayList();
@@ -15,6 +18,25 @@ public class BudgetModel {
     private double totalIncome;
     private double totalSpent;
     private double totalRemaining;
+
+    public ArrayList<String> getCategoryList() {
+        ArrayList<String> categoryList = new ArrayList<String>();
+        // creates list of unique categories
+        for (Budget budget : budgetList) {
+            if (!categoryList.contains(budget.getCategory())) {
+                categoryList.add(budget.getCategory());
+            }
+        }
+        return categoryList;
+    }
+
+    public ObservableList<Income> getIncomeList() {
+        return incomeList;
+    }
+
+    public ObservableList<Budget> getBudgetList() {
+        return budgetList;
+    }
 
 
     public void addIncome(String source, double incomeAmount) {
@@ -84,38 +106,27 @@ public class BudgetModel {
     
     public void readCSV(String filename) { 
         try {
-            File file = new File(System.getProperty("user.home"), filename);
-            Scanner scanner = new Scanner(file);
-            scanner.nextLine(); // skip header row
-            while (scanner.hasNextLine()) { 
-                String line = scanner.nextLine();
-                String[] fields = line.split(",");
-                if (fields.length == 2) { // income data
-                    String source = fields[0].trim();
-                    String amountString = fields[1].trim();
-                    if (!amountString.matches("\\d+(\\.\\d+)?")) { // check if amountString contains only digits and optionally a decimal point
-                        continue; // skip to next line
-                    }
-                    double amount = Double.parseDouble(amountString);
-                    Income income = new Income(source, amount);
-                    incomeList.add(income);
-                } else if (fields.length == 3) { // expense data
-                    String category = fields[0].trim();
-                    String amountString = fields[1].trim();
-                    if (!amountString.matches("\\d+(\\.\\d+) ?")) { // check if amountString contains only digits and optionally a decimal point
-                        continue; // skip to next line
-                    }
-                    double spent = Double.parseDouble(amountString);
-                    double total = Double.parseDouble(fields[2].trim());
-                    Budget budget = new Budget(category, spent, total);
-                    budgetList.add(budget);
-                } // end of if statement
-            } // end of while loop
+            Scanner scanner = new Scanner(new File(filename));
+            scanner.nextLine(); // skip expense header row
+
+            String line = scanner.nextLine(); 
+            while (scanner.hasNextLine()) {
+                String[] fields = line.split(","); // create array of fields split by comma
+
+                // add fields to budget
+                String category = fields[0].trim();
+                double spent = Double.parseDouble(fields[1].trim());
+                double total = Double.parseDouble(fields[2].trim());
+
+                this.addBudget(category, spent, total); // add budget to list
+                line = scanner.nextLine(); // read next line
+            }
             scanner.close();
-            
-        } catch (FileNotFoundException e) {
-            System.out.println("File not found: " + filename);
-        } // end of catch
+        } catch (IOException e) {
+            System.out.println("Error reading file: " + filename);
+        }
+
+        
     } // end of readCSV method 
     
     

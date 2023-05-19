@@ -11,7 +11,13 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.Label;
 import javafx.scene.Node;
-
+import javafx.scene.control.SplitPane.Divider;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.control.Control;
+import javafx.application.Application;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 public class MainPageController implements Initializable {
 
@@ -29,7 +35,7 @@ public class MainPageController implements Initializable {
     BudgetModel budgetModel;
 
     // set models when MainPageController is created
-    public void SetModels(ExpenseList expenseList, BudgetModel budgetModel) {
+    public void setModels(ExpenseList expenseList, BudgetModel budgetModel) {
         this.expenseList = expenseList;
         this.budgetModel = budgetModel;
     }
@@ -42,7 +48,6 @@ public class MainPageController implements Initializable {
             mainPage.setDividerPositions(0.20);
         });
 
-        menuPage.setStyle("-fx-background-color: #ECEAEA;"); // set menuPage background color to gray
         addButtonImages();  // add images to menu buttons
         setAnchorConstraints(); // apply anchorpane constraints to page elements
         selectButton(dashboardNavButton); // select dashboard button by default
@@ -56,6 +61,7 @@ public class MainPageController implements Initializable {
 
     // switches fx:include content page to the page specified by fileName
     public void switchContentPage(String fileName) throws IOException {
+        
         // load the new page
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(App.class.getResource(fileName + ".fxml"));
@@ -71,18 +77,17 @@ public class MainPageController implements Initializable {
         else { // else, replace the current page with the new page
             mainPage.getItems().set(1, newPage);
         }
-        
 
         // add models to controller of new page
         if (fileName.equals("DashboardPage")) {
             DashboardController controller = loader.getController();
-            controller.SetModels(expenseList, budgetModel);
+            controller.setModels(expenseList, budgetModel);
         } else if (fileName.equals("BudgetPage")) {
             BudgetController controller = loader.getController();
-            controller.SetModels(expenseList, budgetModel);
+            controller.setModels(expenseList, budgetModel);
         } else if (fileName.equals("ExpensePage")) {
             ExpenseController controller = loader.getController();
-            controller.SetModels(expenseList, budgetModel);
+            controller.setModels(expenseList, budgetModel);
         }
     }
 

@@ -1,5 +1,6 @@
 package com.application.budgeter;
 
+import javafx.beans.Observable;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.AreaChart;
@@ -11,6 +12,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.control.Label;
 import java.time.LocalDate;
 import javafx.scene.Node;
+import javafx.collections.ObservableList;
+import javafx.collections.FXCollections;
 
 
 public class DashboardController implements Initializable {
@@ -38,10 +41,20 @@ public class DashboardController implements Initializable {
     ExpenseList expenseList = new ExpenseList();
     BudgetModel budgetModel = new BudgetModel();
 
-    public void SetModels(ExpenseList expenseList, BudgetModel budgetModel) {
+    public void setModels(ExpenseList expenseList, BudgetModel budgetModel) {
         // pass expenseList to MainPageController
         this.expenseList = expenseList;
         this.budgetModel = budgetModel;
+
+        // make observable list with category names and spent amounts from budget
+        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+        for (Budget budget : budgetModel.getBudgetList()) {
+            pieChartData.add(new PieChart.Data(budget.getCategory(), budget.getSpent()));
+            // print hey
+            System.out.println("hey");
+        }
+
+        pieChart = new PieChart(pieChartData);
     }
 
 
@@ -50,16 +63,6 @@ public class DashboardController implements Initializable {
     public void initialize(java.net.URL arg0, java.util.ResourceBundle arg1) {
         setAnchorPaneContraints();
         formatTable();
-        // set pie chart background to orange
-        pieChart.setStyle("-fx-background-color: #CEC9BF;");
-
-
-
- 
-
-
-
-
     }
 
     public void setAnchorPaneContraints() {

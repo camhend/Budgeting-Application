@@ -10,7 +10,7 @@
 <?import javafx.scene.text.Font?>
 
 
-<AnchorPane fx:id="budgetPage" minHeight="600.0" minWidth="680.0" prefHeight="600.0" prefWidth="680.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.application.budgeter.BudgetController"> 
+<AnchorPane fx:id="budgetPage" minHeight="600.0" minWidth="680.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.application.budgeter.BudgetController"> 
   <children>
     <!-- Title of page-->
     <Label fx:id="budgetTitle" alignment="CENTER" style="&#10;" text="Budget Planner" textAlignment="CENTER" textFill="#726d6d" >

@@ -17,6 +17,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.control.Label;
 import javafx.scene.Node;
+// tablecell
+import javafx.scene.control.TableCell;
+
 
 
 
@@ -44,41 +47,48 @@ public class BudgetController implements Initializable {
     BudgetModel budgetModel = new BudgetModel();
     ExpenseList expenseList = new ExpenseList();
 
-    public void SetModels(ExpenseList expenseList, BudgetModel budgetModel) {
+    public void setModels(ExpenseList expenseList, BudgetModel budgetModel) {
         // pass expenseList to MainPageController
         this.expenseList = expenseList;
         this.budgetModel = budgetModel;
+        BudgetTable.setItems(budgetModel.getBudgetList());
+        updateSpending();
+        setProgressBar();
     }
 
     public void submit(ActionEvent event) {
         try {
             String categoryName = categoryTextField.getText();
             double categoryLimit = Double.parseDouble(limitTextField.getText());
-            Budget budgetCategory = new Budget(categoryName, 0, categoryLimit);
-            BudgetTable.getItems().add(budgetCategory);
+            budgetModel.addBudget(categoryName, 0, categoryLimit);
+            categoryTextField.clear();
+            limitTextField.clear();
         }
         catch (Exception e) {
             System.out.print(e);
         }
     }
 
-    ObservableList<Budget> budgetlist = FXCollections.observableArrayList(
-        (new Budget("Food", 300.00, 600.00)),
-        (new Budget("Transportation", 160.00, 300.00)),
-        (new Budget("Housing", 1000.00, 1000.00)),
-        (new Budget("Utillities", 156.00, 225.00)),
-        (new Budget("Clothing", 138.00, 200.00)),
-        (new Budget("Recreation", 65.00, 150.00))
-    );
+    public void updateSpending() {
+        // for each category, check category spending in expenseList
+        for (Budget budget : budgetModel.getBudgetList()) {
+            double newSpent = expenseList.getCategorySpending(budget.category);
+            if (newSpent != -1) {
+                budgetModel.editBudgetSpent(budget, newSpent);
+            }
+        }
+    }
+
 
     public void setProgressBar() {
         double totalSpent = 0;
         double totalBudget = 0;
-        for (Budget budget : budgetlist) {
+        for (Budget budget : budgetModel.getBudgetList()) {
            totalSpent += budget.spent;
            totalBudget += budget.total;
         }
         SpendingBar.setProgress(totalSpent/totalBudget);
+        progressTitle.setText("Spent: $" + totalSpent + " / $" + totalBudget + " (" + (int)(totalSpent/totalBudget * 100) + "%)");
     }
     
     @Override
@@ -87,12 +97,53 @@ public class BudgetController implements Initializable {
         total.setCellValueFactory(new PropertyValueFactory<Budget, Double>("total"));
         spent.setCellValueFactory(new PropertyValueFactory<Budget, Double>("spent"));
         remaining.setCellValueFactory(new PropertyValueFactory<Budget, Double>("remaining"));
-        BudgetTable.setItems(budgetlist);
-        setProgressBar();
+        formatCurrencyColumns();
 
         // formatting page elements
         setAnchorPaneConstraints();
         BudgetTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+    }
+
+    private void formatCurrencyColumns() {
+        // set cell factory for 
+        remaining.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(Double item, boolean empty) {
+                super.updateItem(item, empty);
+        
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(String.format("$%.2f", item));
+                }
+            }
+        });
+
+        spent.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(Double item, boolean empty) {
+                super.updateItem(item, empty);
+        
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(String.format("$%.2f", item));
+                }
+            }
+        });
+
+        total.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(Double item, boolean empty) {
+                super.updateItem(item, empty);
+        
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(String.format("$%.2f", item));
+                }
+            }
+        });
     }
 
 

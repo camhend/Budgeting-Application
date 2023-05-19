@@ -17,17 +17,20 @@ public class App extends Application {
     private ExpenseList expenseList = new ExpenseList();
     private BudgetModel budgetModel = new BudgetModel();
 
-    
     @Override
     public void start(Stage stage) throws IOException {
+
+        // load most recent month's data to models
+        expenseList.loadFromCSV("expenses.csv");
+        budgetModel.readCSV("budget.csv");
+
         FXMLLoader loader = new FXMLLoader(App.class.getResource("MainPage.fxml"));
 
         scene = new Scene(loader.load(), 900, 615);
 
-        expenseList.loadFromCSV("expenses.csv");
-        // pass expenseList to MainPageController
+        // pass models to MainPageController
         MainPageController controller = loader.getController();
-        controller.SetModels(expenseList, budgetModel);
+        controller.setModels(expenseList, budgetModel);
 
         // set icon
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/com/application/budgeter/images/appIcon.jpg")));
