@@ -19,6 +19,10 @@ import javafx.scene.control.SplitPane;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.TableCell;
 import java.time.format.DateTimeFormatter;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 
 
 public class DashboardController implements Initializable {
@@ -28,7 +32,10 @@ public class DashboardController implements Initializable {
 
     // charts
     @FXML private PieChart pieChart;
-    @FXML private AreaChart<String, Double> areaChart;
+
+    @FXML private BarChart<String, Double> barChart;
+    @FXML private CategoryAxis categoryAxis;
+    @FXML private NumberAxis amountAxis;
 
     // center budget data elements
     @FXML private Label flatAmountSpent;
@@ -53,7 +60,7 @@ public class DashboardController implements Initializable {
         addPiechart();
         addRecentTransactions();
         formatTable();
-        addAreaChart();
+        addBarChart();
         addBudgetData();
     } // end of setModels method
 
@@ -100,9 +107,20 @@ public class DashboardController implements Initializable {
     } // end of addRecentTransactions method
 
 
-    private void addAreaChart() {
-        
-    } // end of addAreaChart method
+    private void addBarChart() {
+        // make observable list with category names and spent amounts from budget
+        ObservableList<XYChart.Series<String, Double>> barChartData = FXCollections.observableArrayList();
+        XYChart.Series<String, Double> series = new XYChart.Series<>();
+
+        for (Budget budget : budgetModel.getBudgetList()) {
+            series.getData().add(new XYChart.Data<>(budget.getCategory(), budget.getSpent()));
+        }
+
+        barChartData.add(series);
+
+        // set pie chart data
+        barChart.setData(barChartData);
+    } // end of addBarChart method
 
 
     private void addBudgetData() {
@@ -141,7 +159,7 @@ public class DashboardController implements Initializable {
         dashboardPage.widthProperty().addListener((obs, oldVal, newVal) -> {
             setWidthConstraints(dashboardTitle, newVal, .4, .4);
             setWidthConstraints(pieChart, newVal, .05, .6);
-            setWidthConstraints(areaChart, newVal, .05, .4);
+            setWidthConstraints(barChart, newVal, .05, .4);
             setWidthConstraints(flatAmountSpent, newVal, .4, .4);
             setWidthConstraints(percentAmountSpent, newVal, .4, .4);
             setWidthConstraints(daysLeft, newVal, .4, .4);
@@ -153,7 +171,7 @@ public class DashboardController implements Initializable {
         dashboardPage.heightProperty().addListener((obs, oldVal, newVal) -> {
             setHeightConstraints(dashboardTitle, newVal, .03, .92);
             setHeightConstraints(pieChart, newVal, .1, .55);
-            setHeightConstraints(areaChart, newVal, .5, .05);
+            setHeightConstraints(barChart, newVal, .5, .05);
             setHeightConstraints(flatAmountSpent, newVal, .17, .73);
             setHeightConstraints(percentAmountSpent, newVal, .25, .65);
             setHeightConstraints(daysLeft, newVal, .33, .57);

@@ -10,6 +10,10 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.XYChart?>
+
+
 
 <AnchorPane fx:id="dashboardPage" prefHeight="600.0" prefWidth="680.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml" fx:controller="com.application.budgeter.DashboardController">
    <children>
@@ -41,15 +45,15 @@
          </columns>
       </TableView>
 
-      <!-- Area chart for spending over time-->
-      <AreaChart title="Area Chart" fx:id="areaChart" >
-        <xAxis>
-          <CategoryAxis side="BOTTOM" />
-        </xAxis>
-        <yAxis>
-          <NumberAxis side="LEFT" />
-        </yAxis>
-      </AreaChart>
+      <!-- chart for spending over time -->
+      <BarChart fx:id="barChart" title="Bar Chart">
+         <xAxis>
+            <CategoryAxis fx:id="categoryAxis" />
+         </xAxis>
+         <yAxis>
+            <NumberAxis fx:id="amountAxis" />
+         </yAxis>
+      </BarChart>
 
    </children>
 </AnchorPane>
