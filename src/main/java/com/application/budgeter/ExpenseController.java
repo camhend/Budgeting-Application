@@ -54,6 +54,8 @@ import java.util.ArrayList;
     // button icons 
     // how will new file be created for new months
     // new expensemodel for each month
+    // what to do if budget is deleted but expenses still exist
+    // add checks for when expenselist is empty in dashboard controller elements
 
 // Done
     // write tests (DONE)
@@ -608,6 +610,10 @@ public class ExpenseController implements Initializable {
         // get categories from budgetmodel
         ArrayList<String> categoryList = budgetModel.getCategoryList();
         
+        MenuItem all = new MenuItem("All");
+        totalMenu.getItems().add(all);
+        all.setOnAction(this::changeMenuButton);
+
         // add categories to total menu
         for (String category : categoryList) {
             MenuItem menuItem = new MenuItem(category);
