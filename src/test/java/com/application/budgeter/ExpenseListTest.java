@@ -345,6 +345,31 @@ public class ExpenseListTest {
     }
 
     @Test
+    public void testEdit_OneNodeDateChanged() {
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-02-20"), 10);
+        
+        list.add(exp1);
+
+        Expense updatedExp1 = new Expense("hotdog", "food", LocalDate.parse("2001-02-02"), 10);
+        list.edit(exp1, updatedExp1);
+
+        Expense[] expected = {updatedExp1};
+
+        int index = 0;
+        for (Expense expense : list) {
+            assertEquals(expected[index], expense);
+            index++;
+        }
+
+        Iterator<Expense> itPrev = list.descendingIterator();
+        index = 0;
+        while ( itPrev.hasNext() ) {
+            assertEquals(expected[index], itPrev.next() );
+            index--;
+        }
+    }
+
+    @Test
     public void testEdit_EmptyList_ReturnFalse() {
         Expense exp3 = new Expense("groceries", "food", LocalDate.parse("2010-02-28"), 50);
         Expense updatedExp3 = new Expense("burger", "food", LocalDate.parse("2011-02-28"), 50);

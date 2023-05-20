@@ -26,17 +26,16 @@ public class ExpenseList implements Iterable<Expense> {
     private int size;
     private Map<String, Double> categorySpending;
     private ExpenseList copy; // copy of current list used for reverting changes
-    private final LocalDate monthYear;
+    //private final LocalDate monthYear;
 
     // ExpenseList constructor
-    public ExpenseList (LocalDate monthYear) {
+    public ExpenseList () {
         this.head  = null;
         this.tail = null;
         this.size = 0;
         this.totalSpending = 0;
         this.categorySpending = new HashMap<String, Double>();
         this.copy = null;
-        this.monthYear = monthYear;
     } 
 
     // Nested class for LinkedList Nodes
@@ -75,7 +74,6 @@ public class ExpenseList implements Iterable<Expense> {
         }
         
     }
-
 
 
     // Add new Expense to the list in sorted order by date
@@ -232,7 +230,10 @@ public class ExpenseList implements Iterable<Expense> {
         // to the correct sorted position.
         if ( !updated.getLocalDate().equals(old.getLocalDate()) ) {
             // First, remove edited node from the current position
-            if (node == head) {
+            if (node == head && node == tail) {
+                // do not move if this node is the only node
+                return true;
+            } else if (node == head) {
                 // If node is head and node should still be the head, 
                 // then do not move the node
                 if (updated.getLocalDate().isBefore(node.next.expense.getLocalDate()) ) {
@@ -411,7 +412,7 @@ public class ExpenseList implements Iterable<Expense> {
     }
 
     public ExpenseList copy() {
-        ExpenseList copy = new ExpenseList(this.monthYear);
+        ExpenseList copy = new ExpenseList();
         // this ExpenseList is empty
         if (this.isEmpty()) {
             return copy;
@@ -442,10 +443,9 @@ public class ExpenseList implements Iterable<Expense> {
         return copy;
     }
 
-    public void saveChanges (boolean confirmed) {
-        if ( confirmed ) {
-            saveToCSV("Budgeter/src/main/resources/com/application/budgeter/expensedata/" 
-                + monthYear.getYear() + "-" + monthYear.getMonthValue() + ".csv");
+    public void confirmSave (boolean confirmed, String filename) {
+        if ( confirmed && copy != null) {
+            saveToCSV(filename);
         } else {
             this.head = copy.head;
             this.tail = copy.tail;
@@ -479,13 +479,8 @@ public class ExpenseList implements Iterable<Expense> {
         }
     }
 
-    public boolean loadFromCSV(LocalDate monthYear) {
-        return loadFromCSV("Budgeter/src/main/resources/com/application/budgeter/expensedata/" 
-            + this.monthYear.getYear() + "-" + this.monthYear.getMonthValue() + ".csv");
-        
-    }
 
-    private boolean loadFromCSV(String filename) {
+    public boolean loadFromCSV(String filename) {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(filename));
             String line = reader.readLine();
