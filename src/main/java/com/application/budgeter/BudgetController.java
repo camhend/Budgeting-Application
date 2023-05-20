@@ -3,6 +3,7 @@ package com.application.budgeter;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -17,8 +18,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.control.Label;
 import javafx.scene.Node;
-// tablecell
 import javafx.scene.control.TableCell;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 
 
 
@@ -54,6 +56,14 @@ public class BudgetController implements Initializable {
         BudgetTable.setItems(budgetModel.getBudgetList());
         updateSpending();
         setProgressBar();
+
+        // delete menubutton context menu in BudgetTable
+        ContextMenu contextMenu = new ContextMenu();
+        BudgetTable.setContextMenu(contextMenu); // set context menu to tableview
+
+        MenuItem deleteMenuItem = new MenuItem("Delete");
+        contextMenu.getItems().addAll(deleteMenuItem);
+        deleteListener(deleteMenuItem); 
     }
 
     public void submit(ActionEvent event) {
@@ -67,7 +77,18 @@ public class BudgetController implements Initializable {
         catch (Exception e) {
             System.out.print(e);
         }
+    } // end submit
+
+    public void deleteListener(MenuItem deleteMenuItem) {
+        deleteMenuItem.setOnAction((ActionEvent event) -> {
+            // get selected row
+            Budget selectedBudget = BudgetTable.getSelectionModel().getSelectedItem();
+            // remove selected row from the data
+            budgetModel.deleteBudget(selectedBudget);
+            
+        });
     }
+
 
     public void updateSpending() {
         // for each category, check category spending in expenseList
