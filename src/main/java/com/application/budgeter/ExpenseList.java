@@ -460,7 +460,7 @@ public class ExpenseList implements Iterable<Expense> {
     }
 
     // write to csv, return true if successful, each line is an expense, each comma is a field
-    private boolean saveToCSV(String filename) {
+    public boolean saveToCSV(String filename) {
         try {
             FileWriter writer = new FileWriter(filename);
             writer.write("Name,Category,Date,Amount\n");
@@ -499,10 +499,14 @@ public class ExpenseList implements Iterable<Expense> {
                 Expense expense = new Expense(name, category, date, amount);
                 this.add(expense); 
                 line = reader.readLine();
+                System.out.println("expense added");
             }
             reader.close();
+            System.out.println("success");
             return true;
         } catch (IOException e) {
+            System.out.println("error");
+
             return false;
         }
     }

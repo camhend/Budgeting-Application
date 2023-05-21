@@ -30,13 +30,13 @@ public class MainPageController implements Initializable {
     @FXML private Button budgetNavButton;
     @FXML private Button expenseNavButton;
 
-    // data models
-    ExpenseList expenseList;
-    BudgetModel budgetModel;
+    BudgetModel budgetModel = new BudgetModel();
+    ExpenseModel expenseModel = new ExpenseModel();
 
-    // set models when MainPageController is created
-    public void setModels(ExpenseList expenseList, BudgetModel budgetModel) {
-        this.expenseList = expenseList;
+
+    public void setModels(ExpenseModel expenseModel, BudgetModel budgetModel) {
+        // pass expenseList to MainPageController
+        this.expenseModel = expenseModel;
         this.budgetModel = budgetModel;
 
 
@@ -89,13 +89,13 @@ public class MainPageController implements Initializable {
         // add models to controller of new page
         if (fileName.equals("DashboardPage")) {
             DashboardController controller = loader.getController();
-            controller.setModels(expenseList, budgetModel);
+            controller.setModels(expenseModel, budgetModel);
         } else if (fileName.equals("BudgetPage")) {
             BudgetController controller = loader.getController();
-            controller.setModels(expenseList, budgetModel);
+            controller.setModels(expenseModel, budgetModel);
         } else if (fileName.equals("ExpensePage")) {
             ExpenseController controller = loader.getController();
-            controller.setModels(expenseList, budgetModel);
+            controller.setModels(expenseModel, budgetModel);
         }
     }
 

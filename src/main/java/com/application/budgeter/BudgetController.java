@@ -1,6 +1,7 @@
 package com.application.budgeter;
 
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 
@@ -47,12 +48,18 @@ public class BudgetController implements Initializable {
     @FXML private Label progressTitle;
 
     BudgetModel budgetModel = new BudgetModel();
-    ExpenseList expenseList = new ExpenseList();
+    ExpenseList expenseList;
+    ExpenseModel expenseModel = new ExpenseModel();
 
-    public void setModels(ExpenseList expenseList, BudgetModel budgetModel) {
+
+    public void setModels(ExpenseModel expenseModel, BudgetModel budgetModel) {
         // pass expenseList to MainPageController
-        this.expenseList = expenseList;
+        this.expenseModel = expenseModel;
         this.budgetModel = budgetModel;
+
+        LocalDate today = LocalDate.now();
+        expenseList = expenseModel.getExpenseList(today); // get expenseList for current month
+        
         BudgetTable.setItems(budgetModel.getBudgetList());
         updateSpending();
         setProgressBar();

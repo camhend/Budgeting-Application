@@ -137,8 +137,6 @@ public class BudgetModel {
         } catch (IOException e) {
             System.out.println("Error reading file: " + filename);
         }
-
-        
     } // end of readCSV method 
     
     

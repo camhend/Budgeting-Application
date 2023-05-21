@@ -14,14 +14,13 @@ public class App extends Application {
 
     private static Scene scene;
 
-    private ExpenseList expenseList = new ExpenseList();
+    private ExpenseModel expenseModel = new ExpenseModel();
     private BudgetModel budgetModel = new BudgetModel();
 
     @Override
     public void start(Stage stage) throws IOException {
 
         // load most recent month's data to models
-        expenseList.loadFromCSV("expenses.csv");
         budgetModel.readCSV("budget.csv");
 
         FXMLLoader loader = new FXMLLoader(App.class.getResource("MainPage.fxml"));
@@ -30,7 +29,7 @@ public class App extends Application {
 
         // pass models to MainPageController
         MainPageController controller = loader.getController();
-        controller.setModels(expenseList, budgetModel);
+        controller.setModels(expenseModel, budgetModel);
 
         // set icon
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/com/application/budgeter/images/appIcon.jpg")));

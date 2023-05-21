@@ -49,13 +49,18 @@ public class DashboardController implements Initializable {
     @FXML private TableColumn<Expense, LocalDate> dateColumn;
     @FXML private TableColumn<Expense, Double> amountColumn;
 
-    ExpenseList expenseList = new ExpenseList();
     BudgetModel budgetModel = new BudgetModel();
+    ExpenseList expenseList;
+    ExpenseModel expenseModel = new ExpenseModel();
 
-    public void setModels(ExpenseList expenseList, BudgetModel budgetModel) {
+
+    public void setModels(ExpenseModel expenseModel, BudgetModel budgetModel) {
         // pass expenseList to MainPageController
-        this.expenseList = expenseList;
+        this.expenseModel = expenseModel;
         this.budgetModel = budgetModel;
+
+        LocalDate today = LocalDate.now();
+        expenseList = expenseModel.getExpenseList(today); // get expenseList for current month
 
         addPiechart();
         addRecentTransactions();
@@ -86,6 +91,7 @@ public class DashboardController implements Initializable {
 
         // set pie chart data
         pieChart.setData(pieChartData);
+        pieChart.setTitle("Spendings");
     } // end of addPiechart method
 
 
@@ -120,6 +126,8 @@ public class DashboardController implements Initializable {
 
         // set pie chart data
         barChart.setData(barChartData);
+        barChart.setLegendVisible(false);
+        barChart.setTitle("Spendings");
     } // end of addBarChart method
 
 

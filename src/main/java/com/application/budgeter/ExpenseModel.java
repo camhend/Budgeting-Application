@@ -10,6 +10,20 @@ public class ExpenseModel {
         this.loadedLists = new HashMap<>();
     }
 
+
+    // go to Budgeter/src/main/resources/com/application/budgeter/expensedata/ and get all the files with qualified names
+    public ArrayList<String> getDateList() {
+        ArrayList<String> dateList = new ArrayList<>();
+        String path = getClass().getClassLoader().getResource("com/application/budgeter/expensedata").getPath();
+        String[] files = new java.io.File(path).list(); 
+        for (String file : files) {
+            if (file.endsWith(".csv") ) {
+                dateList.add(file.substring(0, file.length() - 4));
+            }
+        }
+        return dateList;
+    }
+
     // Get the ExpenseList of the same Month and Year of the given LocalDate.
     // Then, put the ExpenseList in the loadedLists map for later access.
     public ExpenseList getExpenseList(LocalDate monthYear) {
@@ -22,6 +36,8 @@ public class ExpenseModel {
             String filename = dateKey + ".csv";
             newList.loadFromCSV(path + filename);
             loadedLists.put(dateKey, newList);
+            System.out.println("Loaded " + dateKey + ".csv");
+
             return newList;
         }
     }

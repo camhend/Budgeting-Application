@@ -112,19 +112,20 @@ public class ExpenseController implements Initializable {
     private Button finishEditButton;
     private Button closeEditButton;
 
-
-    ExpenseList expenseList = new ExpenseList(); // list of expenses
-    BudgetModel budgetModel = new BudgetModel(); // budget model
-
     ObservableList<Expense> obsvExpenseList = FXCollections.observableArrayList(); // list of expenses to display in tableview
     
-    // add expenses to expenseList and display in tableview
+    BudgetModel budgetModel = new BudgetModel();
+    ExpenseList expenseList;
+    ExpenseModel expenseModel = new ExpenseModel();
 
 
-    public void setModels(ExpenseList expenseList, BudgetModel budgetModel) {
+    public void setModels(ExpenseModel expenseModel, BudgetModel budgetModel) {
         // pass expenseList to MainPageController
-        this.expenseList = expenseList;
+        this.expenseModel = expenseModel;
         this.budgetModel = budgetModel;
+
+        LocalDate today = LocalDate.now();
+        expenseList = expenseModel.getExpenseList(today); // get expenseList for current month
 
         setMenuItems();
 
@@ -488,13 +489,17 @@ public class ExpenseController implements Initializable {
 
 
     private void updateMonth() {
-        // get month from month menu
-        String month = monthMenu.getText();
 
-        // set expenselist to month via expensemodel
-            // expenseList = expenseModel.getMonth(month);
+        String year = monthMenu.getText().substring(0, 4); // get year from month menu
+        String month = monthMenu.getText().substring(5); // get month from month menu
+        if (month.length() == 1) { // if month is single digit
+            month = "0" + month; // add 0 to front
+        }
+        LocalDate date = LocalDate.parse(month + "/01/" + year, DateTimeFormatter.ofPattern("MM/dd/yyyy")); // create date object
 
-
+        expenseList = expenseModel.getExpenseList(date); // get expense list for month
+        System.out.println(date);
+        
         obsvExpenseList.clear(); // clear observable list
         for (Expense expense : expenseList) { // update observable list
             obsvExpenseList.add(expense); 
@@ -528,7 +533,7 @@ public class ExpenseController implements Initializable {
 
     // save data from tableview to file
     public void saveExpenses() {
-        expenseList.confirmSave(true, "expenses.csv");
+        expenseList.saveToCSV("expenses.csv");
     } // end saveExpenses method
     
 
@@ -614,15 +619,13 @@ public class ExpenseController implements Initializable {
             menuItem.setOnAction(this::changeMenuButton);
         }
 
-
-        // get months from budgetmodel and expense model 
-            // ArrayList<String> monthList = budgetModel.getMonthList();
-            // // add months to month menu
-            // for (String month : monthList) {
-            //     MenuItem menuItem = new MenuItem(month);
-            //     monthMenu.getItems().add(menuItem);
-            //     menuItem.setOnAction(this::changeMenuButton);
-            // }
+        // get dates from expensemodel
+        ArrayList<String> dateList = expenseModel.getDateList();
+        for (String date : dateList) {
+            MenuItem menuItem = new MenuItem(date);
+            monthMenu.getItems().add(menuItem);
+            menuItem.setOnAction(this::changeMenuButton);
+        }
     } // end setMenuItems method
 
 
