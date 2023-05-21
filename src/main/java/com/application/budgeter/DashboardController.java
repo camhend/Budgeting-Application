@@ -158,7 +158,7 @@ public class DashboardController implements Initializable {
         // listener for adjusting elements' width when window is resized
         dashboardPage.widthProperty().addListener((obs, oldVal, newVal) -> {
             setWidthConstraints(dashboardTitle, newVal, .4, .4);
-            setWidthConstraints(pieChart, newVal, .05, .6);
+            setWidthConstraints(pieChart, newVal, .05, .65);
             setWidthConstraints(barChart, newVal, .05, .4);
             setWidthConstraints(flatAmountSpent, newVal, .4, .4);
             setWidthConstraints(percentAmountSpent, newVal, .4, .4);
