@@ -528,26 +528,7 @@ public class ExpenseController implements Initializable {
 
     // save data from tableview to file
     public void saveExpenses() {
-        boolean isSaved = expenseList.saveToCSV("expenses.csv");
-
-        if(isSaved) {
-            // display success message
-            Alert alert = new Alert(AlertType.INFORMATION);
-
-            alert.setTitle("Success");
-            alert.setHeaderText("Success");
-            alert.setContentText("Expenses have been saved");
-            alert.showAndWait();
-        }
-        else {
-            // display error message
-            Alert alert = new Alert(AlertType.ERROR);
-
-            alert.setTitle("Error");
-            alert.setHeaderText("Error");
-            alert.setContentText("Error saving expenses");
-            alert.showAndWait();
-        }
+        expenseList.confirmSave(true, "expenses.csv");
     } // end saveExpenses method
     
 

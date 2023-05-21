@@ -69,5 +69,4 @@ public class ExpenseModel {
     public boolean remove( Expense expense ) {
         return getExpenseList(expense.getLocalDate()).remove(expense);
     }
-
 }
