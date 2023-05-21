@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane fx:id="budgetPage" minHeight="600.0" minWidth="680.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.application.budgeter.BudgetController"> 
+  <children>
+    <!-- Title of page-->
+    <Label fx:id="budgetTitle" alignment="CENTER" style="&#10;" text="Budget Planner" textAlignment="CENTER" textFill="#726d6d" >
+      <font>
+        <Font size="18.0" fx:id="x1" />                
+      </font>
+    </Label>
+
+    <!-- Budget Table -->
+      <TableView fx:id="BudgetTable">
+        <columns>
+          <TableColumn fx:id="category" text="Category" style="-fx-alignment: CENTER;"  />
+          <TableColumn fx:id="total" text="Budget" style="-fx-alignment: CENTER;"  />
+          <TableColumn fx:id="spent" text="Current" style="-fx-alignment: CENTER;"  />
+          <TableColumn fx:id="remaining" text="Remaining" style="-fx-alignment: CENTER;"  />
+        </columns>
+      </TableView>
+
+      <!-- spending progress bar-->
+      <ProgressBar fx:id="SpendingBar" progress="0.0" />
+      <Label fx:id="progressTitle" text="Progress" alignment="CENTER" />
+
+      <!-- add category section-->
+      <TextField fx:id="categoryTextField" promptText="Category..."/>
+      <TextField fx:id="limitTextField" promptText="Cost Limit..."/>
+      <Button fx:id="categoryButton" mnemonicParsing="false" onAction="#submit" text="Add" />
+  </children>
+</AnchorPane>
