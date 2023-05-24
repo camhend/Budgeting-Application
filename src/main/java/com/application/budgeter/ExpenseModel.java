@@ -32,9 +32,8 @@ public class ExpenseModel {
             return loadedLists.get(dateKey);
         } else {
             ExpenseList newList = new ExpenseList();
-            String path = "Budgeter/src/main/resources/com/application/budgeter/expensedata/";
             String filename = dateKey + ".csv";
-            newList.loadFromCSV(path + filename);
+            newList.loadFromCSV(filename);
             loadedLists.put(dateKey, newList);
             System.out.println("Loaded " + dateKey + ".csv");
 

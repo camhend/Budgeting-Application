@@ -19,6 +19,8 @@ import javafx.scene.control.SplitPane;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.TableCell;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
@@ -59,8 +61,9 @@ public class DashboardController implements Initializable {
         this.expenseModel = expenseModel;
         this.budgetModel = budgetModel;
 
-        LocalDate today = LocalDate.now();
-        expenseList = expenseModel.getExpenseList(today); // get expenseList for current month
+        if(!expenseModel.getDateList().isEmpty()) {
+            expenseList = getLatestExpenselist();
+        }
 
         addPiechart();
         addRecentTransactions();
@@ -75,6 +78,22 @@ public class DashboardController implements Initializable {
     public void initialize(java.net.URL arg0, java.util.ResourceBundle arg1) {
         setAnchorPaneContraints();
     } // end of initialize method
+
+
+    private ExpenseList getLatestExpenselist() {
+        // get latest date from dateList
+        ArrayList<String> dateList = expenseModel.getDateList();
+        String date = dateList.get(dateList.size() - 1);
+
+        // convert date to LocalDate object
+        String year = date.substring(0, 4); 
+        String month = date.substring(5); 
+        if (month.length() == 1) {month = "0" + month;}
+        LocalDate newestDate = LocalDate.parse(month + "/01/" + year, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+
+        // return expense list for month
+        return expenseModel.getExpenseList(newestDate); 
+    }
 
 
 

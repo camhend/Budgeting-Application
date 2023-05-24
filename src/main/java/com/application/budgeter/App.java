@@ -24,7 +24,6 @@ public class App extends Application {
         budgetModel.readCSV("budget.csv");
 
         FXMLLoader loader = new FXMLLoader(App.class.getResource("MainPage.fxml"));
-
         scene = new Scene(loader.load(), 900, 615);
 
         // pass models to MainPageController

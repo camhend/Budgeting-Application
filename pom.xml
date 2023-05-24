@@ -70,6 +70,10 @@
                     <include>**/*.csv</include>
                 </includes>
             </resource>
+            
+            <resource>
+                <directory>src/main/resources/com/application/budgeter/expensedata</directory>
+            </resource>
         </resources>
     </build>
 </project>

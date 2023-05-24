@@ -108,8 +108,9 @@ public class ExpenseController implements Initializable {
         this.expenseModel = expenseModel;
         this.budgetModel = budgetModel;
 
-        setDefaultMonth(); // set default month to newest saved month
-        setTableData();
+        // set default month to newest saved month
+        setDefaultMonth();
+        setTableData(); 
     } // end setModels method
     
 
@@ -242,26 +243,23 @@ public class ExpenseController implements Initializable {
                 // get selected row
                 Expense selectedExpense = expenseTable.getSelectionModel().getSelectedItem();
 
+                // create edit popup layout
                 AnchorPane layout = new AnchorPane();
                 layout.setPrefSize(300, 300);
-
 
                 // fill text fields with selected expense's data
                 nameField.setText(selectedExpense.getName());
                 categoryField.setText(selectedExpense.getCategory());
                 dateField.setText(selectedExpense.getLocalDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
                 costField.setText(String.format("$%.2f", selectedExpense.getAmount()));
-                
 
-                // add all elements to layout
                 layout.getChildren().addAll(name, category, date, cost, nameField, categoryField, dateField, costField, finishEditButton, closeEditButton);
 
-                // Create a popup and set its content to the layout
                 Popup popup = new Popup();
                 popup.getContent().add(layout);
 
 
-                // get window coordinates of expensePage
+                // get window center coordinates
                 double x = expensePage.getScene().getWindow().getX();
                 double y = expensePage.getScene().getWindow().getY();
                 x = x + expensePage.getScene().getRoot().getLayoutBounds().getWidth() / 2;
@@ -417,12 +415,7 @@ public class ExpenseController implements Initializable {
         }
             
         expenseList.confirmSave(true, expenseList.getMonthYear()+".csv");
-        // save alert
-        Alert alert = new Alert(AlertType.INFORMATION);
-        alert.setTitle("Save");
-        alert.setHeaderText("Save");
-        alert.setContentText("Expenses saved to expenses.csv");
-        alert.showAndWait();
+        sendAlert("Save", "Save", "Expenses saved to "+expenseList.getMonthYear()+".csv", null);
 
         // refresh monthMenu items
         ArrayList<String> dateList = expenseModel.getDateList();
