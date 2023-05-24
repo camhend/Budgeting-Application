@@ -53,6 +53,14 @@ public class ExpenseList implements Iterable<Expense> {
             this.expense = expense;
         }
     }
+
+    // return month and year (yyyy-mm)
+    public String getMonthYear() {
+        if (head == null) {
+            return null;
+        }
+        return head.expense.getLocalDate().format(DateTimeFormatter.ofPattern("yyyy-MM"));
+    }
     
     public int size() {
         return size;
@@ -446,21 +454,28 @@ public class ExpenseList implements Iterable<Expense> {
         return copy;
     }
 
-    public void confirmSave (boolean confirmed, String filename) {
-        if ( confirmed && copy != null) {
-            saveToCSV(filename);
-        } else {
-            this.head = copy.head;
-            this.tail = copy.tail;
-            this.totalSpending = copy.totalSpending;
-            this.size = copy.size;
-            this.categorySpending = copy.categorySpending;
-        }
-        this.copy = null;
-    }
+    public void confirmSave (boolean confirmed, String filename) { 
+        // no copy was made so no changes were made. No changes to save, so don't save, and return instead
+        if (copy == null) {
+            return;
+        // Changes were made, and save is confirmed (confirm is true)
+        } else if ( confirmed ) { 
+            saveToCSV(filename); 
+        // Changes were made, but save is cancelled (confirm is false)
+        } else { 
+            this.head = copy.head; 
+            this.tail = copy.tail; 
+            this.totalSpending = copy.totalSpending; 
+            this.size = copy.size; 
+            this.categorySpending = copy.categorySpending; 
+        } 
+        this.copy = null; 
+     }
 
     // write to csv, return true if successful, each line is an expense, each comma is a field
-    public boolean saveToCSV(String filename) {
+    private boolean saveToCSV(String filename) {
+        String path = getClass().getClassLoader().getResource("com/application/budgeter/expensedata").getPath();
+
         try {
             FileWriter writer = new FileWriter(filename);
             writer.write("Name,Category,Date,Amount\n");

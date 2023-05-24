@@ -65,9 +65,9 @@
     <TextField promptText="Date..." fx:id="addDateField"/>
     <TextField promptText="Cost..." fx:id="addCostField"/>
 
+    <!-- choosing month to see expense data for -->
+    <Label fx:id="monthTitle" style="-fx-font-weight: bold;" alignment="CENTER" text="Month" />
     <MenuButton text="Month" alignment="CENTER" fx:id="monthMenu"/>
     
-    
-
   </children>
 </AnchorPane>
