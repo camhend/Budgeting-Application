@@ -335,6 +335,12 @@ public class ExpenseController implements Initializable {
             double cost = convertToDouble(addCostField.getText());
             Expense newExpense = new Expense(name, category, date, cost);
             
+
+            expenseModel.add(newExpense); 
+            obsvExpenseList.clear();
+            for (Expense expense : expenseList) {
+                obsvExpenseList.add(expense);
+            }
             // add expense to expenseList and obsvExpenseList
             expenseList.add(newExpense);
             // get index of new expense and add to obsvExpenseList
@@ -399,23 +405,8 @@ public class ExpenseController implements Initializable {
 
     // save data from tableview to file (NOTE add paramter for file to save to)
     public void saveExpenses() {
-        // dont save if empty 
-        if(expenseList.isEmpty()) {
-            Alert alert = new Alert(AlertType.INFORMATION);
-            alert.setTitle("Error");
-            alert.setHeaderText("Cannot Save");
-            alert.setContentText("Expense List is Empty");
-            alert.showAndWait();
-            return;
-        }
-
-        // if saved file is first file, set month menu to file name
-        if (expenseModel.getDateList().isEmpty()) {
-            monthMenu.setText(expenseList.getMonthYear());
-        }
-            
-        expenseList.confirmSave(true, expenseList.getMonthYear()+".csv");
-        sendAlert("Save", "Save", "Expenses saved to "+expenseList.getMonthYear()+".csv", null);
+        expenseModel.saveAll(true);
+        sendAlert("Save", "Save", "Saved All Expenses", null);
 
         // refresh monthMenu items
         ArrayList<String> dateList = expenseModel.getDateList();
@@ -454,7 +445,7 @@ public class ExpenseController implements Initializable {
         for (Expense expense : expenseList) {
             obsvExpenseList.add(expense);
         }
-        setMenuItems();
+        setAllMenuButtons();
         // calc and set total
         totalMenu.setText("All");
         updateTotal();
@@ -532,7 +523,7 @@ public class ExpenseController implements Initializable {
     } // end of setMenuButton method
 
 
-    private void setMenuItems() {
+    private void setAllMenuButtons() {
         // add all as default option for totalmenu
         MenuItem all = new MenuItem("All");
         totalMenu.getItems().add(all);
@@ -731,7 +722,7 @@ public class ExpenseController implements Initializable {
     } // end setHeightConstraints method
 
 
-    
+
         //******/
         // Other
         //******/
