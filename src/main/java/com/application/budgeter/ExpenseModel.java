@@ -63,12 +63,11 @@ public class ExpenseModel {
     // If true, save changes to the ExpenseList and save the changes to file path.
     // If false, changes are reverted on all lists.
     public void saveAll(boolean confirm) {
-        String path = "Budgeter/src/main/resources/com/application/budgeter/expensedata/";
         String filename;
         for (String dateKey : loadedLists.keySet()) {
             ExpenseList list = loadedLists.get(dateKey);
             filename = dateKey + ".csv";
-            list.confirmSave(confirm, path + filename);
+            list.confirmSave(confirm,  filename);
         }
     }
 
