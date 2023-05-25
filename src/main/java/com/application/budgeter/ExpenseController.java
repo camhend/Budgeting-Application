@@ -298,7 +298,7 @@ public class ExpenseController implements Initializable {
                             String name = nameField.getText();
                             String category = categoryField.getText();
                             LocalDate date = LocalDate.parse(dateField.getText(), DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-                            double cost = convertToDouble(categoryField.getText());
+                            double cost = convertToDouble(costField.getText());
                             Expense editedExpense = new Expense(name, category, date, cost);
 
                             // edit expense and update observable list
