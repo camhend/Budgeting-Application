@@ -2,6 +2,7 @@ package com.application.budgeter;
 
 import java.time.*;
 import java.util.*;
+import java.io.*;
 
 public class ExpenseModel {
     private Map<String, ExpenseList> loadedLists;
@@ -14,16 +15,26 @@ public class ExpenseModel {
     // get all csv files in Budgeter Directory with the format YYYY-MM.csv
     public ArrayList<String> getDateList() {
         ArrayList<String> dateList = new ArrayList<>();
-        String path = getClass().getClassLoader().getResource("com/application/budgeter").getPath();
-        String[] files = 
-        for (String file : files) {
-            // if file is a csv file and matches the pattern YYYY-MM.csv
-            boolean matchesPattern = file.matches("\\d{4}-\\d{2}\\.csv");
-            if (file.endsWith(".csv") && matchesPattern ) {
-                dateList.add(file.substring(0, file.length() - 4));
+
+        String projectRootPath = System.getProperty("user.dir");
+        File directory = new File(projectRootPath);
+
+        // Make sure the directory exists
+        if (directory.exists() && directory.isDirectory()) {
+            File[] files = directory.listFiles();
+            for (File fileValue : files) {
+                // if file is a csv file and matches the pattern YYYY-MM.csv
+                String file = fileValue.getName();
+                boolean matchesPattern = file.matches("\\d{4}-\\d{2}\\.csv");
+                if (file.endsWith(".csv") && matchesPattern ) {
+                    dateList.add(file.substring(0, file.length() - 4));
+                }
             }
+            return dateList;
+        } else {
+            System.out.println("Error: Directory does not exist");
+            return dateList;
         }
-        return dateList;
     }
 
     // Get the ExpenseList of the same Month and Year of the given LocalDate.
