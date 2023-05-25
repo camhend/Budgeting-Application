@@ -12,6 +12,8 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.chart.BarChart?>
 <?import javafx.scene.chart.XYChart?>
+<?import javafx.scene.control.MenuButton?>
+
 
 
 
@@ -55,5 +57,9 @@
          </yAxis>
       </BarChart>
 
+
+      <!-- choosing month to see data for -->
+      <Label fx:id="monthTitle" style="-fx-font-weight: bold;" alignment="CENTER" text="Month" />
+      <MenuButton text="Month" alignment="CENTER" fx:id="monthMenu"/>
    </children>
 </AnchorPane>

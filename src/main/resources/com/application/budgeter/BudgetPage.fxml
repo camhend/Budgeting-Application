@@ -8,6 +8,17 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.chart.AreaChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.XYChart?>
+<?import javafx.scene.control.MenuButton?>
+
+
 
 
 <AnchorPane fx:id="budgetPage" minHeight="600.0" minWidth="680.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.application.budgeter.BudgetController"> 
@@ -37,5 +48,9 @@
       <TextField fx:id="categoryTextField" promptText="Category..."/>
       <TextField fx:id="limitTextField" promptText="Cost Limit..."/>
       <Button fx:id="categoryButton" mnemonicParsing="false" onAction="#submit" text="Add" />
+
+      <!-- choosing month to see budget data for -->
+      <Label fx:id="monthTitle" style="-fx-font-weight: bold;" alignment="CENTER" text="Month" />
+      <MenuButton text="Month" alignment="CENTER" fx:id="monthMenu"/>
   </children>
 </AnchorPane>
