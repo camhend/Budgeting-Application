@@ -301,13 +301,12 @@ public class ExpenseController implements Initializable {
                             double cost = convertToDouble(categoryField.getText());
                             Expense editedExpense = new Expense(name, category, date, cost);
 
-                            // edit main expense list
-                            expenseList.edit(selectedExpense, editedExpense);
-
-                            // get index of edited expense in observable list and replace it
-                            int index = expenseList.getIndex(editedExpense);
-                            obsvExpenseList.remove(selectedExpense);
-                            obsvExpenseList.add(index, editedExpense);
+                            // edit expense and update observable list
+                            expenseModel.edit(selectedExpense, editedExpense);
+                            obsvExpenseList.clear();
+                            for (Expense expense : expenseList) {
+                                obsvExpenseList.add(expense);
+                            }
 
                             // update tableview
                             expenseTable.refresh();
@@ -316,6 +315,8 @@ public class ExpenseController implements Initializable {
                             // close popup
                             popup.hide();
                             expensePage.getScene().getRoot().setDisable(false);
+
+                            sendAlert("Success", "Success", "Expense successfully edited", null);
                         }
                     }
                 }); // end finishEditButton listener
@@ -335,17 +336,12 @@ public class ExpenseController implements Initializable {
             double cost = convertToDouble(addCostField.getText());
             Expense newExpense = new Expense(name, category, date, cost);
             
-
+            // add expense and update observable list
             expenseModel.add(newExpense); 
             obsvExpenseList.clear();
             for (Expense expense : expenseList) {
                 obsvExpenseList.add(expense);
             }
-            // add expense to expenseList and obsvExpenseList
-            expenseList.add(newExpense);
-            // get index of new expense and add to obsvExpenseList
-            int index = expenseList.getIndex(newExpense);
-            obsvExpenseList.add(index, newExpense);
 
             // add expense to tableview and clear textfields
             expenseTable.refresh();
@@ -354,6 +350,8 @@ public class ExpenseController implements Initializable {
             addDateField.clear();
             addCostField.clear();
             updateTotal();
+
+            sendAlert("Success", "Success", "Expense successfully added", null);
         }
     } // end addExpense method
 
