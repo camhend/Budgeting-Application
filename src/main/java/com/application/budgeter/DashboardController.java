@@ -115,6 +115,11 @@ public class DashboardController implements Initializable {
 
 
     private void addRecentTransactions() {
+        if (expenseList == null) {
+            transactionsTable.setPlaceholder(new Label("No Transactions Yet"));
+            return;
+        }
+
         // make observable list with category names and spent amounts from budget
         ObservableList<Expense> recentTransactions = FXCollections.observableArrayList();
         // get last 20 transactions, but if there are less than 20, get all of them

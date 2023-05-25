@@ -565,7 +565,6 @@ public class ExpenseController implements Initializable {
     } // end changeMenuButton method
 
 
-
     private void setDefaultMonth() {
         if(expenseModel.getDateList().isEmpty()) {
             return;
@@ -732,6 +731,10 @@ public class ExpenseController implements Initializable {
     } // end setHeightConstraints method
 
 
+    
+        //******/
+        // Other
+        //******/
 
     private void setContextMenu() {
         // create & set context menu to tableview
@@ -745,7 +748,6 @@ public class ExpenseController implements Initializable {
         deleteListener(deleteMenuItem); 
         editListener(editMenuItem);
     } // end setContextMenu method
-
 
 
     private void setTotalPopup() {

@@ -11,13 +11,15 @@ public class ExpenseModel {
     }
 
 
-    // go to Budgeter/src/main/resources/com/application/budgeter/expensedata/ and get all the files with qualified names
+    // get all csv files in Budgeter Directory with the format YYYY-MM.csv
     public ArrayList<String> getDateList() {
         ArrayList<String> dateList = new ArrayList<>();
-        String path = getClass().getClassLoader().getResource("com/application/budgeter/expensedata").getPath();
-        String[] files = new java.io.File(path).list(); 
+        String path = getClass().getClassLoader().getResource("com/application/budgeter").getPath();
+        String[] files = 
         for (String file : files) {
-            if (file.endsWith(".csv") ) {
+            // if file is a csv file and matches the pattern YYYY-MM.csv
+            boolean matchesPattern = file.matches("\\d{4}-\\d{2}\\.csv");
+            if (file.endsWith(".csv") && matchesPattern ) {
                 dateList.add(file.substring(0, file.length() - 4));
             }
         }
@@ -27,7 +29,12 @@ public class ExpenseModel {
     // Get the ExpenseList of the same Month and Year of the given LocalDate.
     // Then, put the ExpenseList in the loadedLists map for later access.
     public ExpenseList getExpenseList(LocalDate monthYear) {
-        String dateKey = monthYear.getYear() + "-" + monthYear.getMonthValue();
+        String dateKey = "";
+        if (monthYear.getMonthValue() > 9) {
+            dateKey = monthYear.getYear() + "-" + monthYear.getMonthValue();
+        } else {
+            dateKey = monthYear.getYear() + "-0" + monthYear.getMonthValue();
+        }
         if (loadedLists.containsKey(dateKey)) {
             return loadedLists.get(dateKey);
         } else {
