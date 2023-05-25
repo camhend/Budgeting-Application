@@ -370,8 +370,8 @@ public class ExpenseController implements Initializable {
 
         // set month menu with dates of found files
         ArrayList<String> dateList = expenseModel.getDateList();
-        setMenuButton(monthMenu, dateList);
         monthMenu.getItems().clear();
+        setMenuButton(monthMenu, dateList);
     } // end updateMonth method
 
 
@@ -577,6 +577,7 @@ public class ExpenseController implements Initializable {
         // set month menu to newest date and update tableview
         monthMenu.setText(newestDate); 
         updateMonth(); 
+        monthMenu.getItems().clear();
     } // end setDefaultMonth method
 
 
