@@ -104,6 +104,7 @@ public class ExpenseController implements Initializable {
         // set default month to newest saved month
         setDefaultMonth();
         setTableData(); 
+        setAllMenuButtons();
     } // end setModels method
     
 
