@@ -50,6 +50,11 @@ public class Expense {
         }
     }
 
+    // Return a cloned version of this Expense object
+    public Expense copy () {
+        return new Expense(this.name, this.category, this.localDate, this.amount);
+    }
+
     public String toString () {
         String toString = 
             "[" + 

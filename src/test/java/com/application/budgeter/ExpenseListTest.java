@@ -206,6 +206,9 @@ public class ExpenseListTest {
 
         assertEquals(2, list.size());
         assertEquals(60.0, list.getTotalSpending(), 0.001);
+        assertEquals(0, list.getCategorySpending("clothing"), 0.001);
+        assertEquals(60, list.getCategorySpending("food"), 0.001);
+
     }
 
     @Test
@@ -342,6 +345,31 @@ public class ExpenseListTest {
     }
 
     @Test
+    public void testEdit_OneNodeDateChanged() {
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-02-20"), 10);
+        
+        list.add(exp1);
+
+        Expense updatedExp1 = new Expense("hotdog", "food", LocalDate.parse("2001-02-02"), 10);
+        list.edit(exp1, updatedExp1);
+
+        Expense[] expected = {updatedExp1};
+
+        int index = 0;
+        for (Expense expense : list) {
+            assertEquals(expected[index], expense);
+            index++;
+        }
+
+        Iterator<Expense> itPrev = list.descendingIterator();
+        index = 0;
+        while ( itPrev.hasNext() ) {
+            assertEquals(expected[index], itPrev.next() );
+            index--;
+        }
+    }
+
+    @Test
     public void testEdit_EmptyList_ReturnFalse() {
         Expense exp3 = new Expense("groceries", "food", LocalDate.parse("2010-02-28"), 50);
         Expense updatedExp3 = new Expense("burger", "food", LocalDate.parse("2011-02-28"), 50);
@@ -437,6 +465,142 @@ public class ExpenseListTest {
     }
 
     @Test
+    public void testEdit_MiddleNodeDateChangeForwardButOrderNotChanged_OrderingNotChanged() {
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-01-01"), 10);
+        Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2002-12-14"), 50);
+        Expense exp3 = new Expense("groceries", "food", LocalDate.parse("2008-02-28"), 30);
+        Expense exp4 = new Expense("video game", "entertainment", LocalDate.parse("2012-04-21"), 40);
+        Expense exp5 = new Expense("gas", "gas", LocalDate.parse("2013-06-02"), 65);
+
+
+        list.add(exp1);
+        list.add(exp2);
+        list.add(exp3);
+        list.add(exp4);
+        list.add(exp5);
+
+        Expense updatedExp3 = new Expense("groceries", "food", LocalDate.parse("2008-03-28"), 30);
+        list.edit(exp3, updatedExp3);
+        
+        Expense[] expected = {exp1, exp2, updatedExp3, exp4, exp5};
+
+        int index = 0;
+        for (Expense expense : list) {
+            assertEquals(expected[index], expense);
+            index++;
+        }
+
+        Iterator<Expense> itPrev = list.descendingIterator();
+        index = 4;
+        while ( itPrev.hasNext() ) {
+            assertEquals(expected[index], itPrev.next() );
+            index--;
+        }
+    }
+
+    @Test
+    public void testEdit_MiddleNodeChangedPreviousButOrderNotChanged_OrderingNotChanged() {
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-01-01"), 10);
+        Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2002-12-14"), 50);
+        Expense exp3 = new Expense("groceries", "food", LocalDate.parse("2008-02-28"), 30);
+        Expense exp4 = new Expense("video game", "entertainment", LocalDate.parse("2012-04-21"), 40);
+        Expense exp5 = new Expense("gas", "gas", LocalDate.parse("2013-06-02"), 65);
+
+
+        list.add(exp1);
+        list.add(exp2);
+        list.add(exp3);
+        list.add(exp4);
+        list.add(exp5);
+
+        Expense updatedExp3 = new Expense("groceries", "food", LocalDate.parse("2008-01-28"), 30);
+        list.edit(exp3, updatedExp3);
+        
+        Expense[] expected = {exp1, exp2, updatedExp3, exp4, exp5};
+
+        int index = 0;
+        for (Expense expense : list) {
+            assertEquals(expected[index], expense);
+            index++;
+        }
+
+        Iterator<Expense> itPrev = list.descendingIterator();
+        index = 4;
+        while ( itPrev.hasNext() ) {
+            assertEquals(expected[index], itPrev.next() );
+            index--;
+        }
+    }
+
+    @Test
+    public void testEdit_MiddleNodeChangedPreviousDate_OrderingChanged() {
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-01-01"), 10);
+        Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2002-12-14"), 50);
+        Expense exp3 = new Expense("groceries", "food", LocalDate.parse("2008-02-28"), 30);
+        Expense exp4 = new Expense("video game", "entertainment", LocalDate.parse("2012-04-21"), 40);
+        Expense exp5 = new Expense("gas", "gas", LocalDate.parse("2013-06-02"), 65);
+
+
+        list.add(exp1);
+        list.add(exp2);
+        list.add(exp3);
+        list.add(exp4);
+        list.add(exp5);
+
+        Expense updatedExp3 = new Expense("groceries", "food", LocalDate.parse("2001-02-28"), 30);
+        list.edit(exp3, updatedExp3);
+        
+        Expense[] expected = {exp1, updatedExp3, exp2, exp4, exp5};
+
+        int index = 0;
+        for (Expense expense : list) {
+            assertEquals(expected[index], expense);
+            index++;
+        }
+
+        Iterator<Expense> itPrev = list.descendingIterator();
+        index = 4;
+        while ( itPrev.hasNext() ) {
+            assertEquals(expected[index], itPrev.next() );
+            index--;
+        }
+    }
+
+    @Test
+    public void testEdit_MiddleNodeChangedForwardDate_OrderingChanged() {
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-01-01"), 10);
+        Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2002-12-14"), 50);
+        Expense exp3 = new Expense("groceries", "food", LocalDate.parse("2008-02-28"), 30);
+        Expense exp4 = new Expense("video game", "entertainment", LocalDate.parse("2012-04-21"), 40);
+        Expense exp5 = new Expense("gas", "gas", LocalDate.parse("2013-06-02"), 65);
+
+
+        list.add(exp1);
+        list.add(exp2);
+        list.add(exp3);
+        list.add(exp4);
+        list.add(exp5);
+
+        Expense updatedExp3 = new Expense("groceries", "food", LocalDate.parse("2012-08-28"), 30);
+        list.edit(exp3, updatedExp3);
+        
+        Expense[] expected = {exp1, exp2, exp4, updatedExp3, exp5};
+
+        int index = 0;
+        for (Expense expense : list) {
+            assertEquals(expected[index], expense);
+            index++;
+        }
+
+        Iterator<Expense> itPrev = list.descendingIterator();
+        index = 4;
+        while ( itPrev.hasNext() ) {
+            assertEquals(expected[index], itPrev.next() );
+            index--;
+        }
+    }
+
+    @Test
     public void testEdit_HeadNodeDateChange() {
         Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-02-01"), 10);
         Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2001-04-14"), 50);
@@ -518,7 +682,6 @@ public class ExpenseListTest {
         Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-02-01"), 10);
         list.add(exp1);
 
-        Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2001-04-14"), 50);
         assertEquals(-1.0, list.getCategorySpending("clothing"), 0.001);
     }
 
@@ -631,14 +794,13 @@ public class ExpenseListTest {
         Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2001-04-14"), 50);
         Expense exp3 = new Expense("groceries", "food", LocalDate.parse("2001-06-28"), 50);
 
-        for (Expense expense : list) {
-            assertEquals(null, expense);
-        }
+        list.add(exp1);
+        list.add(exp2);
+        list.add(exp3);
 
-        Iterator<Expense> itPrev = list.descendingIterator();
-        while ( itPrev.hasNext() ) {
-            assertEquals(null, itPrev.next() );
-        }
+        list.clear();
+        
+        assertTrue(list.isEmpty());
         assertEquals(0, list.size());
         assertEquals(0, list.getTotalSpending(), 0.001);
         assertEquals(-1.0, list.getCategorySpending("food"), 0.001);
@@ -647,14 +809,296 @@ public class ExpenseListTest {
 
     }
 
-
-    
-
-    /*
     @Test
-    public void testgetCategorySpending_AfterEditAmountWasChanged() {
+    public void testEquals_ExpectTrue() {
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-02-01"), 10);
+        Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2001-04-14"), 50);
+        Expense exp3 = new Expense("groceries", "food", LocalDate.parse("2001-06-28"), 50);
+        
+        ExpenseList other = new ExpenseList();
+
+        list.add(exp1);
+        list.add(exp2);
+        list.add(exp3);
+        
+        other.add(exp1);
+        other.add(exp2);
+        other.add(exp3);
+        
+        assertTrue(list.equals(other));
+    }
+
+    @Test
+    public void testEqualsRemoveThenRestore() {
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-02-01"), 10);
+        Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2001-04-14"), 50);
+        Expense exp3 = new Expense("groceries", "food", LocalDate.parse("2001-06-28"), 50);
+        
+        ExpenseList other = new ExpenseList();
+
+        list.add(exp1);
+        list.add(exp2);
+        list.add(exp3);
+        
+        other.add(exp1);
+        other.add(exp2);
+        other.add(exp3);
+
+        other.remove(exp1);
+        assertFalse(list.equals(other));
+
+        other.add(exp1);
+        assertTrue(list.equals(other));
+
+        other.remove(exp1);
+        assertFalse(list.equals(other));
+
+        other.add("hotdog", "food", LocalDate.parse("2001-02-01"), 10);
+        assertTrue(list.equals(other));
         
     }
-    */
+    
+    @Test
+    public void testEqualsAfterEdit_ExpectFalse() {
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-02-01"), 10);
+        Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2001-04-14"), 50);
+        Expense exp3 = new Expense("groceries", "food", LocalDate.parse("2001-06-28"), 50);
+        
+        ExpenseList other = new ExpenseList();
+
+        list.add(exp1);
+        list.add(exp2);
+        list.add(exp3);
+        
+        other.add(exp1);
+        other.add(exp2);
+        other.add(exp3);
+
+        Expense updatedExp2 = new Expense("restuarant", "food", LocalDate.parse("2001-04-14"), 50);
+        other.edit(exp2, updatedExp2);
+
+        assertFalse(list.equals(other));
+    }
+
+    @Test
+    public void testCopy_EmptyList() {
+        ExpenseList other = list.copy();
+        assertTrue(list.equals(other));
+
+        Iterator<Expense> copyItr = other.descendingIterator();
+        Iterator<Expense> listItr = list.descendingIterator();
+        while (listItr.hasNext()) {
+            assertTrue(listItr.next().equals(copyItr.next()));
+        }
+
+    }
+
+    @Test
+    public void testCopy_OneNode() {
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-02-01"), 10);
+        list.add(exp1);
+
+        ExpenseList other = list.copy();
+        assertTrue(list.equals(other));
+
+        Iterator<Expense> copyItr = other.descendingIterator();
+        Iterator<Expense> listItr = list.descendingIterator();
+        while (listItr.hasNext()) {
+            assertTrue(listItr.next().equals(copyItr.next()));
+        }
+    }
+
+    @Test
+    public void testCopy_MultipleNodes() {
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-02-01"), 10);
+        Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2001-04-14"), 50);
+        Expense exp3 = new Expense("groceries", "food", LocalDate.parse("2001-06-28"), 50);
+        
+        list.add(exp1);
+        list.add(exp2);
+        list.add(exp3);
+
+        ExpenseList other = list.copy();
+        assertTrue(list.equals(other));
+
+        Iterator<Expense> copyItr = other.descendingIterator();
+        Iterator<Expense> listItr = list.descendingIterator();
+        while (listItr.hasNext()) {
+            assertTrue(listItr.next().equals(copyItr.next()));
+        }
+    }
+
+    @Test
+    public void testCopy_EqualsAfterAdd_ExpectFalse() {
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-02-01"), 10);
+        Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2001-04-14"), 50);
+        Expense exp3 = new Expense("groceries", "food", LocalDate.parse("2001-06-28"), 50);
+        
+        list.add(exp1);
+        list.add(exp2);
+        list.add(exp3);
+
+        ExpenseList other = list.copy();
+
+        list.add("hotdog", "food", LocalDate.parse("2001-02-01"), 10);
+
+        assertFalse(list.equals(other));
+
+        Iterator<Expense> copyItr = other.descendingIterator();
+        Iterator<Expense> listItr = list.descendingIterator();
+        
+        boolean checkBackwards = true;
+        while (listItr.hasNext()) {
+            if ( !listItr.next().equals(copyItr.next()) ) {
+                checkBackwards = false;
+            }
+            if ( !copyItr.hasNext() ) {
+                checkBackwards = false;
+                break;
+            }
+        }
+        assertFalse(checkBackwards);
+    }
+
+    @Test
+    public void testCopy_EqualsAfterAddSameExpenseDifferentMethods_ExpectTrue() {
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-02-01"), 10);
+        Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2001-04-14"), 50);
+        Expense exp3 = new Expense("groceries", "food", LocalDate.parse("2001-06-28"), 50);
+        
+        list.add(exp1);
+        list.add(exp2);
+        list.add(exp3);
+
+        ExpenseList other = list.copy();
+
+        list.add("hotdog", "food", LocalDate.parse("2001-02-01"), 10);
+        other.add(exp1);
+
+        assertTrue(list.equals(other));
+    }
+
+    @Test
+    public void testCopy_EqualsAfterEdit_ExpectFalse() {
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-02-01"), 10);
+        Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2001-04-14"), 50);
+        Expense exp3 = new Expense("groceries", "food", LocalDate.parse("2001-06-28"), 50);
+        
+        list.add(exp1);
+        list.add(exp2);
+        list.add(exp3);
+
+        ExpenseList other = list.copy();
+
+        list.edit(exp1, new Expense("restaurant", "food", LocalDate.parse("2001-02-01"), 10));
+
+        assertFalse(list.equals(other));
+
+        Iterator<Expense> copyItr = other.descendingIterator();
+        Iterator<Expense> listItr = list.descendingIterator();
+        boolean checkBackwards = true;
+        while (listItr.hasNext()) {
+            if ( !listItr.next().equals(copyItr.next()) ) {
+                checkBackwards = false;
+            }
+        }
+        assertFalse(checkBackwards);
+    }
+
+    @Test
+    public void testCopy_EqualsAfterRemove_ExpectFalse() {
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-02-01"), 10);
+        Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2001-04-14"), 50);
+        Expense exp3 = new Expense("groceries", "food", LocalDate.parse("2001-06-28"), 50);
+        
+        list.add(exp1);
+        list.add(exp2);
+        list.add(exp3);
+
+        ExpenseList other = list.copy();
+
+        list.remove(exp2);
+
+        assertFalse(list.equals(other));
+
+        Iterator<Expense> copyItr = other.descendingIterator();
+        Iterator<Expense> listItr = list.descendingIterator();
+        boolean checkBackwards = true;
+        while (listItr.hasNext()) {
+            if ( !listItr.next().equals(copyItr.next()) ) {
+                checkBackwards = false;
+            }
+        }
+        assertFalse(checkBackwards);
+    }
+
+    @Test
+    public void testCopy_EqualsAfterExpenseSetter_ExpectFalse() {
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-02-01"), 10);
+        
+        list.add(exp1);
+
+        ExpenseList other = list.copy();
+
+        for (Expense expense : list) {
+            expense.setName("name");
+        }
+
+        assertFalse(list.equals(other));
+
+        Iterator<Expense> copyItr = other.descendingIterator();
+        Iterator<Expense> listItr = list.descendingIterator();
+        boolean checkBackwards = true;
+        while (listItr.hasNext()) {
+            if ( !listItr.next().equals(copyItr.next()) ) {
+                checkBackwards = false;
+            }
+        }
+        assertFalse(checkBackwards);
+    }
+
+    @Test
+    public void testSaveChanges_ConfirmChanges() {
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-02-01"), 10);
+        Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2001-04-14"), 50);
+        Expense exp3 = new Expense("groceries", "food", LocalDate.parse("2001-06-28"), 50);
+        
+        list.add(exp1);
+        list.add(exp2);
+        list.add(exp3);
+
+        // list.saveChanges(false);
+        // assertTrue(list.isEmpty());
+    }
+
+    @Test
+    public void testSaveChanges_RevertChanges() {
+        Expense exp1 = new Expense("hotdog", "food", LocalDate.parse("2001-02-01"), 10);
+        Expense exp2 = new Expense("shoe", "clothing", LocalDate.parse("2001-04-14"), 50);
+        Expense exp3 = new Expense("groceries", "food", LocalDate.parse("2001-06-28"), 50);
+        
+        list.add(exp1);
+        list.add(exp2);
+        list.add(exp3);
+        // list.saveChanges(true);
+        
+        list.remove(exp1);
+        // list.saveChanges(false);
+
+        Expense[] expected = {exp1, exp2, exp3};
+        int index = 0;
+        for (Expense expense : list) {
+            // assertTrue(expected[index].equals(expense));
+            index++;
+        }
+
+        Iterator<Expense> itPrev = list.descendingIterator();
+        index = 2;
+        while ( itPrev.hasNext() ) {
+            assertTrue(expected[index].equals(itPrev.next()));
+            index--;
+        }
+    }
+
 
 }

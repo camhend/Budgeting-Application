@@ -12,6 +12,7 @@ import java.util.List;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.css.CssParser;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -34,16 +35,18 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-// window iconfied
-
-
-
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.paint.Color;
+import javafx.scene.Node;
+import java.util.ArrayList;
 
 
 public class ExpenseController implements Initializable {
-
+    // page elements
     @FXML private Label expenseTitle; // title of page
-
     @FXML private AnchorPane expensePage; // page that holds all the elements
     
     // tableview
@@ -57,70 +60,68 @@ public class ExpenseController implements Initializable {
     @FXML private MenuButton totalMenu; // menu for choosing time periods
     @FXML private Label total; // actual number
     @FXML private Label totalTitle; 
+    @FXML private Label totalMenuTitle;
 
     // add expense section
     @FXML private Button addExpenseButton; 
     @FXML private TextField addExpenseField;
-    @FXML private TextField addCategoryField;
+    @FXML private MenuButton addCategoryField;
     @FXML private TextField addDateField;
     @FXML private TextField addCostField;
 
-    @FXML private Button saveExpenseButton; // saves expense to file
+    @FXML private Button saveExpenseButton; 
 
-    
-    ExpenseList expenseList = new ExpenseList(); // list of expenses
+    // month section
+    @FXML MenuButton monthMenu; 
+    @FXML Label monthTitle; 
 
+    // edit expense section
+    private TextField nameField;
+    private MenuButton categoryField;
+    private TextField dateField;
+    private TextField costField;
+    private Label name;
+    private Label category;
+    private Label date;
+    private Label cost;
+    private Button finishEditButton;
+    private Button closeEditButton;
+
+    // context menu
+    ContextMenu editingContextMenu;
+    MenuItem deleteMenuItem;
+    MenuItem editMenuItem;
+
+    // Total Value popup 
+    Popup popup;
+    Label totalPopupLabel;
+
+    // Expense & Budget data
     ObservableList<Expense> obsvExpenseList = FXCollections.observableArrayList(); // list of expenses to display in tableview
+    BudgetModel budgetModel;
+    ExpenseList expenseList; 
+    ExpenseModel expenseModel;
+
+
+    public void setModels(ExpenseModel expenseModel, BudgetModel budgetModel) {
+        // pass expenseList to MainPageController
+        this.expenseModel = expenseModel;
+        this.budgetModel = budgetModel;
+
+        // set default month to newest saved month
+        setDefaultMonth();
+        setTableData(); 
+    } // end setModels method
     
-    // add expenses to expenseList and display in tableview
 
-
-
-    
-
-    // initialize method (runs when ExpenseController is created)
+    // setup page elements
     @Override
     public void initialize(java.net.URL arg0, java.util.ResourceBundle arg1) {
-
-        // setup page
-        setAnchorPaneConstraints(); 
-        formatTableCells(); 
-        formatTableColumns();
-        expenseTable.setPlaceholder(new Label("No Expenses Added")); 
-       
-        // get expenselist (expense model) 
-        
-        loadExpenses(); // load expenses from file
-
-        // add expenses to observable list
-        for (Expense expense : expenseList) {
-            obsvExpenseList.add(expense);
-        }
-
-
-        // add observable list to tableview
-        expenseTable.setItems(obsvExpenseList);
-
-    
-        // calc all time total
-        totalMenu.setText("All Time");
-        updateTotal();
-
-
-        // delete and edit menu items
-        ContextMenu editingContextMenu = new ContextMenu();
-        expenseTable.setContextMenu(editingContextMenu); // set context menu to tableview
-
-        // create menu items
-        MenuItem deleteMenuItem = new MenuItem("Delete");
-        MenuItem editMenuItem = new MenuItem("Edit");
-
-        // add menu item to context menu
-        editingContextMenu.getItems().addAll(deleteMenuItem, editMenuItem);
-
-        // listeners to handle each menu item
-        deleteListener(deleteMenuItem); 
-        editListener(editMenuItem);
+        setAnchorPaneConstraints(); // set resize constraints for anchorpane
+        formatTable(); // format tableview 
+        setContextMenu();  // set context menu for tableview (delete/edit)
+        createEditMenu(); // setup edit menu
+        setTotalPopup(); // setup total popup (shows total when hovering over total label)
     } // end initialize method
 
 
@@ -129,7 +130,14 @@ public class ExpenseController implements Initializable {
     // Data Validation methods 
     //***********************/
 
-    private boolean isValidDate(String date) {
+    private double convertToDouble(String cost) {
+        cost = cost.replace("$", "");
+        cost = String.format("%.2f", Double.parseDouble(cost));
+        return Double.parseDouble(cost);
+    } // end convertToDouble method
+
+
+    public boolean isValidDate(String date) {
         // if date is mm/dd/yyyy format regex
         if (!date.matches("^(0[1-9]|1[012])/(0[1-9]|[12][0-9]|3[01])/[0-9]{4}$")) {
             return false;
@@ -148,7 +156,7 @@ public class ExpenseController implements Initializable {
     } // end isValidDate method
 
 
-    private boolean isValidCost(String cost) {
+    public boolean isValidCost(String cost) {
         // check if cost is an integer or double
         try {
             // if cost without $ sign is an integer
@@ -162,6 +170,43 @@ public class ExpenseController implements Initializable {
         }
         return true;
     } // end isValidCost method
+
+
+    private boolean fieldsAreEmpty(String name, String category, String date, String cost) {
+        // if any fields are empty
+        if (name.equals("") || category.equals("") || name.equals("") || cost.equals("")) {
+            return true;
+        }
+        return false;
+    } // end fieldsAreEmpty method
+
+
+    private boolean areValidAddExpenses(String name, String category, String date, String amount, Popup owner) {
+        // if any fields are empty
+        if (fieldsAreEmpty(name, category, date, amount)) {
+            sendAlert("Error", "Error", "Please fill out all fields", owner);
+            return false;
+        }
+        else if (!isValidCost(amount)) {
+            sendAlert("Error", "Error", "Please enter a positive valid cost (e.g. $1.50)", owner);
+            return false;
+        }
+        else if (!isValidDate(date)) {
+            sendAlert("Error", "Error", "Please enter a valid date (mm/dd/yyyy)", owner);
+            return false;
+        }
+        // contains comams
+        else if (name.contains(",") || category.contains(",")) {
+            sendAlert("Error", "Error", "Please do not use commas", owner);
+            return false;
+        }
+        // category not selected
+        else if (category.equals("Category...")) {
+            sendAlert("Error", "Error", "Please Select a Category", owner);
+            return false;
+        }
+        return true;
+    } // end validateAddExpense method
 
 
 
@@ -198,65 +243,23 @@ public class ExpenseController implements Initializable {
                 // get selected row
                 Expense selectedExpense = expenseTable.getSelectionModel().getSelectedItem();
 
+                // create edit popup layout
                 AnchorPane layout = new AnchorPane();
                 layout.setPrefSize(300, 300);
-
-                // Create a label with a message
-                Label name = new Label("Name:");
-                // place at x = 10 y = 10
-                name.setLayoutX(100);
-                name.setLayoutY(50);
-                Label category = new Label("Category:");
-                category.setLayoutX(100);
-                category.setLayoutY(100);
-                Label date = new Label("Date:");
-                date.setLayoutX(100);
-                date.setLayoutY(150);
-                Label cost = new Label("Cost:");
-                cost.setLayoutX(100);
-                cost.setLayoutY(200);
-
-                // Create a text field each for name, category, date, and cost
-                TextField nameField = new TextField();
-                nameField.setLayoutX(200);
-                nameField.setLayoutY(50);
-                TextField categoryField = new TextField();
-                categoryField.setLayoutX(200);
-                categoryField.setLayoutY(100);
-                TextField dateField = new TextField();
-                dateField.setLayoutX(200);
-                dateField.setLayoutY(150);
-                TextField costField = new TextField();
-                costField.setLayoutX(200);
-                costField.setLayoutY(200);
-
-                // Create a button to finish editing
-                Button finishEditButton = new Button("Finish");
-                finishEditButton.setLayoutX(100);
-                finishEditButton.setLayoutY(300);
-
-                // close
-                Button closeEditButton = new Button("Close");
-                closeEditButton.setLayoutX(300);
-                closeEditButton.setLayoutY(300);
-
 
                 // fill text fields with selected expense's data
                 nameField.setText(selectedExpense.getName());
                 categoryField.setText(selectedExpense.getCategory());
                 dateField.setText(selectedExpense.getLocalDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
                 costField.setText(String.format("$%.2f", selectedExpense.getAmount()));
-                
 
-                // add all elements to layout
                 layout.getChildren().addAll(name, category, date, cost, nameField, categoryField, dateField, costField, finishEditButton, closeEditButton);
 
-                // Create a popup and set its content to the layout
                 Popup popup = new Popup();
                 popup.getContent().add(layout);
 
 
-                // get window coordinates of expensePage
+                // get window center coordinates
                 double x = expensePage.getScene().getWindow().getX();
                 double y = expensePage.getScene().getWindow().getY();
                 x = x + expensePage.getScene().getRoot().getLayoutBounds().getWidth() / 2;
@@ -266,33 +269,10 @@ public class ExpenseController implements Initializable {
                 popup.show(expensePage.getScene().getWindow(), x - layout.getPrefWidth() / 2, y - layout.getPrefHeight() / 2);
                 expensePage.getScene().getRoot().setDisable(true); // disable main window
 
-                // popup position event handlers
-                expensePage.getScene().getWindow().xProperty().addListener(new ChangeListener<Number>() {
-                    @Override
-                    public void changed(ObservableValue<? extends Number> observableValue, Number oldX, Number newX) {
-                        popup.setX(newX.doubleValue() + expensePage.getScene().getRoot().getLayoutBounds().getWidth() / 2 - layout.getPrefWidth() / 2);
-                    }
-                });
-                expensePage.getScene().getWindow().yProperty().addListener(new ChangeListener<Number>() {
-                    @Override
-                    public void changed(ObservableValue<? extends Number> observableValue, Number oldY, Number newY) {
-                        popup.setY(newY.doubleValue() + expensePage.getScene().getRoot().getLayoutBounds().getHeight() / 2 - layout.getPrefHeight() / 2);
-                    }
-                });
-                expensePage.getScene().widthProperty().addListener(new ChangeListener<Number>() {
-                    @Override
-                    public void changed(ObservableValue<? extends Number> observableValue, Number oldWidth, Number newWidth) {
-                        popup.setX(expensePage.getScene().getWindow().getX() + expensePage.getScene().getRoot().getLayoutBounds().getWidth() / 2 - layout.getPrefWidth() / 2);
-                    }
-                });
-                expensePage.getScene().heightProperty().addListener(new ChangeListener<Number>() {
-                    @Override
-                    public void changed(ObservableValue<? extends Number> observableValue, Number oldHeight, Number newHeight) {
-                        popup.setY(expensePage.getScene().getWindow().getY() + expensePage.getScene().getRoot().getLayoutBounds().getHeight() / 2 - layout.getPrefHeight() / 2);
-                    }
-                });
-
+                // popup position event handler
+                centerEditPopup(popup, layout);
                 
+                // reenable main window when popup is closed
                 closeEditButton.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
@@ -301,413 +281,180 @@ public class ExpenseController implements Initializable {
                     }
                 });
 
+                // close popup when escape is pressed
+                popup.addEventFilter(KeyEvent.KEY_PRESSED, eventTwo -> {
+                    if (eventTwo.getCode() == KeyCode.ESCAPE) {
+                        popup.hide();
+                        expensePage.getScene().getRoot().setDisable(false);
+                    }
+                });
+
                 finishEditButton.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
-                        // check if textfields are empty and correct data types
-                        if (nameField.getText().isEmpty() || categoryField.getText().isEmpty() || dateField.getText().isEmpty() || costField.getText().isEmpty()) {
-                            // create alert
-                            Alert alert = new Alert(AlertType.ERROR);
-                            alert.setTitle("Error");
-                            alert.setHeaderText("Empty Fields");
-                            alert.setContentText("Please fill in all fields");
-                            alert.initOwner(popup); 
-                            alert.showAndWait();
-                        }
-                        // else if costfield is a number or is a number + $
-                        else if (!isValidCost(costField.getText())) {
-                            // create alert
-                            Alert alert = new Alert(AlertType.ERROR);
-                            alert.setTitle("Error");
-                            alert.setHeaderText("Invalid Cost");
-                            alert.setContentText("Please enter a valid positive cost (ex. $1.50)");
-                            alert.initOwner(popup); 
-                            alert.showAndWait();
-                        } 
-                        // else if date is not mm/dd/yyyy 
-                        else if (!isValidDate(dateField.getText())) {
-                            // create alert
-                            Alert alert = new Alert(AlertType.ERROR);
-                            alert.setTitle("Error");
-                            alert.setHeaderText("Invalid Date");
-                            alert.setContentText("Please enter a valid date (mm/dd/yyyy)");
-                            alert.initOwner(popup); 
-                            alert.showAndWait();
-                        }
-                        // no commas
-                        else if (nameField.getText().contains(",") || categoryField.getText().contains(",")) {
-                            // create alert
-                            Alert alert = new Alert(AlertType.ERROR);
-                            alert.setTitle("Error");
-                            alert.setHeaderText("Error");
-                            alert.setContentText("Please do not use commas");
-                            alert.initOwner(popup); 
-                            alert.showAndWait();
-                        }
-                        else {
-                            costField.setText(costField.getText().replace("$", "")); // remove dollar sign
-
+                        boolean validFields = areValidAddExpenses(nameField.getText(), categoryField.getText(), dateField.getText(), costField.getText(), popup);
+                        if (validFields) {
+                            // create new expense object
                             String name = nameField.getText();
-                            String category = categoryField.getText().toLowerCase();
+                            String category = categoryField.getText();
                             LocalDate date = LocalDate.parse(dateField.getText(), DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-                            double cost = Double.parseDouble(costField.getText());
-
-                            // get edited expense
+                            double cost = convertToDouble(costField.getText());
                             Expense editedExpense = new Expense(name, category, date, cost);
 
-                            // edit main expense list
-                            expenseList.edit(selectedExpense, editedExpense);
-
-
-
-                            // get index of edited expense
-                            int index = expenseList.getIndex(editedExpense);
-
-                            if(index == -1) { // if expense not found
-                                // create alert
-                                Alert alert = new Alert(AlertType.ERROR);
-                                alert.setTitle("Error");
-                                alert.setHeaderText("ERROR");
-                                alert.setContentText("Expense not found");
-                                alert.initOwner(popup); 
-                                alert.showAndWait();
-                                return;
+                            // edit expense and update observable list
+                            expenseModel.edit(selectedExpense, editedExpense);
+                            obsvExpenseList.clear();
+                            for (Expense expense : expenseList) {
+                                obsvExpenseList.add(expense);
                             }
 
-                            // remove old expense from observable list
-                            obsvExpenseList.remove(selectedExpense);
-                            // add edited expense to observable list at index
-                            obsvExpenseList.add(index, editedExpense);
-
                             // update tableview
-                            expenseTable.setItems(obsvExpenseList);
-                            // update total
+                            expenseTable.refresh();
                             updateTotal();
+
                             // close popup
                             popup.hide();
                             expensePage.getScene().getRoot().setDisable(false);
+
+                            sendAlert("Success", "Success", "Expense successfully edited", null);
                         }
                     }
                 }); // end finishEditButton listener
-
-                // minimize popup when main window is minimized
-            } 
+            } // end handle method
         }); // end editButton listener
     } // end editListener method
     
 
     // add data from text fields to tableview
     public void addExpense() {
-        // if any fields are empty
-        if (addExpenseField.getText().isEmpty() || addCategoryField.getText().isEmpty() || addDateField.getText().isEmpty() || addCostField.getText().isEmpty()) {
-            // display error message
-            Alert alert = new Alert(AlertType.ERROR);
-
-            alert.setTitle("Error");
-            alert.setHeaderText("Error");
-            alert.setContentText("Please fill out all fields");
-            alert.showAndWait();
-        }
-        else if (!isValidCost(addCostField.getText())) {
-            // display error message
-            Alert alert = new Alert(AlertType.ERROR);
-
-            alert.setTitle("Error");
-            alert.setHeaderText("Error");
-            alert.setContentText("Please enter a positive valid cost (e.g. $1.50)");
-            alert.showAndWait();
-        }
-        else if (!isValidDate(addDateField.getText())) {
-            // display error message
-            Alert alert = new Alert(AlertType.ERROR);
-
-            alert.setTitle("Error");
-            alert.setHeaderText("Error");
-            alert.setContentText("Please enter a valid date (mm/dd/yyyy)");
-            alert.showAndWait();
-        }
-        // contains comas
-        else if (addExpenseField.getText().contains(",") || addCategoryField.getText().contains(",")) {
-            // display error message
-            Alert alert = new Alert(AlertType.ERROR);
-
-            alert.setTitle("Error");
-            alert.setHeaderText("Error");
-            alert.setContentText("Please do not use commas");
-            alert.showAndWait();
-        }
-        // else add data to tableview
-        else {
-            // remove $ sign from cost
-            addCostField.setText(addCostField.getText().replace("$", ""));
-            
-            // add 2 decimal places to cost
-            addCostField.setText(String.format("%.2f", Double.parseDouble(addCostField.getText())));
-
-            // add data to tableview
+        boolean validFields = areValidAddExpenses(addExpenseField.getText(), addCategoryField.getText(), addDateField.getText(), addCostField.getText(), null);
+        if (validFields) {
+            // create new expense
             String name = addExpenseField.getText();
-            String category = addCategoryField.getText().toLowerCase(); // convert category to lowercase (easier to search)
+            String category = addCategoryField.getText(); // convert category to lowercase (easier to search)
             LocalDate date = LocalDate.parse(addDateField.getText(), DateTimeFormatter.ofPattern("MM/dd/yyyy")); 
-            double cost = Double.parseDouble(addCostField.getText());
+            double cost = convertToDouble(addCostField.getText());
             Expense newExpense = new Expense(name, category, date, cost);
             
-            expenseList.add(newExpense);
-            // implement add index instead of manual add
-            obsvExpenseList.add(newExpense);
+            // add expense and update observable list
+            expenseModel.add(newExpense); 
+            obsvExpenseList.clear();
+            for (Expense expense : expenseList) {
+                obsvExpenseList.add(expense);
+            }
 
-            // add expense to tableview
+            // add expense to tableview and clear textfields
             expenseTable.refresh();
-
-            // clear text fields
             addExpenseField.clear();
-            addCategoryField.clear();
+            addCategoryField.setText("Category...");
             addDateField.clear();
             addCostField.clear();
-
             updateTotal();
-            // sort 
-            expenseTable.getSortOrder().add(expenseTable.getColumns().get(2));
+
+            sendAlert("Success", "Success", "Expense successfully added", null);
         }
     } // end addExpense method
 
 
+    private void updateMonth() {
+        // get expenselist of selected month
+        String year = monthMenu.getText().substring(0, 4); 
+        String month = monthMenu.getText().substring(5); 
+        if (month.length() == 1) {month = "0" + month;}
+        LocalDate date = LocalDate.parse(month + "/01/" + year, DateTimeFormatter.ofPattern("MM/dd/yyyy")); // create date object
+        expenseList = expenseModel.getExpenseList(date); // get expense list for month
 
-    //***************/
-    // File IO methods
-    //***************/
-
-    // save data from tableview to file
-    public void saveExpenses() {
-        // write data from expenseList to expenses.csv
-
-        try {
-            FileWriter csvWriter = new FileWriter("expenses.csv");
-
-
-            // write data to csv file
-            for (Expense expense : expenseList) {
-                csvWriter.append(expense.getName());
-                csvWriter.append(",");
-                csvWriter.append(expense.getCategory());
-                csvWriter.append(",");
-                csvWriter.append(expense.getLocalDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
-                csvWriter.append(",");
-                // get amount with 2 decimals
-                csvWriter.append(String.format("%.2f", expense.getAmount()));
-                csvWriter.append("\n");
-            }
-            csvWriter.flush();
-            csvWriter.close();
-
-            // display success message
-            Alert alert = new Alert(AlertType.INFORMATION);
-
-            alert.setTitle("Success");
-            alert.setHeaderText("Success");
-            alert.setContentText("Expenses have been saved");
-            alert.showAndWait();
+        // clear and update observable list and tableview
+        obsvExpenseList.clear(); 
+        for (Expense expense : expenseList) { 
+            obsvExpenseList.add(expense); 
         }
-        catch (IOException e) {
-            // display error message
-            Alert alert = new Alert(AlertType.ERROR);
-
-            alert.setTitle("Error");
-            alert.setHeaderText("Error");
-            alert.setContentText("Error saving expenses");
-            alert.showAndWait();
-        }
-        
-    } // end saveExpenses 
-
-
-    public void loadExpenses() {
-        // read data from expenses.csv to expenseList
-        try {
-            // clear expenseList
-            expenseList.clear();
-
-            // read data from csv file
-            BufferedReader csvReader = new BufferedReader(new FileReader("expenses.csv"));
-            String row;
-            while ((row = csvReader.readLine()) != null) {
-                String[] data = row.split(",");
-                String name = data[0];
-                String category = data[1];
-                LocalDate date = LocalDate.parse(data[2], DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-                double cost = Double.parseDouble(data[3]);
-                Expense newExpense = new Expense(name, category, date, cost);
-                expenseList.add(newExpense);
-            }
-            csvReader.close();
-        }
-        catch (IOException e) {
-            // display error message
-            Alert alert = new Alert(AlertType.ERROR);
-
-            alert.setTitle("Error");
-            alert.setHeaderText("Error");
-            alert.setContentText("Error loading expenses");
-            alert.showAndWait();
-        }
-    } // end loadExpenses method
-
-
-
-    //**************/
-    // Total Methods 
-    //**************/
-
-    // if months = 0 then calculate all time
-    public String calcluateTotal(int months) {
-
-        double totalCost = 0;
-
-        if (months == 0) {
-            // adds all costs from list to totalCost removing the $ sign
-            for (Expense expense : expenseList) {
-                // if dollar sign is in front of cost then remove it
-                if (Double.toString(expense.getAmount()).charAt(0) == '$') {
-                    
-                }
-                else {
-                    totalCost += expense.getAmount();
-                }
-            }
-        }
-        else // if months != 0 then calculate past months
-        {
-            // get current date
-            LocalDate currentDate = LocalDate.now();
-            // get date from months ago
-            LocalDate pastDate = currentDate.minusMonths(months);
-            // 
-
-            // adds all costs from list to totalCost removing the $ sign
-            for (Expense expense : expenseList) {
-                // convert expense date to localDate
-                LocalDate expenseDate = expense.getLocalDate();
-                if (expenseDate.isAfter(pastDate) && expenseDate.isBefore(currentDate) || expenseDate.isEqual(currentDate))
-                {
-                    totalCost += expense.getAmount();
-                }
-            }
-        }
-
-        return String.format("%.2f", totalCost);
-    } // end calcluateTotal method
- 
-
-    // changes menu button text to selected menu item
-    public void changeMenuButton(ActionEvent event) {
-        MenuItem menuItem = (MenuItem) event.getSource();
-        totalMenu.setText(menuItem.getText());
+        expenseTable.refresh();
         updateTotal();
-    } // end changeMenuButton method
 
-    
+        // set month menu with dates of found files
+        ArrayList<String> dateList = expenseModel.getDateList();
+        monthMenu.getItems().clear();
+        setMenuButton(monthMenu, dateList);
+    } // end updateMonth method
+
+
     public void updateTotal() {
-        // read menu button text and update total accordingly
-        switch (totalMenu.getText()) {
-            case "Past Month":
-                total.setText("$" + calcluateTotal(1));
-                break;
-            case "Past 3 Months":
-                total.setText("$" + calcluateTotal(3));
-                break;
-            case "Past 6 Months":
-                total.setText("$" + calcluateTotal(6));
-                break;
-            case "Past 12 Months":
-                total.setText("$" + calcluateTotal(12));
-                break;
-            case "All Time":
-                total.setText("$" + calcluateTotal(0)); // 0 means all time
-                break;
+        // if total menu = all
+        if (totalMenu.getText().equals("All")) {
+            total.setText(String.format("$%.2f", expenseList.getTotalSpending()));
+        }
+        // else find total for selected category
+        else { 
+            if (expenseList.getCategorySpending(totalMenu.getText()) == -1) { // if category not found
+                total.setText("$0.00"); // set total to 0
+            }
+            else { // else set total to category total
+                total.setText(String.format("$%.2f", expenseList.getCategorySpending(totalMenu.getText())));
+            }
         }
     } // end updateTotal method
+
+
+
+    //***************/
+    // File IO method
+    //***************/
+
+    // save data from tableview to file (NOTE add paramter for file to save to)
+    public void saveExpenses() {
+        expenseModel.saveAll(true);
+        sendAlert("Save", "Save", "Saved All Expenses", null);
+
+        // refresh monthMenu items
+        ArrayList<String> dateList = expenseModel.getDateList();
+        monthMenu.getItems().clear();
+        setMenuButton(monthMenu, dateList);
+    } // end saveExpenses method
     
 
 
-
+    //************************/
     // Front End Design Methods
+    //************************/
 
-    private void setAnchorPaneConstraints() {
-        // listener for adjusting elements' width when window is resized
-        expensePage.widthProperty().addListener((obs, oldVal, newVal) -> {
-            
-            // page title centered
-            AnchorPane.setLeftAnchor(expenseTitle, newVal.doubleValue() * .40); 
-            AnchorPane.setRightAnchor(expenseTitle, newVal.doubleValue() * .40); 
+    
+        //******************/
+        // Tableview Methods
+        //******************/
 
-            // total takes up 10% of window width 
-            AnchorPane.setRightAnchor(total, newVal.doubleValue() * .1); 
-            AnchorPane.setLeftAnchor(total, newVal.doubleValue() * .8); 
-            total.setPrefWidth(newVal.doubleValue() * .1);
 
-            AnchorPane.setLeftAnchor(totalTitle, newVal.doubleValue() * 0.8);
-            AnchorPane.setRightAnchor(totalTitle, newVal.doubleValue() * 0.1);  
-            totalTitle.setPrefWidth(newVal.doubleValue() * .1);
-            AnchorPane.setRightAnchor(totalMenu, total.getWidth() + newVal.doubleValue() * .1);  // total menu next to total label
-            // runs after total is resized
-            Platform.runLater(() -> {
-                AnchorPane.setLeftAnchor(totalTitle, newVal.doubleValue() * 0.8);
-                AnchorPane.setRightAnchor(totalTitle, newVal.doubleValue() * 0.1);  
-                totalTitle.setPrefWidth(newVal.doubleValue() * .1);
-                AnchorPane.setRightAnchor(totalMenu, total.getWidth() + newVal.doubleValue() * .1);  // total menu next to total label
-            });
+    private void setTableData() {
+        // if no month selected (no file saved)
+        if (monthMenu.getText().equals("Month")) { // if no month selected
+            expenseList = new ExpenseList();
+        }
+        else { // else get latest month
+            String year = monthMenu.getText().substring(0, 4); 
+            String month = monthMenu.getText().substring(5); 
+            if (month.length() == 1) {month = "0" + month;}
+            LocalDate date = LocalDate.parse(month + "/01/" + year, DateTimeFormatter.ofPattern("MM/dd/yyyy")); // create date object
+            expenseList = expenseModel.getExpenseList(date); // get expense list for month
+        }
+        
+        // update observable list and tableview
+        obsvExpenseList = FXCollections.observableArrayList();
+        expenseTable.setItems(obsvExpenseList);
+        for (Expense expense : expenseList) {
+            obsvExpenseList.add(expense);
+        }
+        setAllMenuButtons();
+        // calc and set total
+        totalMenu.setText("All");
+        updateTotal();
+    } // end setTableData method
 
-            // tableview takes up 80% of window width centered
-            AnchorPane.setLeftAnchor(expenseTable, newVal.doubleValue() * .1);
-            AnchorPane.setRightAnchor(expenseTable, newVal.doubleValue() * .1);
 
-            // add buttons above tableview 10% of window each 
-            AnchorPane.setLeftAnchor(addExpenseField, newVal.doubleValue() * .1);
-            AnchorPane.setRightAnchor(addExpenseField, newVal.doubleValue() * .8);
-
-            AnchorPane.setLeftAnchor(addCategoryField, newVal.doubleValue() * .2);
-            AnchorPane.setRightAnchor(addCategoryField, newVal.doubleValue() * .7);
-
-            AnchorPane.setLeftAnchor(addDateField, newVal.doubleValue() * .3);
-            AnchorPane.setRightAnchor(addDateField, newVal.doubleValue() * .6);
-
-            AnchorPane.setLeftAnchor(addCostField, newVal.doubleValue() * .4);
-            AnchorPane.setRightAnchor(addCostField, newVal.doubleValue() * .5);
-
-            AnchorPane.setLeftAnchor(addExpenseButton, newVal.doubleValue() * .5);
-            AnchorPane.setRightAnchor(addExpenseButton, newVal.doubleValue() * .46);
-
-            // save button at right 10% of window
-            AnchorPane.setLeftAnchor(saveExpenseButton, newVal.doubleValue() * .8);
-            AnchorPane.setRightAnchor(saveExpenseButton, newVal.doubleValue() * .1);    
-
-            
-        });
-
-        // listener for adjusting elements' height when window is resized
-        expensePage.heightProperty().addListener((obs, oldVal, newVal) -> {
-            // page title at top 5% of window
-            AnchorPane.setTopAnchor(expenseTitle, newVal.doubleValue() * .03); 
-            AnchorPane.setBottomAnchor(expenseTitle, newVal.doubleValue() * .92); 
-
-            AnchorPane.setTopAnchor(total, newVal.doubleValue() * .1); // total cost at top 10% of window
-            AnchorPane.setTopAnchor(totalTitle, newVal.doubleValue() * .075); // total title at top 10% of window
-            AnchorPane.setTopAnchor(totalMenu, newVal.doubleValue() * .1); // total menu at top 10% of window
-            
-            // tableview anchorpane takes up 70% of window height
-            AnchorPane.setBottomAnchor(expenseTable, 0.0);
-            AnchorPane.setTopAnchor(expenseTable, newVal.doubleValue() * .3);
-
-            // add buttons above tableview
-            AnchorPane.setBottomAnchor(addExpenseField, newVal.doubleValue() * .72);
-            AnchorPane.setBottomAnchor(addCategoryField, newVal.doubleValue() * .72);
-            AnchorPane.setBottomAnchor(addDateField, newVal.doubleValue() * .72);
-            AnchorPane.setBottomAnchor(addCostField, newVal.doubleValue() * .72);
-            AnchorPane.setBottomAnchor(addExpenseButton, newVal.doubleValue() * .72);
-
-            // save button above tableview
-            AnchorPane.setBottomAnchor(saveExpenseButton, newVal.doubleValue() * .72); 
-        });
-    } // end setAnchorPaneConstraints method
+    private void formatTable() {
+        formatTableCells();
+        formatTableColumns();
+        expenseTable.setPlaceholder(new Label("No Expenses Added")); 
+    } // end formatTable method
 
 
     private void formatTableCells() {
@@ -738,17 +485,11 @@ public class ExpenseController implements Initializable {
                 }
             }
         });
-
-        // align columns center
-        nameColumn.setStyle("-fx-alignment: CENTER;");
-        categoryColumn.setStyle("-fx-alignment: CENTER;");
-        dateColumn.setStyle("-fx-alignment: CENTER;");
-        amountColumn.setStyle("-fx-alignment: CENTER;");
     } // end of formatTableCells method
 
 
     private void formatTableColumns() {
-        // set cell value factory for each column
+        // set each expense field to its respective column
         nameColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("name"));
         categoryColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("category"));
         dateColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("localDate"));
@@ -764,4 +505,268 @@ public class ExpenseController implements Initializable {
             expenseTable.getColumns().addAll(columns);
         }
     } // end of formatTableColumns method
+
+
+
+        //*******************/
+        // MenuButton Methods
+        //*******************/
+
+    private void setMenuButton(MenuButton menuButton, ArrayList<String> items) {
+        for (String item : items) {
+            MenuItem menuItem = new MenuItem(item);
+            menuButton.getItems().add(menuItem);
+            menuItem.setOnAction(this::changeMenuButton);
+        }
+    } // end of setMenuButton method
+
+
+    private void setAllMenuButtons() {
+        // add all as default option for totalmenu
+        MenuItem all = new MenuItem("All");
+        totalMenu.getItems().add(all);
+        all.setOnAction(this::changeMenuButton);
+        
+        // set category buttons with categories from budgetmodel
+        ArrayList<String> categoryList = budgetModel.getCategoryList();
+        setMenuButton(totalMenu, categoryList);
+        setMenuButton(addCategoryField, categoryList);
+        setMenuButton(categoryField, categoryList);
+
+        // set month menu with dates of found files
+        ArrayList<String> dateList = expenseModel.getDateList();
+        setMenuButton(monthMenu, dateList);
+    } // end setMenuItems method
+
+
+    // changes menu button text to selected menu item
+    public void changeMenuButton(ActionEvent event) {
+        MenuItem menuItem = (MenuItem) event.getSource();
+        MenuButton menuButton = (MenuButton) menuItem.getParentPopup().getOwnerNode();
+        menuButton.setText(menuItem.getText());
+        // update tableview based on menu button clicked
+        if (menuButton == monthMenu) {
+            updateMonth();
+        }
+        else if (menuButton == totalMenu) {
+            updateTotal();
+        }
+    } // end changeMenuButton method
+
+
+    private void setDefaultMonth() {
+        if(expenseModel.getDateList().isEmpty()) {
+            return;
+        }
+        // get newest date
+        ArrayList<String> dates = expenseModel.getDateList();
+        String newestDate = dates.get(dates.size() - 1);
+
+        // set month menu to newest date and update tableview
+        monthMenu.setText(newestDate); 
+        updateMonth(); 
+        monthMenu.getItems().clear();
+    } // end setDefaultMonth method
+
+
+
+        //*******************/
+        // Edit Popup Methods
+        //*******************/
+
+    private void createEditMenu() {
+
+        nameField = new TextField();
+        categoryField = new MenuButton();
+        dateField = new TextField();
+        costField = new TextField();
+        name = new Label("Name:");
+        category = new Label("Category:");
+        date = new Label("Date:");
+        cost = new Label("Cost:");
+        finishEditButton = new Button("Finish");
+        closeEditButton = new Button("Close");
+
+        // place each label 
+        name.setLayoutX(100);
+        name.setLayoutY(50);
+        category.setLayoutX(100);
+        category.setLayoutY(100);
+        date.setLayoutX(100);
+        date.setLayoutY(150);
+        cost.setLayoutX(100);
+        cost.setLayoutY(200);
+
+        // place each textfield
+        nameField.setLayoutX(200);
+        nameField.setLayoutY(50);
+        categoryField.setLayoutX(200);
+        categoryField.setLayoutY(100);
+        categoryField.setPrefWidth(150);
+        dateField.setLayoutX(200);
+        dateField.setLayoutY(150);
+        costField.setLayoutX(200);
+        costField.setLayoutY(200);
+
+        // Create a button to finish editing
+        finishEditButton.setLayoutX(100);
+        finishEditButton.setLayoutY(300);
+
+        // close
+        closeEditButton.setLayoutX(300);
+        closeEditButton.setLayoutY(300);
+    } // end of createEditMenu method
+
+
+    private void centerEditPopup(Popup popup, AnchorPane layout) {
+        // popup position event handlers
+        expensePage.getScene().getWindow().xProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number oldX, Number newX) {
+                popup.setX(newX.doubleValue() + expensePage.getScene().getRoot().getLayoutBounds().getWidth() / 2 - layout.getPrefWidth() / 2);
+            }
+        });
+        expensePage.getScene().getWindow().yProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number oldY, Number newY) {
+                popup.setY(newY.doubleValue() + expensePage.getScene().getRoot().getLayoutBounds().getHeight() / 2 - layout.getPrefHeight() / 2);
+            }
+        });
+        expensePage.getScene().widthProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number oldWidth, Number newWidth) {
+                popup.setX(expensePage.getScene().getWindow().getX() + expensePage.getScene().getRoot().getLayoutBounds().getWidth() / 2 - layout.getPrefWidth() / 2);
+            }
+        });
+        expensePage.getScene().heightProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number oldHeight, Number newHeight) {
+                popup.setY(expensePage.getScene().getWindow().getY() + expensePage.getScene().getRoot().getLayoutBounds().getHeight() / 2 - layout.getPrefHeight() / 2);
+            }
+        });
+    } // end of centerEditPopup method
+ 
+
+
+        //******************************/
+        // AnchorPane Constraint Methods
+        //******************************/
+
+    private void setAnchorPaneConstraints() {
+        // listener for adjusting elements' width when window is resized
+        expensePage.widthProperty().addListener((obs, oldVal, newVal) -> {
+            setWidthConstraints(expenseTitle, newVal, 0.4, 0.4);
+            setWidthConstraints(monthMenu, newVal, .1, .79);
+            setWidthConstraints(monthTitle, newVal, .1, .79);
+            setWidthConstraints(total, newVal, .8, .1);
+            total.setPrefWidth(newVal.doubleValue() * .1);
+
+            // runs after total is resized
+            Platform.runLater(() -> {
+                setWidthConstraints(totalTitle, newVal, .8, .1);
+                totalTitle.setPrefWidth(newVal.doubleValue() * .1);
+
+                // set totalMenu next to total label
+                AnchorPane.setRightAnchor(totalMenu, total.getWidth() + newVal.doubleValue() * .1);  // total menu next to total label
+                // set totalMenuTitle on top of totalMenu (centered)
+                AnchorPane.setRightAnchor(totalMenuTitle, total.getWidth()+totalMenuTitle.getWidth()/2 + newVal.doubleValue() * .1);
+            });
+
+            setWidthConstraints(expenseTable, newVal, .1, .1);
+
+            // add buttons above tableview 10% of window each
+            setWidthConstraints(addExpenseField, newVal, .1, .8); 
+            setWidthConstraints(addCategoryField, newVal, .2, .7);
+            setWidthConstraints(addDateField, newVal, .3, .6);
+            setWidthConstraints(addCostField, newVal, .4, .5);
+            setWidthConstraints(addExpenseButton, newVal, .5, .46);
+
+            // save button at right 10% of window
+            setWidthConstraints(saveExpenseButton, newVal, .8, .1);   
+        });
+
+        // listener for adjusting elements' height when window is resized
+        expensePage.heightProperty().addListener((obs, oldVal, newVal) -> {
+            setHeightConstraints(expenseTitle, newVal, .03, 0.92);
+
+            AnchorPane.setTopAnchor(monthMenu, newVal.doubleValue() * .1);
+            AnchorPane.setTopAnchor(monthTitle, newVal.doubleValue() * .075);
+
+            AnchorPane.setTopAnchor(total, newVal.doubleValue() * .1); // total cost at top 10% of window
+            AnchorPane.setTopAnchor(totalTitle, newVal.doubleValue() * .075); // total title at top 10% of window
+            AnchorPane.setTopAnchor(totalMenu, newVal.doubleValue() * .1); // total menu at top 10% of window
+            AnchorPane.setTopAnchor(totalMenuTitle, newVal.doubleValue() * .075);
+            
+            setHeightConstraints(expenseTable, newVal, .32, .05);
+
+            AnchorPane.setBottomAnchor(addExpenseField, newVal.doubleValue() * .72);
+            AnchorPane.setBottomAnchor(addCategoryField, newVal.doubleValue() * .72);
+            AnchorPane.setBottomAnchor(addDateField, newVal.doubleValue() * .72);
+            AnchorPane.setBottomAnchor(addCostField, newVal.doubleValue() * .72);
+            AnchorPane.setBottomAnchor(addExpenseButton, newVal.doubleValue() * .72);
+
+            AnchorPane.setBottomAnchor(saveExpenseButton, newVal.doubleValue() * .72); 
+        });
+    } // end setAnchorPaneConstraints method
+
+    private void setWidthConstraints(Node element, Number newVal,  double left, double right) {
+        AnchorPane.setLeftAnchor(element, newVal.doubleValue() * left);
+        AnchorPane.setRightAnchor(element, newVal.doubleValue() * right);
+    } // end setWidthConstraints method
+
+    private void setHeightConstraints(Node element, Number newVal,  double top, double bottom) {
+        AnchorPane.setTopAnchor(element, newVal.doubleValue() * top);
+        AnchorPane.setBottomAnchor(element, newVal.doubleValue() * bottom);
+    } // end setHeightConstraints method
+
+
+
+        //******/
+        // Other
+        //******/
+
+    private void setContextMenu() {
+        // create & set context menu to tableview
+        editingContextMenu = new ContextMenu();
+        deleteMenuItem = new MenuItem("Delete");
+        editMenuItem = new MenuItem("Edit");
+        editingContextMenu.getItems().addAll(deleteMenuItem, editMenuItem);
+        expenseTable.setContextMenu(editingContextMenu);
+
+        // listeners to handle each menu item
+        deleteListener(deleteMenuItem); 
+        editListener(editMenuItem);
+    } // end setContextMenu method
+
+
+    private void setTotalPopup() {
+        // popup total value when mouse hovers over total
+        popup = new Popup();
+        totalPopupLabel = new Label(total.getText());
+        BackgroundFill backgroundFill = new BackgroundFill(Color.rgb(200, 200, 200), null, null);
+        Background background = new Background(backgroundFill);
+        totalPopupLabel.setBackground(background);
+        popup.getContent().add(totalPopupLabel);
+
+        // hover over total to show popup
+        total.setOnMouseEntered(event -> {
+            totalPopupLabel.setText(total.getText());
+            double x = event.getScreenX();
+            double y = event.getScreenY();
+            popup.show(total, x, y);
+        });
+        total.setOnMouseExited(event -> {
+            popup.hide();
+        });
+    } // end setTotalPopup method
+
+
+    private void sendAlert(String title, String header, String content, Popup owner) {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        if (owner != null) {alert.initOwner(owner);}
+        alert.showAndWait();
+    } // end sendAlert method
 } // end ExpenseController class

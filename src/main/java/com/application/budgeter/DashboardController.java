@@ -1,5 +1,6 @@
 package com.application.budgeter;
 
+import javafx.beans.Observable;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.AreaChart;
@@ -9,7 +10,25 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.control.Label;
+import java.lang.reflect.Array;
 import java.time.LocalDate;
+import javafx.scene.Node;
+import javafx.collections.ObservableList;
+import javafx.collections.FXCollections;
+import javafx.scene.control.SplitPane;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.control.TableCell;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.Button;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 
 
 public class DashboardController implements Initializable {
@@ -19,153 +38,304 @@ public class DashboardController implements Initializable {
 
     // charts
     @FXML private PieChart pieChart;
-    @FXML private AreaChart<String, Double> areaChart;
+
+    @FXML private BarChart<String, Double> barChart;
+    @FXML private CategoryAxis categoryAxis;
+    @FXML private NumberAxis amountAxis;
 
     // center budget data elements
-    @FXML private Rectangle spendingsRect;
     @FXML private Label flatAmountSpent;
     @FXML private Label percentAmountSpent;
     @FXML private Label daysLeft;
     @FXML private Label transactionsTableTitle;
+    
+    // month section
+    @FXML MenuButton monthMenu; 
+    @FXML Label monthTitle; 
 
     // recent transaction table elements
     @FXML private TableView<Expense> transactionsTable;
     @FXML private TableColumn<Expense, String> nameColumn;
     @FXML private TableColumn<Expense, LocalDate> dateColumn;
-    @FXML private TableColumn<Expense, Double> costColumn;
+    @FXML private TableColumn<Expense, Double> amountColumn;
+
+    BudgetModel budgetModel = new BudgetModel();
+    ExpenseList expenseList;
+    ExpenseModel expenseModel = new ExpenseModel();
+
+
+    public void setModels(ExpenseModel expenseModel, BudgetModel budgetModel) {
+        // pass expenseList to MainPageController
+        this.expenseModel = expenseModel;
+        this.budgetModel = budgetModel;
+
+        if(!expenseModel.getDateList().isEmpty()) {
+            expenseList = getLatestExpenselist();
+        }
+
+        addPiechart();
+        addRecentTransactions();
+        formatTable();
+        addBarChart();
+        addBudgetData();
+        setAllMenuButtons();
+        setDefaultMonth();
+    } // end of setModels method
 
 
 
     @Override
     public void initialize(java.net.URL arg0, java.util.ResourceBundle arg1) {
         setAnchorPaneContraints();
-        formatTable();
-        // set pie chart background to orange
-        pieChart.setStyle("-fx-background-color: #FFA500;");
-
-        // set transaction table title center
-        transactionsTableTitle.setStyle("-fx-alignment: CENTER;");
-
-        // make spendingsRect background blue
-        spendingsRect.setStyle("-fx-fill: #0000FF;");
-        // center align flatAmountSpent, percentAmountSpent, and daysLeft
-        flatAmountSpent.setStyle("-fx-alignment: CENTER;");
-        percentAmountSpent.setStyle("-fx-alignment: CENTER;");
-        daysLeft.setStyle("-fx-alignment: CENTER;");
+    } // end of initialize method
 
 
+    private ExpenseList getLatestExpenselist() {
+        // get latest date from dateList
+        ArrayList<String> dateList = expenseModel.getDateList();
+        String date = dateList.get(dateList.size() - 1);
+
+        // convert date to LocalDate object
+        String year = date.substring(0, 4); 
+        String month = date.substring(5); 
+        if (month.length() == 1) {month = "0" + month;}
+        LocalDate newestDate = LocalDate.parse(month + "/01/" + year, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+
+        // return expense list for month
+        return expenseModel.getExpenseList(newestDate); 
     }
 
+
+
+    //**********************/
+    // format page elements
+    //**********************/
+
+    private void addPiechart() {
+        // make observable list with category names and spent amounts from budget
+        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+        for (Budget budget : budgetModel.getBudgetList()) {
+            pieChartData.add(new PieChart.Data(budget.getCategory(), budget.getSpent()));
+        }
+
+        // set pie chart data
+        pieChart.setData(pieChartData);
+        pieChart.setTitle("");
+    } // end of addPiechart method
+
+
+    private void addRecentTransactions() {
+        if (expenseList == null) {
+            transactionsTable.setPlaceholder(new Label("No Transactions Yet"));
+            return;
+        }
+
+        // make observable list with category names and spent amounts from budget
+        ObservableList<Expense> recentTransactions = FXCollections.observableArrayList();
+        // get last 20 transactions, but if there are less than 20, get all of them
+        int numTransactions = expenseList.size();
+        if (numTransactions > 20) {
+            numTransactions = 20;
+        }
+
+        for (int i = 0; i < numTransactions; i++) {
+            recentTransactions.add(expenseList.get(i));
+        }
+
+        // set pie chart data
+        transactionsTable.setItems(recentTransactions);
+    } // end of addRecentTransactions method
+
+
+    private void addBarChart() {
+        // make observable list with category names and spent amounts from budget
+        ObservableList<XYChart.Series<String, Double>> barChartData = FXCollections.observableArrayList();
+        XYChart.Series<String, Double> series = new XYChart.Series<>();
+
+        for (Budget budget : budgetModel.getBudgetList()) {
+            series.getData().add(new XYChart.Data<>(budget.getCategory(), budget.getSpent()));
+        }
+
+        barChartData.add(series);
+
+        // set pie chart data
+        barChart.setData(barChartData);
+        barChart.setLegendVisible(false);
+        barChart.setTitle("Spendings");
+    } // end of addBarChart method
+
+
+    private void addBudgetData() {
+        double totalSpent = 0;
+        double totalBudget = 0;
+        for (Budget budget : budgetModel.getBudgetList()) {
+           totalSpent += budget.spent;
+           totalBudget += budget.total;
+        }
+        // format totalSpent and totalBudget to 2 decimal places 
+        String spent =  "$" + String.format("%.2f", totalSpent);
+        String total = "$" + String.format("%.2f", totalBudget);
+
+
+        double percentAmount = (totalSpent / totalBudget) * 100;
+        String percentAmountString = "$" + String.format("%.2f", percentAmount) + "%";
+
+        // days left = days in month - current day
+        LocalDate currentDate = LocalDate.now();
+        String daysLeft = Integer.toString(currentDate.lengthOfMonth() - currentDate.getDayOfMonth());
+
+
+        flatAmountSpent.setText(spent + " / " + total + " Spent");
+        percentAmountSpent.setText(percentAmountString + " Spent");
+        this.daysLeft.setText(daysLeft + " Days Left");
+    } // end of addBudgetData method
+
+
+
+    //************************/
+    // Front End Design Methods
+    //************************/
+    
     public void setAnchorPaneContraints() {
         // listener for adjusting elements' width when window is resized
         dashboardPage.widthProperty().addListener((obs, oldVal, newVal) -> {
-            // set width of dashboardTitle
-            AnchorPane.setRightAnchor(dashboardTitle, newVal.doubleValue() * .4);
-            AnchorPane.setLeftAnchor(dashboardTitle, newVal.doubleValue() * .4 );
+            setWidthConstraints(dashboardTitle, newVal, .4, .4);
+            setWidthConstraints(pieChart, newVal, .05, .6);
+            setWidthConstraints(barChart, newVal, .05, .4);
+            setWidthConstraints(flatAmountSpent, newVal, .4, .4);
+            setWidthConstraints(percentAmountSpent, newVal, .4, .4);
+            setWidthConstraints(daysLeft, newVal, .4, .4);
+            setWidthConstraints(transactionsTableTitle, newVal, .65, .05);
+            setWidthConstraints(transactionsTable, newVal, .65, .05);
 
-            // set width of pieChart
-            // 5% left, 60% right
-            AnchorPane.setLeftAnchor(pieChart, newVal.doubleValue() * .05);
-            AnchorPane.setRightAnchor(pieChart, newVal.doubleValue() * .7);
-
-            // set width of areaChart
-            // 5% left, 40% right
-            AnchorPane.setLeftAnchor(areaChart, newVal.doubleValue() * .05);
-            AnchorPane.setRightAnchor(areaChart, newVal.doubleValue() * .4);
-
-            // set width of spendingsRect
-            // 40% left, 40% right
-            AnchorPane.setLeftAnchor(spendingsRect, newVal.doubleValue() * .4);
-            AnchorPane.setRightAnchor(spendingsRect, newVal.doubleValue() * .4);
-
-            // set width of flatAmountSpent
-            // 40% left, 40% right
-            AnchorPane.setLeftAnchor(flatAmountSpent, newVal.doubleValue() * .4);
-            AnchorPane.setRightAnchor(flatAmountSpent, newVal.doubleValue() * .4);
-
-            // set width of percentAmountSpent
-            // 40% left, 40% right
-            AnchorPane.setLeftAnchor(percentAmountSpent, newVal.doubleValue() * .4);
-            AnchorPane.setRightAnchor(percentAmountSpent, newVal.doubleValue() * .4);
-
-            // set width of daysLeft
-            // 40% left, 40% right
-            AnchorPane.setLeftAnchor(daysLeft, newVal.doubleValue() * .4);
-            AnchorPane.setRightAnchor(daysLeft, newVal.doubleValue() * .4);
-
-            // set width of transactionsTableTitle
-            // 55% left, 20% right
-            AnchorPane.setLeftAnchor(transactionsTableTitle, newVal.doubleValue() * .65);
-            AnchorPane.setRightAnchor(transactionsTableTitle, newVal.doubleValue() * .05);
-
-            // set width of transactionsTable
-            // 55% left, 20% right
-            AnchorPane.setLeftAnchor(transactionsTable, newVal.doubleValue() * .65);
-            AnchorPane.setRightAnchor(transactionsTable, newVal.doubleValue() * .05);
+            setWidthConstraints(monthMenu, newVal, .1, .79);
+            setWidthConstraints(monthTitle, newVal, .1, .79);
         });
-
 
         // listener for adjusting elements' height when window is resized
         dashboardPage.heightProperty().addListener((obs, oldVal, newVal) -> {
-            // set height of dashboardTitle
-            // 3% top, 92% bottom
-            AnchorPane.setTopAnchor(dashboardTitle, newVal.doubleValue() * .03);
-            AnchorPane.setBottomAnchor(dashboardTitle, newVal.doubleValue() * .92);
+            setHeightConstraints(dashboardTitle, newVal, .03, .92);
+            setHeightConstraints(pieChart, newVal, .1, .55);
+            setHeightConstraints(barChart, newVal, .5, .05);
+            setHeightConstraints(flatAmountSpent, newVal, .17, .73);
+            setHeightConstraints(percentAmountSpent, newVal, .25, .65);
+            setHeightConstraints(daysLeft, newVal, .33, .57);
+            setHeightConstraints(transactionsTableTitle, newVal, .07, .88);
+            setHeightConstraints(transactionsTable, newVal, .12, .05);
 
-            // pieChart
-            // 10% top, 55% bottom
-            AnchorPane.setTopAnchor(pieChart, newVal.doubleValue() * .1);
-            AnchorPane.setBottomAnchor(pieChart, newVal.doubleValue() * .55);
-
-            // areaChart
-            // 60% top, 5% bottom
-            AnchorPane.setTopAnchor(areaChart, newVal.doubleValue() * .5);
-            AnchorPane.setBottomAnchor(areaChart, newVal.doubleValue() * .05);
-
-            // spendingsRect
-            // 30% top, 50% bottom
-            AnchorPane.setTopAnchor(spendingsRect, newVal.doubleValue() * .3);
-            AnchorPane.setBottomAnchor(spendingsRect, newVal.doubleValue() * .5);
-
-            // flatAmountSpent
-                // 20% top, 70% bottom
-            AnchorPane.setTopAnchor(flatAmountSpent, newVal.doubleValue() * .2);
-            AnchorPane.setBottomAnchor(flatAmountSpent, newVal.doubleValue() * .7);
-
-            // percentAmountSpent
-                // 25% top, 65% bottom
-            AnchorPane.setTopAnchor(percentAmountSpent, newVal.doubleValue() * .25);
-            AnchorPane.setBottomAnchor(percentAmountSpent, newVal.doubleValue() * .65);
-
-            // daysLeft
-                // 30% top, 60% bottom
-            AnchorPane.setTopAnchor(daysLeft, newVal.doubleValue() * .3);
-            AnchorPane.setBottomAnchor(daysLeft, newVal.doubleValue() * .6);
-
-            // transactionsTableTitle
-            // 10% top 85% bottom
-            AnchorPane.setTopAnchor(transactionsTableTitle, newVal.doubleValue() * .07);
-            AnchorPane.setBottomAnchor(transactionsTableTitle, newVal.doubleValue() * .88);
-            
-            // transactionsTable
-            // 12% top, 5% bottom
-            AnchorPane.setTopAnchor(transactionsTable, newVal.doubleValue() * .12);
-            AnchorPane.setBottomAnchor(transactionsTable, newVal.doubleValue() * .05);
-
-
-
+            AnchorPane.setTopAnchor(monthMenu, newVal.doubleValue() * .1);
+            AnchorPane.setTopAnchor(monthTitle, newVal.doubleValue() * .075);
         });
     } // end of setAnchorPaneContraints method
 
 
+    private void setWidthConstraints(Node element, Number newVal,  double left, double right) {
+        AnchorPane.setLeftAnchor(element, newVal.doubleValue() * left);
+        AnchorPane.setRightAnchor(element, newVal.doubleValue() * right);
+    } // end setWidthConstraints method
+
+
+    private void setHeightConstraints(Node element, Number newVal,  double top, double bottom) {
+        AnchorPane.setTopAnchor(element, newVal.doubleValue() * top);
+        AnchorPane.setBottomAnchor(element, newVal.doubleValue() * bottom);
+    } // end setHeightConstraints method
+
+
     public void formatTable() {
-        // set column alignment center
-        nameColumn.setStyle("-fx-alignment: CENTER;");
-        dateColumn.setStyle("-fx-alignment: CENTER;");
-        costColumn.setStyle("-fx-alignment: CENTER;");
+        // set table columns
+        nameColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("name"));
+        dateColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("localDate"));
+        amountColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("amount"));
 
         // set table column resize policy
         transactionsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        // format data in table
+
+        // set cell factory for cost column to format cost to currency (adds $ and .00 to end of cost)
+        amountColumn.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(Double item, boolean empty) {
+                super.updateItem(item, empty);
         
-    } // end of formatTableCells method
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(String.format("$%.2f", item));
+                }
+            }
+        });
+
+        // set cell factory for date column to format date to MM/dd/yyyy
+        dateColumn.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(LocalDate item, boolean empty) {
+                super.updateItem(item, empty);
+        
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
+                }
+            }
+        });
+    } // end of formatTable method
+
+
+    private void setMenuButton(MenuButton menuButton, ArrayList<String> items) {
+        for (String item : items) {
+            System.out.println(item);
+            MenuItem menuItem = new MenuItem(item);
+            menuButton.getItems().add(menuItem);
+            menuItem.setOnAction(this::changeMenuButton);
+        }
+    } // end of setMenuButton method
+
+
+    private void setAllMenuButtons() {
+        ArrayList<String> dateList = expenseModel.getDateList();
+        setMenuButton(monthMenu, dateList);
+    } // end setMenuItems method
+
+
+    // changes menu button text to selected menu item
+    public void changeMenuButton(ActionEvent event) {
+        MenuItem menuItem = (MenuItem) event.getSource();
+        MenuButton menuButton = (MenuButton) menuItem.getParentPopup().getOwnerNode();
+        menuButton.setText(menuItem.getText());
+        if (menuButton == monthMenu) {
+            updateMonth();
+        }
+    } // end changeMenuButton method
+
+
+    private void updateMonth() {
+        // get expenselist of selected month
+        String year = monthMenu.getText().substring(0, 4); 
+        String month = monthMenu.getText().substring(5); 
+        if (month.length() == 1) {month = "0" + month;}
+        LocalDate date = LocalDate.parse(month + "/01/" + year, DateTimeFormatter.ofPattern("MM/dd/yyyy")); // create date object
+        expenseList = expenseModel.getExpenseList(date); // get expense list for month
+
+        addRecentTransactions();
+
+        // set month menu with dates of found files
+        ArrayList<String> dateList = expenseModel.getDateList();
+        monthMenu.getItems().clear();
+        setMenuButton(monthMenu, dateList);
+    } // end updateMonth method
+
+
+    private void setDefaultMonth() {
+        if(expenseModel.getDateList().isEmpty()) {
+            return;
+        }
+        // get newest date
+        ArrayList<String> dates = expenseModel.getDateList();
+        String newestDate = dates.get(dates.size() - 1);
+
+        // set month menu to newest date and update tableview
+        monthMenu.setText(newestDate); 
+        monthMenu.getItems().clear();
+    } // end setDefaultMonth method
 } // end of DashboardController class

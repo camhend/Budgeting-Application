@@ -9,24 +9,26 @@ import java.io.IOException;
 
 import javafx.scene.image.Image;
 
-/*
- TODO: 
-*/
 
 public class App extends Application {
 
     private static Scene scene;
 
-    
-    
+    private ExpenseModel expenseModel = new ExpenseModel();
+    private BudgetModel budgetModel = new BudgetModel();
+
     @Override
     public void start(Stage stage) throws IOException {
 
-        
+        // load most recent month's data to models
+        budgetModel.readCSV("budget.csv");
 
-        scene = new Scene(loadFXML("MainPage"), 900, 615);
+        FXMLLoader loader = new FXMLLoader(App.class.getResource("MainPage.fxml"));
+        scene = new Scene(loader.load(), 900, 615);
 
-
+        // pass models to MainPageController
+        MainPageController controller = loader.getController();
+        controller.setModels(expenseModel, budgetModel);
 
         // set icon
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/com/application/budgeter/images/appIcon.jpg")));

@@ -3,6 +3,12 @@ package com.application.budgeter;
 import java.util.Iterator;
 import java.time.*;
 import java.util.*;
+import java.io.*;
+import java.io.FileWriter;
+import java.time.format.DateTimeFormatter;
+import java.io.*;
+import java.io.FileWriter;
+import java.time.format.DateTimeFormatter;
 
 // TODO: make CSV reader / writer
     // consider: how many expense to load? 
@@ -22,6 +28,8 @@ public class ExpenseList implements Iterable<Expense> {
     private double totalSpending;
     private int size;
     private Map<String, Double> categorySpending;
+    private ExpenseList copy; // copy of current list used for reverting changes
+    //private final LocalDate monthYear;
 
     // ExpenseList constructor
     public ExpenseList () {
@@ -30,6 +38,7 @@ public class ExpenseList implements Iterable<Expense> {
         this.size = 0;
         this.totalSpending = 0;
         this.categorySpending = new HashMap<String, Double>();
+        this.copy = null;
     } 
 
     // Nested class for LinkedList Nodes
@@ -43,6 +52,14 @@ public class ExpenseList implements Iterable<Expense> {
             this.prev = prev;
             this.expense = expense;
         }
+    }
+
+    // return month and year (yyyy-mm)
+    public String getMonthYear() {
+        if (head == null) {
+            return null;
+        }
+        return head.expense.getLocalDate().format(DateTimeFormatter.ofPattern("yyyy-MM"));
     }
     
     public int size() {
@@ -70,10 +87,13 @@ public class ExpenseList implements Iterable<Expense> {
     }
 
 
-
     // Add new Expense to the list in sorted order by date
     // Takes Expense fields as parameters
     public void add ( String name, String category, LocalDate localDate, double amount) { 
+        // if backup copy wasn't made, create it now
+        if (this.copy == null) {
+            this.copy = this.copy();
+        }        
         Expense newExpense = new Expense( name, category, localDate, amount);
         ExpenseNode newNode = new ExpenseNode (newExpense, null, null);
         // List is empty
@@ -114,6 +134,10 @@ public class ExpenseList implements Iterable<Expense> {
     // Add new Expense to list in sorted order by date
     // Takes Expense object as parameter
     public void add ( Expense newExpense) { 
+        // if backup copy wasn't made, create it now
+        if (this.copy == null) {
+            this.copy = this.copy();
+        }  
         ExpenseNode newNode = new ExpenseNode (newExpense, null, null);
         // List is empty
         if ( this.isEmpty() ) {
@@ -143,7 +167,6 @@ public class ExpenseList implements Iterable<Expense> {
         }
         totalSpending += newExpense.getAmount();
         size++;
-
         String category = newExpense.getCategory();
         double amount = newExpense.getAmount();
         if (categorySpending.containsKey(category)) {
@@ -192,6 +215,10 @@ public class ExpenseList implements Iterable<Expense> {
     // the correct position in the sorted list.
     // If the given Expense is not in the list, then return false.
     public boolean edit( Expense old, Expense updated) {
+        // if backup copy wasn't made, create it now
+        if (this.copy == null) {
+            this.copy = this.copy();
+        }
         ExpenseNode node = this.getNode(old);
         if (node == null) { // expense not found in list
             return false; 
@@ -214,7 +241,10 @@ public class ExpenseList implements Iterable<Expense> {
         // to the correct sorted position.
         if ( !updated.getLocalDate().equals(old.getLocalDate()) ) {
             // First, remove edited node from the current position
-            if (node == head) {
+            if (node == head && node == tail) {
+                // do not move if this node is the only node
+                return true;
+            } else if (node == head) {
                 // If node is head and node should still be the head, 
                 // then do not move the node
                 if (updated.getLocalDate().isBefore(node.next.expense.getLocalDate()) ) {
@@ -330,6 +360,10 @@ public class ExpenseList implements Iterable<Expense> {
     // Remove the ExpenseNode that contains the given Expense
     // Return true if successfully removed.
     public boolean remove( Expense expense ) {
+        // if backup copy wasn't made, create it now
+        if (this.copy == null) {
+            this.copy = this.copy();
+        }
         ExpenseNode node = this.getNode(expense);
         if (node == null) {
             return false;
@@ -366,6 +400,127 @@ public class ExpenseList implements Iterable<Expense> {
             current = current.next;
         }
         return arr;
+    }
+
+    // Return boolean for if this ExpenseList equals the other ExpenseList
+    public boolean equals (ExpenseList other) {
+        if (this.size != other.size()
+        || totalSpending != other.getTotalSpending()) {
+            return false;
+        }
+        Iterator<Expense> itr = other.iterator();
+        for (Expense expense : this) {
+            if ( !expense.equals(itr.next()) ) {
+                return false;
+            }
+        }
+        for (String key : categorySpending.keySet()) {
+            if (this.getCategorySpending(key) != other.getCategorySpending(key)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public ExpenseList copy() {
+        ExpenseList copy = new ExpenseList();
+        // this ExpenseList is empty
+        if (this.isEmpty()) {
+            return copy;
+        }
+        copy.totalSpending = this.totalSpending;
+        copy.size = this.size;
+        for (String key : this.categorySpending.keySet()) {
+            copy.categorySpending.put(key, this.getCategorySpending(key));
+        }
+
+        copy.head = new ExpenseNode(this.head.expense.copy(), null, null);
+        // this ExpenseList has ONE node
+        if (this.head.next == null) {
+            copy.tail = copy.head;
+            return copy;
+        }
+
+        
+        ExpenseNode thisCurrent = this.head;
+        ExpenseNode copyCurrent = copy.head;
+        
+        while (thisCurrent.next != null) {
+            copyCurrent.next = new ExpenseNode(thisCurrent.next.expense.copy(), null, copyCurrent);
+            thisCurrent = thisCurrent.next;
+            copyCurrent = copyCurrent.next;
+        }
+        copy.tail = copyCurrent;
+        return copy;
+    }
+
+    public void confirmSave (boolean confirmed, String filename) { 
+        // no copy was made so no changes were made. No changes to save, so don't save, and return instead
+        if (copy == null) {
+            return;
+        // Changes were made, and save is confirmed (confirm is true)
+        } else if ( confirmed ) { 
+            saveToCSV(filename); 
+        // Changes were made, but save is cancelled (confirm is false)
+        } else { 
+            this.head = copy.head; 
+            this.tail = copy.tail; 
+            this.totalSpending = copy.totalSpending; 
+            this.size = copy.size; 
+            this.categorySpending = copy.categorySpending; 
+        } 
+        this.copy = null; 
+     }
+
+    // write to csv, return true if successful, each line is an expense, each comma is a field
+    private boolean saveToCSV(String filename) {
+        try {
+            FileWriter writer = new FileWriter(filename);
+            writer.write("Name,Category,Date,Amount\n");
+            ExpenseNode current = head;
+            while (current != null) {
+                String name = current.expense.getName();
+                String category = current.expense.getCategory();
+                String date = current.expense.getLocalDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+                String amount = String.format("%.2f", current.expense.getAmount());
+                writer.write(name + "," + category + "," + date + "," + amount);
+                
+                writer.write("\n");
+                current = current.next;
+            }
+            writer.close();
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+
+    // load from file in src/main/resources/com/application/budgeter/expensedata , return true if successful
+    // each line is an expense, each comma is a field (name, category, date, amount)
+    public boolean loadFromCSV(String filename) {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(filename));
+            // print reader added
+            String line = reader.readLine();
+            line = reader.readLine();
+            while (line != null) {
+                String[] fields = line.split(","); // create array of fields split by comma
+                // add fields to expense
+                String name = fields[0]; 
+                String category = fields[1];
+                LocalDate date = LocalDate.parse(fields[2], DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+                double amount = Double.parseDouble(fields[3]);
+                // create expense and add to list
+                Expense expense = new Expense(name, category, date, amount);
+                this.add(expense); 
+                line = reader.readLine();
+            }
+            reader.close();
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
     }
 
     // return Iterator instance
