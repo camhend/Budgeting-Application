@@ -23,6 +23,8 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.MenuButton;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
 
 public class BudgetController implements Initializable {
@@ -50,6 +52,9 @@ public class BudgetController implements Initializable {
     @FXML private ProgressBar SpendingBar;
     @FXML private Label progressTitle;
 
+    // save
+    @FXML private Button saveBudgetButton;
+
     BudgetModel budgetModel = new BudgetModel();
     ExpenseList expenseList;
     ExpenseModel expenseModel = new ExpenseModel();
@@ -76,6 +81,19 @@ public class BudgetController implements Initializable {
         deleteListener(deleteMenuItem); 
     }
 
+    @Override
+    public void initialize(URL arg0, ResourceBundle arg1) {
+        category.setCellValueFactory(new PropertyValueFactory<Budget, String>("category"));
+        total.setCellValueFactory(new PropertyValueFactory<Budget, Double>("total"));
+        spent.setCellValueFactory(new PropertyValueFactory<Budget, Double>("spent"));
+        remaining.setCellValueFactory(new PropertyValueFactory<Budget, Double>("remaining"));
+        formatCurrencyColumns();
+
+        // formatting page elements
+        setAnchorPaneConstraints();
+        BudgetTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+    }
+
     public void submit(ActionEvent event) {
         try {
             String categoryName = categoryTextField.getText();
@@ -89,8 +107,22 @@ public class BudgetController implements Initializable {
         }
     } // end submit
 
-    public void deleteListener(MenuItem deleteMenuItem) {
+    private void deleteListener(MenuItem deleteMenuItem) {
         deleteMenuItem.setOnAction((ActionEvent event) -> {
+            
+            if (expenseList != null) {
+                // if category is in expenseList, send alert and return
+                for (Expense expense : expenseList) {
+                    if (expense.getCategory().equals(BudgetTable.getSelectionModel().getSelectedItem().category)) {
+                        Alert alert = new Alert(AlertType.INFORMATION);
+                        alert.setTitle("Error");
+                        alert.setHeaderText("Cannot delete category that has expenses");
+                        alert.setContentText("Please delete expenses in this category first");
+                        alert.showAndWait();
+                        return;
+                    }
+                }
+            }
             // get selected row
             Budget selectedBudget = BudgetTable.getSelectionModel().getSelectedItem();
             // remove selected row from the data
@@ -100,7 +132,7 @@ public class BudgetController implements Initializable {
     }
 
 
-    public void updateSpending() {
+    private void updateSpending() {
         // for each category, check category spending in expenseList
         for (Budget budget : budgetModel.getBudgetList()) {
             double newSpent = expenseList.getCategorySpending(budget.category);
@@ -110,8 +142,18 @@ public class BudgetController implements Initializable {
         }
     }
 
+    public void saveBudget() {
+        budgetModel.writeCSV("budget.csv");
 
-    public void setProgressBar() {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Saved");
+        alert.setHeaderText("Budget saved");
+        alert.setContentText("Your budget has been saved");
+        alert.showAndWait();
+    }
+
+
+    private void setProgressBar() {
         double totalSpent = 0;
         double totalBudget = 0;
         for (Budget budget : budgetModel.getBudgetList()) {
@@ -127,18 +169,7 @@ public class BudgetController implements Initializable {
         progressTitle.setText("Spent: $" + spent + " / $" + total + " (" + (int)(totalSpent/totalBudget * 100) + "%)");
     }
     
-    @Override
-    public void initialize(URL arg0, ResourceBundle arg1) {
-        category.setCellValueFactory(new PropertyValueFactory<Budget, String>("category"));
-        total.setCellValueFactory(new PropertyValueFactory<Budget, Double>("total"));
-        spent.setCellValueFactory(new PropertyValueFactory<Budget, Double>("spent"));
-        remaining.setCellValueFactory(new PropertyValueFactory<Budget, Double>("remaining"));
-        formatCurrencyColumns();
-
-        // formatting page elements
-        setAnchorPaneConstraints();
-        BudgetTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-    }
+    
 
     private void formatCurrencyColumns() {
         // set cell factory for 
@@ -196,6 +227,9 @@ public class BudgetController implements Initializable {
             
             setWidthConstraints(monthMenu, newVal, .1, .79);
             setWidthConstraints(monthTitle, newVal, .1, .79);
+
+            // save button at right 10% of window
+            setWidthConstraints(saveBudgetButton, newVal, .8, .1);   
         });
 
         // height property listener
@@ -210,6 +244,8 @@ public class BudgetController implements Initializable {
 
             AnchorPane.setTopAnchor(monthMenu, newVal.doubleValue() * .1);
             AnchorPane.setTopAnchor(monthTitle, newVal.doubleValue() * .075);
+
+            AnchorPane.setBottomAnchor(saveBudgetButton, newVal.doubleValue() * .72); 
         });
     }
 

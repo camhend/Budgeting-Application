@@ -52,5 +52,8 @@
       <!-- choosing month to see budget data for -->
       <Label fx:id="monthTitle" style="-fx-font-weight: bold;" alignment="CENTER" text="Month" />
       <MenuButton text="Month" alignment="CENTER" fx:id="monthMenu"/>
+
+      <!-- save button -->
+      <Button mnemonicParsing="false" text="Save" fx:id="saveBudgetButton" onAction="#saveBudget"/>
   </children>
 </AnchorPane>

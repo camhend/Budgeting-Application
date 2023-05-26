@@ -25,6 +25,10 @@ import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.Button;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 
 
 public class DashboardController implements Initializable {
@@ -74,6 +78,8 @@ public class DashboardController implements Initializable {
         formatTable();
         addBarChart();
         addBudgetData();
+        setAllMenuButtons();
+        setDefaultMonth();
     } // end of setModels method
 
 
@@ -274,4 +280,62 @@ public class DashboardController implements Initializable {
             }
         });
     } // end of formatTable method
+
+
+    private void setMenuButton(MenuButton menuButton, ArrayList<String> items) {
+        for (String item : items) {
+            System.out.println(item);
+            MenuItem menuItem = new MenuItem(item);
+            menuButton.getItems().add(menuItem);
+            menuItem.setOnAction(this::changeMenuButton);
+        }
+    } // end of setMenuButton method
+
+
+    private void setAllMenuButtons() {
+        ArrayList<String> dateList = expenseModel.getDateList();
+        setMenuButton(monthMenu, dateList);
+    } // end setMenuItems method
+
+
+    // changes menu button text to selected menu item
+    public void changeMenuButton(ActionEvent event) {
+        MenuItem menuItem = (MenuItem) event.getSource();
+        MenuButton menuButton = (MenuButton) menuItem.getParentPopup().getOwnerNode();
+        menuButton.setText(menuItem.getText());
+        if (menuButton == monthMenu) {
+            updateMonth();
+        }
+    } // end changeMenuButton method
+
+
+    private void updateMonth() {
+        // get expenselist of selected month
+        String year = monthMenu.getText().substring(0, 4); 
+        String month = monthMenu.getText().substring(5); 
+        if (month.length() == 1) {month = "0" + month;}
+        LocalDate date = LocalDate.parse(month + "/01/" + year, DateTimeFormatter.ofPattern("MM/dd/yyyy")); // create date object
+        expenseList = expenseModel.getExpenseList(date); // get expense list for month
+
+        addRecentTransactions();
+
+        // set month menu with dates of found files
+        ArrayList<String> dateList = expenseModel.getDateList();
+        monthMenu.getItems().clear();
+        setMenuButton(monthMenu, dateList);
+    } // end updateMonth method
+
+
+    private void setDefaultMonth() {
+        if(expenseModel.getDateList().isEmpty()) {
+            return;
+        }
+        // get newest date
+        ArrayList<String> dates = expenseModel.getDateList();
+        String newestDate = dates.get(dates.size() - 1);
+
+        // set month menu to newest date and update tableview
+        monthMenu.setText(newestDate); 
+        monthMenu.getItems().clear();
+    } // end setDefaultMonth method
 } // end of DashboardController class
