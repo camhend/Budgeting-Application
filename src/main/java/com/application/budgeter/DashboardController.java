@@ -20,11 +20,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.TableCell;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.MenuButton;
 
 
 public class DashboardController implements Initializable {
@@ -44,6 +44,10 @@ public class DashboardController implements Initializable {
     @FXML private Label percentAmountSpent;
     @FXML private Label daysLeft;
     @FXML private Label transactionsTableTitle;
+    
+    // month section
+    @FXML MenuButton monthMenu; 
+    @FXML Label monthTitle; 
 
     // recent transaction table elements
     @FXML private TableView<Expense> transactionsTable;
@@ -110,7 +114,7 @@ public class DashboardController implements Initializable {
 
         // set pie chart data
         pieChart.setData(pieChartData);
-        pieChart.setTitle("Spendings");
+        pieChart.setTitle("");
     } // end of addPiechart method
 
 
@@ -197,6 +201,9 @@ public class DashboardController implements Initializable {
             setWidthConstraints(daysLeft, newVal, .4, .4);
             setWidthConstraints(transactionsTableTitle, newVal, .65, .05);
             setWidthConstraints(transactionsTable, newVal, .65, .05);
+
+            setWidthConstraints(monthMenu, newVal, .1, .79);
+            setWidthConstraints(monthTitle, newVal, .1, .79);
         });
 
         // listener for adjusting elements' height when window is resized
@@ -209,6 +216,9 @@ public class DashboardController implements Initializable {
             setHeightConstraints(daysLeft, newVal, .33, .57);
             setHeightConstraints(transactionsTableTitle, newVal, .07, .88);
             setHeightConstraints(transactionsTable, newVal, .12, .05);
+
+            AnchorPane.setTopAnchor(monthMenu, newVal.doubleValue() * .1);
+            AnchorPane.setTopAnchor(monthTitle, newVal.doubleValue() * .075);
         });
     } // end of setAnchorPaneContraints method
 

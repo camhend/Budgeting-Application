@@ -22,14 +22,17 @@ import javafx.scene.Node;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
-
-
+import javafx.scene.control.MenuButton;
 
 
 public class BudgetController implements Initializable {
     
     @FXML AnchorPane budgetPage;
     @FXML private Label budgetTitle;
+
+    // month section
+    @FXML MenuButton monthMenu; 
+    @FXML Label monthTitle; 
 
     // Budget Table
     @FXML TableView<Budget> BudgetTable;
@@ -189,7 +192,10 @@ public class BudgetController implements Initializable {
             setWidthConstraints(progressTitle, newVal, 0.40, 0.40); 
             setWidthConstraints(categoryTextField, newVal, 0.275, 0.55);  
             setWidthConstraints(limitTextField, newVal, 0.475, 0.35); 
-            setWidthConstraints(categoryButton, newVal, 0.675, 0.275); 
+            setWidthConstraints(categoryButton, newVal, 0.675, 0.275);
+            
+            setWidthConstraints(monthMenu, newVal, .1, .79);
+            setWidthConstraints(monthTitle, newVal, .1, .79);
         });
 
         // height property listener
@@ -201,6 +207,9 @@ public class BudgetController implements Initializable {
             AnchorPane.setTopAnchor(limitTextField, newVal.doubleValue() * .30);
             AnchorPane.setTopAnchor(categoryTextField, newVal.doubleValue() * .30);
             AnchorPane.setTopAnchor(categoryButton, newVal.doubleValue() * .30);
+
+            AnchorPane.setTopAnchor(monthMenu, newVal.doubleValue() * .1);
+            AnchorPane.setTopAnchor(monthTitle, newVal.doubleValue() * .075);
         });
     }
 

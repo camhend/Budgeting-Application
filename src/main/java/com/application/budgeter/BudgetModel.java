@@ -162,5 +162,4 @@ public class BudgetModel {
             System.out.println(budget.getCategory() + " - total: $" + budget.getTotal() + " - Spent: $" + budget.getSpent() + ", Remaining: $" + budget.getRemaining());
         }
     }
-
 }
