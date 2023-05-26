@@ -3,10 +3,6 @@ package com.application.budgeter;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
-
-
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -52,14 +48,15 @@ public class BudgetController implements Initializable {
     @FXML private ProgressBar SpendingBar;
     @FXML private Label progressTitle;
 
-    // save
+    // save budget button
     @FXML private Button saveBudgetButton;
 
+    // data models
     BudgetModel budgetModel = new BudgetModel();
     ExpenseList expenseList;
     ExpenseModel expenseModel = new ExpenseModel();
 
-
+    //* set data models and setup elements that require data models
     public void setModels(ExpenseModel expenseModel, BudgetModel budgetModel) {
         // pass expenseList to MainPageController
         this.expenseModel = expenseModel;
@@ -81,32 +78,31 @@ public class BudgetController implements Initializable {
         deleteListener(deleteMenuItem); 
     }
 
-    @Override
+    @Override //* formatting page elements
     public void initialize(URL arg0, ResourceBundle arg1) {
-        category.setCellValueFactory(new PropertyValueFactory<Budget, String>("category"));
-        total.setCellValueFactory(new PropertyValueFactory<Budget, Double>("total"));
-        spent.setCellValueFactory(new PropertyValueFactory<Budget, Double>("spent"));
-        remaining.setCellValueFactory(new PropertyValueFactory<Budget, Double>("remaining"));
-        formatCurrencyColumns();
-
-        // formatting page elements
+        formatBudgetTable();
         setAnchorPaneConstraints();
-        BudgetTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
 
+
+    //* add budget to budgetlist 
     public void submit(ActionEvent event) {
         try {
             String categoryName = categoryTextField.getText();
             double categoryLimit = Double.parseDouble(limitTextField.getText());
+
             budgetModel.addBudget(categoryName, 0, categoryLimit);
+
             categoryTextField.clear();
             limitTextField.clear();
         }
         catch (Exception e) {
             System.out.print(e);
         }
-    } // end submit
+    } // end submit method
 
+
+    //* listener for deleting budget from budgetlist
     private void deleteListener(MenuItem deleteMenuItem) {
         deleteMenuItem.setOnAction((ActionEvent event) -> {
             
@@ -129,9 +125,10 @@ public class BudgetController implements Initializable {
             budgetModel.deleteBudget(selectedBudget);
             
         });
-    }
+    } // end deleteListener method
 
 
+    //* update spending for each category by reading expenseList
     private void updateSpending() {
         // for each category, check category spending in expenseList
         for (Budget budget : budgetModel.getBudgetList()) {
@@ -140,8 +137,10 @@ public class BudgetController implements Initializable {
                 budgetModel.editBudgetSpent(budget, newSpent);
             }
         }
-    }
+    } // end updateSpending method
 
+
+    //* write budget to csv file
     public void saveBudget() {
         budgetModel.writeCSV("budget.csv");
 
@@ -150,9 +149,10 @@ public class BudgetController implements Initializable {
         alert.setHeaderText("Budget saved");
         alert.setContentText("Your budget has been saved");
         alert.showAndWait();
-    }
+    } // end saveBudget method
 
 
+    //* set progress bar and title to percentage of budget spent
     private void setProgressBar() {
         double totalSpent = 0;
         double totalBudget = 0;
@@ -167,53 +167,46 @@ public class BudgetController implements Initializable {
         String total = String.format("%.2f", totalBudget);
 
         progressTitle.setText("Spent: $" + spent + " / $" + total + " (" + (int)(totalSpent/totalBudget * 100) + "%)");
-    }
+    } // end setProgressBar method
     
     
+    //* apply formatting to table
+    private void formatBudgetTable() {
+        formatCurrencyColumns();
 
+        BudgetTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        category.setCellValueFactory(new PropertyValueFactory<Budget, String>("category"));
+        total.setCellValueFactory(new PropertyValueFactory<Budget, Double>("total"));
+        spent.setCellValueFactory(new PropertyValueFactory<Budget, Double>("spent"));
+        remaining.setCellValueFactory(new PropertyValueFactory<Budget, Double>("remaining"));
+    } // end formatBudgetTable
+
+
+    //* format all currency columns
     private void formatCurrencyColumns() {
-        // set cell factory for 
-        remaining.setCellFactory(column -> new TableCell<>() {
+        formatCurrencyColumn(remaining);
+        formatCurrencyColumn(spent);
+        formatCurrencyColumn(total);
+    } // end formatCurrencyColumns method
+
+
+    //* add dollar sign and 2 decimal places to given column
+    private void formatCurrencyColumn(TableColumn<Budget, Double> column) {
+        column.setCellFactory(col -> new TableCell<>() {
             @Override
             protected void updateItem(Double item, boolean empty) {
                 super.updateItem(item, empty);
-        
-                if (empty || item == null) {
+                if (empty || item == null)
                     setText(null);
-                } else {
+                else 
                     setText(String.format("$%.2f", item));
-                }
             }
         });
-
-        spent.setCellFactory(column -> new TableCell<>() {
-            @Override
-            protected void updateItem(Double item, boolean empty) {
-                super.updateItem(item, empty);
-        
-                if (empty || item == null) {
-                    setText(null);
-                } else {
-                    setText(String.format("$%.2f", item));
-                }
-            }
-        });
-
-        total.setCellFactory(column -> new TableCell<>() {
-            @Override
-            protected void updateItem(Double item, boolean empty) {
-                super.updateItem(item, empty);
-        
-                if (empty || item == null) {
-                    setText(null);
-                } else {
-                    setText(String.format("$%.2f", item));
-                }
-            }
-        });
-    }
+    } // end formatCurrencyColumn method
 
 
+    //* set anchorpane constraints for all elements when window is resized
     private void setAnchorPaneConstraints() {
         // width property listener
         budgetPage.widthProperty().addListener((obs, oldVal, newVal) -> {
@@ -247,15 +240,19 @@ public class BudgetController implements Initializable {
 
             AnchorPane.setBottomAnchor(saveBudgetButton, newVal.doubleValue() * .72); 
         });
-    }
+    } // end setAnchorPaneConstraints method
 
+
+    // set left and right anchor constraints
     private void setWidthConstraints(Node element, Number newVal,  double left, double right) {
         AnchorPane.setLeftAnchor(element, newVal.doubleValue() * left);
         AnchorPane.setRightAnchor(element, newVal.doubleValue() * right);
-    }
+    } // end setWidthConstraints method
 
+
+    // set top and bottom anchor constraints
     private void setHeightConstraints(Node element, Number newVal,  double top, double bottom) {
         AnchorPane.setTopAnchor(element, newVal.doubleValue() * top);
         AnchorPane.setBottomAnchor(element, newVal.doubleValue() * bottom);
-    }
+    } // end setHeightConstraints method
 } // end of budget controller class
