@@ -27,6 +27,7 @@
         </fx:define>
         
         
+        <!-- Menu Section -->
         <AnchorPane minHeight="600.0" minWidth="220.0"  fx:id="menuPage" style="-fx-background-color: #ECEAEA;">
             <children>
                 <!-- Title (Menu) -->

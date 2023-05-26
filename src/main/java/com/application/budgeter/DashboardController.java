@@ -38,12 +38,11 @@ public class DashboardController implements Initializable {
 
     // charts
     @FXML private PieChart pieChart;
-
     @FXML private BarChart<String, Double> barChart;
     @FXML private CategoryAxis categoryAxis;
     @FXML private NumberAxis amountAxis;
 
-    // center budget data elements
+    // central budget data elements
     @FXML private Label flatAmountSpent;
     @FXML private Label percentAmountSpent;
     @FXML private Label daysLeft;
@@ -59,19 +58,21 @@ public class DashboardController implements Initializable {
     @FXML private TableColumn<Expense, LocalDate> dateColumn;
     @FXML private TableColumn<Expense, Double> amountColumn;
 
+    // data models 
     BudgetModel budgetModel = new BudgetModel();
     ExpenseList expenseList;
     ExpenseModel expenseModel = new ExpenseModel();
 
 
+    //* pass models to controller & set setup elements that require models
     public void setModels(ExpenseModel expenseModel, BudgetModel budgetModel) {
-        // pass expenseList to MainPageController
         this.expenseModel = expenseModel;
         this.budgetModel = budgetModel;
 
-        if(!expenseModel.getDateList().isEmpty()) {
+        if(!expenseModel.getDateList().isEmpty()) 
             expenseList = getLatestExpenselist();
-        }
+        else 
+            expenseList = new ExpenseList();
 
         addPiechart();
         addRecentTransactions();
@@ -84,12 +85,13 @@ public class DashboardController implements Initializable {
 
 
 
-    @Override
+    @Override //* setup page when page is loaded
     public void initialize(java.net.URL arg0, java.util.ResourceBundle arg1) {
         setAnchorPaneContraints();
     } // end of initialize method
 
 
+    //* get latest filename and convert to local date and get expense list
     private ExpenseList getLatestExpenselist() {
         // get latest date from dateList
         ArrayList<String> dateList = expenseModel.getDateList();
@@ -103,16 +105,17 @@ public class DashboardController implements Initializable {
 
         // return expense list for month
         return expenseModel.getExpenseList(newestDate); 
-    }
+    } // end of getLatestExpenselist method
 
 
 
-    //**********************/
-    // format page elements
-    //**********************/
+    //********************/
+    // PAGE SETUP METHODS
+    //********************/
 
+    //* add budget data to pie chart
     private void addPiechart() {
-        // make observable list with category names and spent amounts from budget
+        // get observable list with category names and spent amounts from budget
         ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
         for (Budget budget : budgetModel.getBudgetList()) {
             pieChartData.add(new PieChart.Data(budget.getCategory(), budget.getSpent()));
@@ -124,38 +127,33 @@ public class DashboardController implements Initializable {
     } // end of addPiechart method
 
 
+    //* add most recent 20 transactions to table
     private void addRecentTransactions() {
-        if (expenseList == null) {
-            transactionsTable.setPlaceholder(new Label("No Transactions Yet"));
+        if (expenseList == null) 
             return;
-        }
 
-        // make observable list with category names and spent amounts from budget
+        // get up to last 20 transactions
         ObservableList<Expense> recentTransactions = FXCollections.observableArrayList();
-        // get last 20 transactions, but if there are less than 20, get all of them
         int numTransactions = expenseList.size();
-        if (numTransactions > 20) {
+        if (numTransactions > 20) 
             numTransactions = 20;
-        }
-
-        for (int i = 0; i < numTransactions; i++) {
+        for (int i = 0; i < numTransactions; i++) 
             recentTransactions.add(expenseList.get(i));
-        }
 
-        // set pie chart data
+        // set table data
         transactionsTable.setItems(recentTransactions);
     } // end of addRecentTransactions method
 
 
+    //* add budget data to pie chart
     private void addBarChart() {
-        // make observable list with category names and spent amounts from budget
+        // get observable list from budgetmodel
         ObservableList<XYChart.Series<String, Double>> barChartData = FXCollections.observableArrayList();
+
+        // add category and spent to series
         XYChart.Series<String, Double> series = new XYChart.Series<>();
-
-        for (Budget budget : budgetModel.getBudgetList()) {
+        for (Budget budget : budgetModel.getBudgetList()) 
             series.getData().add(new XYChart.Data<>(budget.getCategory(), budget.getSpent()));
-        }
-
         barChartData.add(series);
 
         // set pie chart data
@@ -165,26 +163,30 @@ public class DashboardController implements Initializable {
     } // end of addBarChart method
 
 
+    //* add budget data to central budget summary
     private void addBudgetData() {
+
+        // get total spent and total budget
         double totalSpent = 0;
         double totalBudget = 0;
         for (Budget budget : budgetModel.getBudgetList()) {
            totalSpent += budget.spent;
            totalBudget += budget.total;
         }
+
         // format totalSpent and totalBudget to 2 decimal places 
         String spent =  "$" + String.format("%.2f", totalSpent);
         String total = "$" + String.format("%.2f", totalBudget);
 
-
+        // calculate percent spent
         double percentAmount = (totalSpent / totalBudget) * 100;
         String percentAmountString = "$" + String.format("%.2f", percentAmount) + "%";
 
-        // days left = days in month - current day
+        // calculate days left in month
         LocalDate currentDate = LocalDate.now();
         String daysLeft = Integer.toString(currentDate.lengthOfMonth() - currentDate.getDayOfMonth());
 
-
+        // set labels
         flatAmountSpent.setText(spent + " / " + total + " Spent");
         percentAmountSpent.setText(percentAmountString + " Spent");
         this.daysLeft.setText(daysLeft + " Days Left");
@@ -195,96 +197,95 @@ public class DashboardController implements Initializable {
     //************************/
     // Front End Design Methods
     //************************/
-    
-    public void setAnchorPaneContraints() {
-        // listener for adjusting elements' width when window is resized
-        dashboardPage.widthProperty().addListener((obs, oldVal, newVal) -> {
-            setWidthConstraints(dashboardTitle, newVal, .4, .4);
-            setWidthConstraints(pieChart, newVal, .05, .6);
-            setWidthConstraints(barChart, newVal, .05, .4);
-            setWidthConstraints(flatAmountSpent, newVal, .4, .4);
-            setWidthConstraints(percentAmountSpent, newVal, .4, .4);
-            setWidthConstraints(daysLeft, newVal, .4, .4);
-            setWidthConstraints(transactionsTableTitle, newVal, .65, .05);
-            setWidthConstraints(transactionsTable, newVal, .65, .05);
 
-            setWidthConstraints(monthMenu, newVal, .1, .79);
-            setWidthConstraints(monthTitle, newVal, .1, .79);
+    //* set anchorpane constraints to resize buttons and title when window is resized
+    private void setAnchorPaneContraints() {
+        // width constraints
+        dashboardPage.widthProperty().addListener((obs, oldVal, newVal) -> {
+            setWidthConstraints(dashboardTitle, newVal, .4, .4); // dashboard title center 20% of page
+            setWidthConstraints(pieChart, newVal, .05, .6); // pie chart right 35% of page
+            setWidthConstraints(barChart, newVal, .05, .4); // bar chart bottom right 55% of page
+            setWidthConstraints(flatAmountSpent, newVal, .4, .4); // flat amount spent center 20% of page
+            setWidthConstraints(percentAmountSpent, newVal, .4, .4); // percent amount spent center 20% of page
+            setWidthConstraints(daysLeft, newVal, .4, .4); // days left center 20% of page
+                setWidthConstraints(transactionsTableTitle, newVal, .65, .05); // transactions table title left 30% of page
+            setWidthConstraints(transactionsTable, newVal, .65, .05); // transactions table left 30% of page
+
+            setWidthConstraints(monthMenu, newVal, .1, .79); // month menu left 11% of page
+            setWidthConstraints(monthTitle, newVal, .1, .79); // month title left 11% of page
         });
 
-        // listener for adjusting elements' height when window is resized
+        // height constraints
         dashboardPage.heightProperty().addListener((obs, oldVal, newVal) -> {
-            setHeightConstraints(dashboardTitle, newVal, .03, .92);
-            setHeightConstraints(pieChart, newVal, .1, .55);
-            setHeightConstraints(barChart, newVal, .5, .05);
-            setHeightConstraints(flatAmountSpent, newVal, .17, .73);
-            setHeightConstraints(percentAmountSpent, newVal, .25, .65);
-            setHeightConstraints(daysLeft, newVal, .33, .57);
-            setHeightConstraints(transactionsTableTitle, newVal, .07, .88);
-            setHeightConstraints(transactionsTable, newVal, .12, .05);
+            setHeightConstraints(dashboardTitle, newVal, .03, .92); // dashboard title top 5% of page
+            setHeightConstraints(pieChart, newVal, .1, .55); // pie chart top 35% of page
+            setHeightConstraints(barChart, newVal, .5, .05); // bar chart bottom 45% of page
+            setHeightConstraints(flatAmountSpent, newVal, .17, .73); // flat amount spent top-middle 10% of page
+            setHeightConstraints(percentAmountSpent, newVal, .25, .65); // percent amount spent top-middle 10% of page
+            setHeightConstraints(daysLeft, newVal, .33, .57); // days left top-middle 10% of page
+            setHeightConstraints(transactionsTableTitle, newVal, .07, .88); // transactions table title top 5% of page
+            setHeightConstraints(transactionsTable, newVal, .12, .05); // transactions table takes most of page height
 
-            AnchorPane.setTopAnchor(monthMenu, newVal.doubleValue() * .1);
-            AnchorPane.setTopAnchor(monthTitle, newVal.doubleValue() * .075);
+            AnchorPane.setTopAnchor(monthMenu, newVal.doubleValue() * .1); // month menu top 10% of page
+            AnchorPane.setTopAnchor(monthTitle, newVal.doubleValue() * .075); // month title above month menu
         });
     } // end of setAnchorPaneContraints method
 
 
+    //* set left and right anchor constraints
     private void setWidthConstraints(Node element, Number newVal,  double left, double right) {
         AnchorPane.setLeftAnchor(element, newVal.doubleValue() * left);
         AnchorPane.setRightAnchor(element, newVal.doubleValue() * right);
     } // end setWidthConstraints method
 
 
+    //* set top and bottom anchor constraints
     private void setHeightConstraints(Node element, Number newVal,  double top, double bottom) {
         AnchorPane.setTopAnchor(element, newVal.doubleValue() * top);
         AnchorPane.setBottomAnchor(element, newVal.doubleValue() * bottom);
     } // end setHeightConstraints method
 
 
-    public void formatTable() {
+    //* Apply formatting to table and set table columns to expense fields
+    private void formatTable() {
         // set table columns
         nameColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("name"));
         dateColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("localDate"));
         amountColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("amount"));
 
-        // set table column resize policy
-        transactionsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        transactionsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY); // set table column resize policy
 
-        // format data in table
+        transactionsTable.setPlaceholder(new Label("No Transactions Yet")); // set placeholder text if no transactions
 
-        // set cell factory for cost column to format cost to currency (adds $ and .00 to end of cost)
+        // add $ and 2 decimal places to amount column
         amountColumn.setCellFactory(column -> new TableCell<>() {
             @Override
             protected void updateItem(Double item, boolean empty) {
                 super.updateItem(item, empty);
-        
-                if (empty || item == null) {
+                if (empty || item == null)
                     setText(null);
-                } else {
+                else 
                     setText(String.format("$%.2f", item));
-                }
             }
         });
 
-        // set cell factory for date column to format date to MM/dd/yyyy
+        // format date column to MM/dd/yyyy
         dateColumn.setCellFactory(column -> new TableCell<>() {
             @Override
             protected void updateItem(LocalDate item, boolean empty) {
                 super.updateItem(item, empty);
-        
-                if (empty || item == null) {
+                if (empty || item == null) 
                     setText(null);
-                } else {
+                else 
                     setText(item.format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
-                }
             }
         });
     } // end of formatTable method
 
 
+    //* give a menubutton an arraylist of items
     private void setMenuButton(MenuButton menuButton, ArrayList<String> items) {
         for (String item : items) {
-            System.out.println(item);
             MenuItem menuItem = new MenuItem(item);
             menuButton.getItems().add(menuItem);
             menuItem.setOnAction(this::changeMenuButton);
@@ -292,23 +293,27 @@ public class DashboardController implements Initializable {
     } // end of setMenuButton method
 
 
+    //* set menu items for month menu
     private void setAllMenuButtons() {
         ArrayList<String> dateList = expenseModel.getDateList();
         setMenuButton(monthMenu, dateList);
     } // end setMenuItems method
 
 
-    // changes menu button text to selected menu item
+    //* changes menu button text to selected menu item
     public void changeMenuButton(ActionEvent event) {
         MenuItem menuItem = (MenuItem) event.getSource();
         MenuButton menuButton = (MenuButton) menuItem.getParentPopup().getOwnerNode();
         menuButton.setText(menuItem.getText());
+
+        // update month if month menu button is changed
         if (menuButton == monthMenu) {
             updateMonth();
         }
     } // end changeMenuButton method
 
 
+    //* change expense list to selected month
     private void updateMonth() {
         // get expenselist of selected month
         String year = monthMenu.getText().substring(0, 4); 
@@ -326,6 +331,7 @@ public class DashboardController implements Initializable {
     } // end updateMonth method
 
 
+    //* set month to default month (newest month)
     private void setDefaultMonth() {
         if(expenseModel.getDateList().isEmpty()) {
             return;

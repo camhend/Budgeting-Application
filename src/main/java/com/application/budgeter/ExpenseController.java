@@ -1,18 +1,12 @@
 package com.application.budgeter;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
-
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.css.CssParser;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -33,8 +27,6 @@ import javafx.stage.Popup;
 import java.lang.NumberFormatException;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Background;
@@ -69,6 +61,7 @@ public class ExpenseController implements Initializable {
     @FXML private TextField addDateField;
     @FXML private TextField addCostField;
 
+    // save expense section
     @FXML private Button saveExpenseButton; 
 
     // month section
@@ -97,14 +90,14 @@ public class ExpenseController implements Initializable {
     Label totalPopupLabel;
 
     // Expense & Budget data
-    ObservableList<Expense> obsvExpenseList = FXCollections.observableArrayList(); // list of expenses to display in tableview
+    ObservableList<Expense> obsvExpenseList; // list of expenses to display in tableview
     BudgetModel budgetModel;
     ExpenseList expenseList; 
     ExpenseModel expenseModel;
 
 
+    //* pass data models to controller & setup page elements that require data models
     public void setModels(ExpenseModel expenseModel, BudgetModel budgetModel) {
-        // pass expenseList to MainPageController
         this.expenseModel = expenseModel;
         this.budgetModel = budgetModel;
 
@@ -114,9 +107,11 @@ public class ExpenseController implements Initializable {
     } // end setModels method
     
 
-    // setup page elements
-    @Override
+    
+    @Override //* setup page elements
     public void initialize(java.net.URL arg0, java.util.ResourceBundle arg1) {
+        obsvExpenseList = FXCollections.observableArrayList(); 
+
         setAnchorPaneConstraints(); // set resize constraints for anchorpane
         formatTable(); // format tableview 
         setContextMenu();  // set context menu for tableview (delete/edit)
@@ -130,6 +125,7 @@ public class ExpenseController implements Initializable {
     // Data Validation methods 
     //***********************/
 
+    //* return double value of String cost (e.g. "$10.00" -> 10.00)
     private double convertToDouble(String cost) {
         cost = cost.replace("$", "");
         cost = String.format("%.2f", Double.parseDouble(cost));
@@ -137,6 +133,7 @@ public class ExpenseController implements Initializable {
     } // end convertToDouble method
 
 
+    //* return true if date is in mm/dd/yyyy format
     public boolean isValidDate(String date) {
         // if date is mm/dd/yyyy format regex
         if (!date.matches("^(0[1-9]|1[012])/(0[1-9]|[12][0-9]|3[01])/[0-9]{4}$")) {
@@ -156,6 +153,7 @@ public class ExpenseController implements Initializable {
     } // end isValidDate method
 
 
+    //* return true if cost is a valid number (e.g. 10.00, 10, $10.00, $10)
     public boolean isValidCost(String cost) {
         // check if cost is an integer or double
         try {
@@ -172,7 +170,8 @@ public class ExpenseController implements Initializable {
     } // end isValidCost method
 
 
-    private boolean fieldsAreEmpty(String name, String category, String date, String cost) {
+    //* return true if fields are empty
+    public boolean fieldsAreEmpty(String name, String category, String date, String cost) {
         // if any fields are empty
         if (name.equals("") || category.equals("") || name.equals("") || cost.equals("")) {
             return true;
@@ -181,7 +180,8 @@ public class ExpenseController implements Initializable {
     } // end fieldsAreEmpty method
 
 
-    private boolean areValidAddExpenses(String name, String category, String date, String amount, Popup owner) {
+    //* return true if expense fields are valid
+    public boolean areValidAddExpenses(String name, String category, String date, String amount, Popup owner) {
         // if any fields are empty
         if (fieldsAreEmpty(name, category, date, amount)) {
             sendAlert("Error", "Error", "Please fill out all fields", owner);
@@ -214,27 +214,26 @@ public class ExpenseController implements Initializable {
     // Data Manipulation methods
     //*************************/
 
+    //* listen for delete button click and delete selected expense
     private void deleteListener(MenuItem deleteMenuItem) {
         // set event handler for when delete menu item is clicked
         deleteMenuItem.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                // get selected row
+                // remove selected row from list and obsv list
                 Expense selectedExpense = expenseTable.getSelectionModel().getSelectedItem();
-                // remove selected row from list
                 expenseList.remove(selectedExpense);
-                // remove selected row from observable list
                 obsvExpenseList.remove(selectedExpense);
-                // update tableview
+
+                // update tableview and total
                 expenseTable.setItems(obsvExpenseList);
-                // update total
                 updateTotal();
             }
-            
         });
     } // end deleteListener method
 
 
+    //* listen for edit button click and edit selected expense with new entered data
     private void editListener(MenuItem editMenuItem) {
         // set event handler for when edit menu item is clicked
         editMenuItem.setOnAction(new EventHandler<ActionEvent>() {
@@ -253,6 +252,7 @@ public class ExpenseController implements Initializable {
                 dateField.setText(selectedExpense.getLocalDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
                 costField.setText(String.format("$%.2f", selectedExpense.getAmount()));
 
+                // add text fields to layout & popup 
                 layout.getChildren().addAll(name, category, date, cost, nameField, categoryField, dateField, costField, finishEditButton, closeEditButton);
 
                 Popup popup = new Popup();
@@ -325,7 +325,7 @@ public class ExpenseController implements Initializable {
     } // end editListener method
     
 
-    // add data from text fields to tableview
+    //* add data from add text fields to tableview
     public void addExpense() {
         boolean validFields = areValidAddExpenses(addExpenseField.getText(), addCategoryField.getText(), addDateField.getText(), addCostField.getText(), null);
         if (validFields) {
@@ -356,6 +356,7 @@ public class ExpenseController implements Initializable {
     } // end addExpense method
 
 
+    //* update expenselist and tableview with selected month
     private void updateMonth() {
         // get expenselist of selected month
         String year = monthMenu.getText().substring(0, 4); 
@@ -379,6 +380,7 @@ public class ExpenseController implements Initializable {
     } // end updateMonth method
 
 
+    //* update total label with total of selected category
     public void updateTotal() {
         // if total menu = all
         if (totalMenu.getText().equals("All")) {
@@ -401,7 +403,7 @@ public class ExpenseController implements Initializable {
     // File IO method
     //***************/
 
-    // save data from tableview to file (NOTE add paramter for file to save to)
+    //* save all expenses to respective file
     public void saveExpenses() {
         expenseModel.saveAll(true);
         sendAlert("Save", "Save", "Saved All Expenses", null);
@@ -414,9 +416,9 @@ public class ExpenseController implements Initializable {
     
 
 
-    //************************/
-    // Front End Design Methods
-    //************************/
+    //*********************/
+    // Page Design Methods
+    //*********************/
 
     
         //******************/
@@ -425,26 +427,23 @@ public class ExpenseController implements Initializable {
 
 
     private void setTableData() {
-        // if no month selected (no file saved)
+        // if no month selected (no file saved) set expense list to empty
         if (monthMenu.getText().equals("Month")) { // if no month selected
             expenseList = new ExpenseList();
         }
-        else { // else get latest month
+        else { // else get latest month expense list
             String year = monthMenu.getText().substring(0, 4); 
             String month = monthMenu.getText().substring(5); 
             if (month.length() == 1) {month = "0" + month;}
             LocalDate date = LocalDate.parse(month + "/01/" + year, DateTimeFormatter.ofPattern("MM/dd/yyyy")); // create date object
             expenseList = expenseModel.getExpenseList(date); // get expense list for month
         }
+
+        // update observable list and set to tableview
+        updateMonth();
+        expenseTable.setItems(obsvExpenseList); 
         
-        // update observable list and tableview
-        obsvExpenseList = FXCollections.observableArrayList();
-        expenseTable.setItems(obsvExpenseList);
-        for (Expense expense : expenseList) {
-            obsvExpenseList.add(expense);
-        }
-        setAllMenuButtons();
-        // calc and set total
+        // set total to display total for All cateogries
         totalMenu.setText("All");
         updateTotal();
     } // end setTableData method
@@ -512,6 +511,7 @@ public class ExpenseController implements Initializable {
         // MenuButton Methods
         //*******************/
 
+    //* give a menubutton an arraylist of items
     private void setMenuButton(MenuButton menuButton, ArrayList<String> items) {
         for (String item : items) {
             MenuItem menuItem = new MenuItem(item);
@@ -521,6 +521,7 @@ public class ExpenseController implements Initializable {
     } // end of setMenuButton method
 
 
+    //* set menu items for all menus
     private void setAllMenuButtons() {
         // add all as default option for totalmenu
         MenuItem all = new MenuItem("All");
@@ -539,7 +540,7 @@ public class ExpenseController implements Initializable {
     } // end setMenuItems method
 
 
-    // changes menu button text to selected menu item
+    //* changes menu button text to selected menu item
     public void changeMenuButton(ActionEvent event) {
         MenuItem menuItem = (MenuItem) event.getSource();
         MenuButton menuButton = (MenuButton) menuItem.getParentPopup().getOwnerNode();
@@ -554,6 +555,7 @@ public class ExpenseController implements Initializable {
     } // end changeMenuButton method
 
 
+    //* set moth menu to newest month
     private void setDefaultMonth() {
         if(expenseModel.getDateList().isEmpty()) {
             return;
@@ -574,6 +576,7 @@ public class ExpenseController implements Initializable {
         // Edit Popup Methods
         //*******************/
 
+    //* create a popup window to edit an expense
     private void createEditMenu() {
 
         nameField = new TextField();
@@ -618,6 +621,7 @@ public class ExpenseController implements Initializable {
     } // end of createEditMenu method
 
 
+    //* center popup on screen
     private void centerEditPopup(Popup popup, AnchorPane layout) {
         // popup position event handlers
         expensePage.getScene().getWindow().xProperty().addListener(new ChangeListener<Number>() {
@@ -652,6 +656,7 @@ public class ExpenseController implements Initializable {
         // AnchorPane Constraint Methods
         //******************************/
 
+    //* set anchorpane constraints for all elements
     private void setAnchorPaneConstraints() {
         // listener for adjusting elements' width when window is resized
         expensePage.widthProperty().addListener((obs, oldVal, newVal) -> {
@@ -709,11 +714,14 @@ public class ExpenseController implements Initializable {
         });
     } // end setAnchorPaneConstraints method
 
+
+    //* set left, right constraints for element
     private void setWidthConstraints(Node element, Number newVal,  double left, double right) {
         AnchorPane.setLeftAnchor(element, newVal.doubleValue() * left);
         AnchorPane.setRightAnchor(element, newVal.doubleValue() * right);
     } // end setWidthConstraints method
 
+    //* set top, bottom constraints for element
     private void setHeightConstraints(Node element, Number newVal,  double top, double bottom) {
         AnchorPane.setTopAnchor(element, newVal.doubleValue() * top);
         AnchorPane.setBottomAnchor(element, newVal.doubleValue() * bottom);
@@ -725,6 +733,7 @@ public class ExpenseController implements Initializable {
         // Other
         //******/
 
+    //* set context menu for tableview (delete, edit)
     private void setContextMenu() {
         // create & set context menu to tableview
         editingContextMenu = new ContextMenu();
@@ -739,6 +748,7 @@ public class ExpenseController implements Initializable {
     } // end setContextMenu method
 
 
+    //* add popup to total label
     private void setTotalPopup() {
         // popup total value when mouse hovers over total
         popup = new Popup();
@@ -761,6 +771,7 @@ public class ExpenseController implements Initializable {
     } // end setTotalPopup method
 
 
+    //* simple method to send alert
     private void sendAlert(String title, String header, String content, Popup owner) {
         Alert alert = new Alert(AlertType.INFORMATION);
         alert.setTitle(title);
