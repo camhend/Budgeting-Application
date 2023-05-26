@@ -69,8 +69,6 @@ public class ExpenseController implements Initializable {
     @FXML Label monthTitle; 
 
     // edit expense section
-    Popup editPopup;
-    AnchorPane editLayout;
     private TextField nameField;
     private MenuButton categoryField;
     private TextField dateField;
@@ -254,11 +252,11 @@ public class ExpenseController implements Initializable {
                 dateField.setText(selectedExpense.getLocalDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
                 costField.setText(String.format("$%.2f", selectedExpense.getAmount()));
 
+                // add text fields to layout & popup 
                 layout.getChildren().addAll(name, category, date, cost, nameField, categoryField, dateField, costField, finishEditButton, closeEditButton);
 
                 Popup popup = new Popup();
                 popup.getContent().add(layout);
-                
 
 
                 // get window center coordinates
@@ -429,26 +427,23 @@ public class ExpenseController implements Initializable {
 
 
     private void setTableData() {
-        // if no month selected (no file saved)
+        // if no month selected (no file saved) set expense list to empty
         if (monthMenu.getText().equals("Month")) { // if no month selected
             expenseList = new ExpenseList();
         }
-        else { // else get latest month
+        else { // else get latest month expense list
             String year = monthMenu.getText().substring(0, 4); 
             String month = monthMenu.getText().substring(5); 
             if (month.length() == 1) {month = "0" + month;}
             LocalDate date = LocalDate.parse(month + "/01/" + year, DateTimeFormatter.ofPattern("MM/dd/yyyy")); // create date object
             expenseList = expenseModel.getExpenseList(date); // get expense list for month
         }
+
+        // update observable list and set to tableview
+        updateMonth();
+        expenseTable.setItems(obsvExpenseList); 
         
-        // update observable list and tableview
-        obsvExpenseList = FXCollections.observableArrayList();
-        expenseTable.setItems(obsvExpenseList);
-        for (Expense expense : expenseList) {
-            obsvExpenseList.add(expense);
-        }
-        setAllMenuButtons();
-        // calc and set total
+        // set total to display total for All cateogries
         totalMenu.setText("All");
         updateTotal();
     } // end setTableData method
@@ -583,11 +578,6 @@ public class ExpenseController implements Initializable {
 
     //* create a popup window to edit an expense
     private void createEditMenu() {
-
-        editPopup = new Popup();
-        editLayout = new AnchorPane();
-
-        editLayout.setPrefSize(300, 300);
 
         nameField = new TextField();
         categoryField = new MenuButton();
