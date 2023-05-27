@@ -1,22 +1,16 @@
 package com.application.budgeter;
 
-import javafx.beans.Observable;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.control.Label;
-import java.lang.reflect.Array;
 import java.time.LocalDate;
 import javafx.scene.Node;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
-import javafx.scene.control.SplitPane;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.TableCell;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -26,9 +20,7 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.Button;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 
 
 public class DashboardController implements Initializable {

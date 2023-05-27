@@ -37,6 +37,9 @@ public class App extends Application {
         // set stage
         stage.setScene(scene);
         stage.show();
+
+        // print working directory (last dir should be \Budgeter)
+        System.out.println("Working Directory = " + System.getProperty("user.dir"));
     }
 
     public static void main(String[] args) {

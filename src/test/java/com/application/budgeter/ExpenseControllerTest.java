@@ -56,5 +56,4 @@ public class ExpenseControllerTest {
         assertTrue(expenseController.isValidCost("$12.000000000000000000000000004"));
         assertFalse(expenseController.isValidCost("-$1"));
     }
-    
 }
