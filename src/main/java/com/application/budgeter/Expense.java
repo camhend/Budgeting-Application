@@ -1,6 +1,7 @@
 package com.application.budgeter;
 
 import java.time.*;
+import java.util.Comparator;
 
 // This class defines an object that holds information about an expense entry
 public class Expense {
@@ -63,5 +64,34 @@ public class Expense {
             localDate.toString() + ", " +
             amount + "]";
         return toString;
+    }
+
+}
+
+class LexicographicNameComparitor implements Comparator<Expense> {
+    @Override
+    public int compare(Expense a, Expense b) {
+        return a.getName().compareToIgnoreCase(b.getName());
+    }
+}
+
+class LexicographicCategoryComparitor implements Comparator<Expense> {
+    @Override
+    public int compare(Expense a, Expense b) {
+        return a.getCategory().compareToIgnoreCase(b.getCategory());
+    }
+}
+
+class DateComparitor implements Comparator<Expense> {
+    @Override
+    public int compare(Expense a, Expense b) {
+        return a.getLocalDate().compareTo(b.getLocalDate());
+    }
+}
+
+class AmountComparitor implements Comparator<Expense> {
+    @Override
+    public int compare(Expense a, Expense b) {
+        return Double.compare(a.getAmount(), b.getAmount());
     }
 }

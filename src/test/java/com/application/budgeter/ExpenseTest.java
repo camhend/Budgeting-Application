@@ -1,6 +1,7 @@
 package com.application.budgeter;
 
 import java.time.*;
+import java.util.Comparator;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -115,5 +116,111 @@ public class ExpenseTest {
         String expectedString = "[testname, food, 2001-01-01, 15.0]";
         assertEquals(expectedString, expense.toString());
     }
+
+    @Test
+    public void testLexicographicNameComparator() {
+        Expense a = new Expense(
+            "apple", 
+            "food", 
+            LocalDate.parse("2001-01-01"), 
+            15);
+
+            Expense b = new Expense(
+                "crackers", 
+                "food", 
+                LocalDate.parse("2001-01-01"), 
+                15);
+
+            Expense c = new Expense(
+                    "apple", 
+                    "food", 
+                    LocalDate.parse("2010-01-01"), 
+                    35);
+        
+            Comparator<Expense> com = new LexicographicNameComparitor();
+            assertTrue(com.compare(a, b) < 0);
+            assertTrue(com.compare(b, a) > 0);
+            assertTrue(com.compare(a, c) == 0);
+    }
+
+    @Test
+    public void testLexicographicCategoryComparator() {
+        Expense a = new Expense(
+            "apple", 
+            "food", 
+            LocalDate.parse("2001-01-01"), 
+            15);
+
+        Expense b = new Expense(
+            "belt", 
+            "new clothes", 
+            LocalDate.parse("2001-01-01"), 
+            15);
+
+        Expense c = new Expense(
+            "crackers", 
+            "food", 
+            LocalDate.parse("2001-01-01"), 
+            15);
+            
+        
+            Comparator<Expense> com = new LexicographicCategoryComparitor();
+            assertTrue(com.compare(a, b) < 0);
+            assertTrue(com.compare(b, a) > 0);
+            assertTrue(com.compare(a, c) == 0);
+    }
+
+    @Test
+    public void testDateComparator() {
+        Expense a = new Expense(
+            "apple", 
+            "food", 
+            LocalDate.parse("2001-01-01"), 
+            15);
+
+            Expense b = new Expense(
+                "apple", 
+                "food", 
+                LocalDate.parse("2005-01-01"), 
+                15);
+
+            Expense c = new Expense(
+                    "crackers", 
+                    "food", 
+                    LocalDate.parse("2001-01-01"), 
+                    35);
+        
+            Comparator<Expense> com = new DateComparitor();
+            assertTrue(com.compare(a, b) < 0);
+            assertTrue(com.compare(b, a) > 0);
+            assertTrue(com.compare(a, c) == 0);
+    }
+
+    @Test
+    public void testAmountComparator() {
+        Expense a = new Expense(
+            "apple", 
+            "food", 
+            LocalDate.parse("2001-01-01"), 
+            15);
+
+            Expense b = new Expense(
+                "apple", 
+                "food", 
+                LocalDate.parse("2005-01-01"), 
+                35);
+
+            Expense c = new Expense(
+                    "crackers", 
+                    "food", 
+                    LocalDate.parse("2001-01-01"), 
+                    15);
+        
+            Comparator<Expense> com = new AmountComparitor();
+            assertTrue(com.compare(a, b) < 0);
+            assertTrue(com.compare(b, a) > 0);
+            assertTrue(com.compare(a, c) == 0);
+    }
+
 
 }
