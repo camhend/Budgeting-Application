@@ -34,6 +34,8 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
 import javafx.scene.Node;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.*;
 
 
 public class ExpenseController implements Initializable {
@@ -79,6 +81,12 @@ public class ExpenseController implements Initializable {
     private Label cost;
     private Button finishEditButton;
     private Button closeEditButton;
+
+    // tableView column sorting
+    private boolean sortedByName = false;
+    private boolean sortedByCategory = false;
+    private boolean sortedByDate = false;
+    private boolean sortedByAmount = false;
 
     // context menu
     ContextMenu editingContextMenu;
@@ -495,6 +503,73 @@ public class ExpenseController implements Initializable {
         dateColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("localDate"));
         amountColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("amount"));
 
+        nameColumn.setSortable(false);
+        categoryColumn.setSortable(false);
+        dateColumn.setSortable(false);
+        amountColumn.setSortable(false);
+
+        HashMap<Button, String> headerButtons = new HashMap<>();
+        Button nameHeader = new Button("Name");
+        nameColumn.setGraphic(nameHeader);
+        nameHeader.setOnAction(event -> {
+            if (sortedByName) {
+                expenseTable.setItems(obsvExpenseList);
+                resetColumnButtons(headerButtons);
+            } else {
+                sort(expenseTable, new LexicographicNameComparitor());
+                resetColumnButtons(headerButtons);
+                nameHeader.setText("Name ▼");
+                sortedByName = true;
+            }   
+        });
+        headerButtons.put(nameHeader, nameHeader.getText());
+
+        Button categoryHeader = new Button("Category");
+        categoryColumn.setGraphic(categoryHeader);
+        categoryHeader.setOnAction(event -> {
+            if (sortedByCategory) {
+                expenseTable.setItems(obsvExpenseList);
+                resetColumnButtons(headerButtons);
+            } else {
+                sort(expenseTable, new LexicographicCategoryComparitor());
+                resetColumnButtons(headerButtons);
+                categoryHeader.setText("Category ▼");
+                sortedByCategory = true;
+            }   
+        });
+        headerButtons.put(categoryHeader, categoryHeader.getText());
+
+        Button dateHeader = new Button("Date");
+        dateColumn.setGraphic(dateHeader);
+        dateHeader.setOnAction(event -> {
+            if (sortedByDate) {
+                expenseTable.setItems(obsvExpenseList);
+                resetColumnButtons(headerButtons);
+            } else {
+                sort(expenseTable, new DateComparitor());
+                resetColumnButtons(headerButtons);
+                dateHeader.setText("Date ▼");
+                sortedByDate = true;
+            }   
+        });
+        headerButtons.put(dateHeader, dateHeader.getText());
+
+        Button amountHeader = new Button("Amount");
+        amountColumn.setGraphic(amountHeader);
+        amountHeader.setOnAction(event -> {
+            if (sortedByAmount) {
+                expenseTable.setItems(obsvExpenseList);
+                resetColumnButtons(headerButtons);
+            } else {
+                sort(expenseTable, new AmountComparitor());
+                resetColumnButtons(headerButtons);
+                amountHeader.setText("Amount ▼");
+                sortedByAmount = true;
+            }   
+        });
+        headerButtons.put(amountHeader, amountHeader.getText());
+
+
         // set tableview resize policy to it will not resize columns past the width of the tableview
         expenseTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
@@ -506,7 +581,22 @@ public class ExpenseController implements Initializable {
         }
     } // end of formatTableColumns method
 
+    private void sort(TableView<Expense> tableView, Comparator<Expense> c) {
+        ObservableList<Expense> list = FXCollections.observableArrayList(tableView.getItems());
+        ListUtils.sort(list, c);
+        tableView.setItems(list);
+    }
 
+    public void resetColumnButtons (HashMap<Button, String> headerButtons) {
+        for (Button b : headerButtons.keySet()) {
+            b.setText(headerButtons.get(b));
+        }
+
+        sortedByAmount = false;
+        sortedByCategory = false;
+        sortedByDate = false;
+        sortedByName = false;
+    }
 
         //*******************/
         // MenuButton Methods
