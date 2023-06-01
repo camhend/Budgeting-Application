@@ -536,6 +536,7 @@ public class ExpenseController implements Initializable {
         setMenuButton(categoryField, categoryList);
 
         // set month menu with dates of found files
+        monthMenu.getItems().clear();
         ArrayList<String> dateList = expenseModel.getDateList();
         setMenuButton(monthMenu, dateList);
     } // end setMenuItems method

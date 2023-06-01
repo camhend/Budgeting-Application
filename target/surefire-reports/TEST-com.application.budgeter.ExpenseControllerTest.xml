@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.application.budgeter.ExpenseListTest" time="0.019" tests="59" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.application.budgeter.ExpenseControllerTest" time="0.076" tests="2" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="17"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -58,63 +58,6 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="61.0"/>
   </properties>
-  <testcase name="testGetCategorySpending_AfterEditAmountWASChanged" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testAdd_IncrementsCounters" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testEdit_MiddleNodeChangedForwardDate_OrderingChanged" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testCopy_MultipleNodes" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testGetCategorySpending_AfterCategoryNameChangeToNewCategory" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testAdd_AfterAddtoList_newExpenseIsAtEnd" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testGetCategorySpending_RemoveFromCategory" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testToArray" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testEqualsAfterEdit_ExpectFalse" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testDescendingExpenseListIterator" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testClear" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testGetCategorySpending_AfterClear" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testGetCategorySpending_AfterCategoryNameChangeToExistingCategory" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testSize" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testEdit_HeadNodeDateChangeOrderNotChanged_OrderingNotChanged" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testGetCategorySpending_CategoryNameNotExactMatch" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testCopy_EqualsAfterExpenseSetter_ExpectFalse" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testRemove_TwoElementInList" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testEdit_ExpenseNotInList_ReturnFalse" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testCopy_EqualsAfterEdit_ExpectFalse" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testAdd_AddMiddleDate_AddSortedtoMiddle" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testExpenseListIterator" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testContains_ExpenseNotInList_ReturnFalse" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testForEach_EmptyList" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testEdit_OneNodeDateChanged" classname="com.application.budgeter.ExpenseListTest" time="0.001"/>
-  <testcase name="testGetCategorySpending_AddToExistingCategory" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testRemove_RemoveExpenseFromHead_ExpenseNoLongerInList" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testRemove_RemoveDecrementsCounters" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testAdd_AddNewerDate_NewerDateIsLastIndex" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testCopy_EqualsAfterRemove_ExpectFalse" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testCopy_EmptyList" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testCopy_EqualsAfterAddSameExpenseDifferentMethods_ExpectTrue" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testToArray_emptyList" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testEdit_MiddleNodeChangedPreviousDate_OrderingChanged" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testAdd_AddOlderDate_AddSortedtoEnd" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testRemove_FromEmptyList_ExpectFalse" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testAdd_AddtoEmptyList_newExpenseIsAtIndexZero" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testSaveChanges_ConfirmChanges" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testEqualsRemoveThenRestore" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testRemove_RemoveExpenseFromTail_ExpenseNoLongerInList" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testEquals_ExpectTrue" classname="com.application.budgeter.ExpenseListTest" time="0.001"/>
-  <testcase name="testEdit_MiddleNodeChangedPreviousButOrderNotChanged_OrderingNotChanged" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testEdit_TailNodeDateChange" classname="com.application.budgeter.ExpenseListTest" time="0.002"/>
-  <testcase name="testEdit_DateNotChanged_OrderingNotChanged" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testEdit_EmptyList_ReturnFalse" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testEdit_MiddleNodeDateChangeForwardButOrderNotChanged_OrderingNotChanged" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testContains_AfterAddExpense_ReturnTrue" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testCopy_EqualsAfterAdd_ExpectFalse" classname="com.application.budgeter.ExpenseListTest" time="0.001"/>
-  <testcase name="testRemove_RemoveExpenseFromMiddle_ExpenseNoLongerInList" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testCopy_OneNode" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testEdit_TailNodeDateChangeOrderNotChanged_OrderingNotChanged" classname="com.application.budgeter.ExpenseListTest" time="0.001"/>
-  <testcase name="testIsEmpty" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testGetCategorySpending_CategoryNotInList" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testEdit_HeadNodeDateChange" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testRemove_OneElementInList" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testContains_EmptyList_ReturnFalse" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testGetCategorySpending_AfterEditAmountNOTChanged" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testSaveChanges_RevertChanges" classname="com.application.budgeter.ExpenseListTest" time="0"/>
-  <testcase name="testGetCategorySpending_OneCategory" classname="com.application.budgeter.ExpenseListTest" time="0"/>
+  <testcase name="isValidDateTest" classname="com.application.budgeter.ExpenseControllerTest" time="0.036"/>
+  <testcase name="isValidCostTest" classname="com.application.budgeter.ExpenseControllerTest" time="0"/>
 </testsuite>
