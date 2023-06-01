@@ -16,7 +16,7 @@ public class ExpenseModel {
     public ArrayList<String> getDateList() {
         ArrayList<String> dateList = new ArrayList<>();
 
-        String projectRootPath = System.getProperty("user.dir");
+        String projectRootPath = System.getProperty("user.dir") + "\\expensedata";
         File directory = new File(projectRootPath);
 
         // Make sure the directory exists

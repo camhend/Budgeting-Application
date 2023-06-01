@@ -19,7 +19,7 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         // read csv files
-        budgetModel.readCSV("budget.csv");
+        budgetModel.readCSV("1212-12.csv");
 
         // load MainPage.fxml
         FXMLLoader loader = new FXMLLoader(App.class.getResource("MainPage.fxml"));

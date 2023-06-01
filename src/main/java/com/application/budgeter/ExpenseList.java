@@ -475,7 +475,16 @@ public class ExpenseList implements Iterable<Expense> {
     // write to csv, return true if successful, each line is an expense, each comma is a field
     private boolean saveToCSV(String filename) {
         try {
-            FileWriter writer = new FileWriter(filename);
+            String projectRootPath = System.getProperty("user.dir") + "\\expensedata";
+            File directory = new File(projectRootPath);
+            if (!directory.exists()) {
+                directory.mkdir();
+            }
+            File file = new File(projectRootPath + "\\" + filename);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            FileWriter writer = new FileWriter(file);
             writer.write("Name,Category,Date,Amount\n");
             ExpenseNode current = head;
             while (current != null) {
@@ -500,7 +509,16 @@ public class ExpenseList implements Iterable<Expense> {
     // each line is an expense, each comma is a field (name, category, date, amount)
     public boolean loadFromCSV(String filename) {
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(filename));
+            String projectRootPath = System.getProperty("user.dir") + "\\expensedata";
+            File directory = new File(projectRootPath);
+            if (!directory.exists()) {
+                directory.mkdir();
+            }
+            File file = new File(projectRootPath + "\\" + filename);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            BufferedReader reader = new BufferedReader(new FileReader(file));
             // print reader added
             String line = reader.readLine();
             line = reader.readLine();

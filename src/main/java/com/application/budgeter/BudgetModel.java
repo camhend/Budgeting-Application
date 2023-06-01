@@ -7,14 +7,97 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import java.util.ArrayList;
 import java.io.PrintStream;
+import java.lang.reflect.Array;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
+import java.io.BufferedReader;
+import java.time.format.DateTimeFormatter;
+import java.io.FileWriter;
+import java.io.FileReader;
+
+
+
 
 public class BudgetModel {
-    private ObservableList<Income> incomeList = FXCollections.observableArrayList();
+    private Map<String, ObservableList<Budget>> loadedLists;
+
     private ObservableList<Budget> budgetList = FXCollections.observableArrayList();
     
     private double totalIncome;
     private double totalSpent;
     private double totalRemaining;
+
+
+    public BudgetModel() {
+        this.loadedLists = new HashMap<>();
+    } // end constructor
+
+
+
+    public ArrayList<String> getDateList() {
+        ArrayList<String> dateList = new ArrayList<>();
+
+        String projectRootPath = System.getProperty("user.dir") + "\\budgetdata";
+        File directory = new File(projectRootPath);
+
+        // Make sure the directory exists
+        if (directory.exists() && directory.isDirectory()) {
+            File[] files = directory.listFiles();
+            for (File fileValue : files) {
+                // if file is a csv file and matches the pattern YYYY-MM.csv
+                String file = fileValue.getName();
+                boolean matchesPattern = file.matches("\\d{4}-\\d{2}\\.csv");
+                if (file.endsWith(".csv") && matchesPattern ) {
+                    dateList.add(file.substring(0, file.length() - 4));
+                }
+            }
+            return dateList;
+        } else {
+            System.out.println("Error: Directory does not exist");
+            return dateList;
+        }
+    } // end getDateList method
+
+
+
+    // get budget list from csv file of a month 
+    public ObservableList<Budget> getBudgetList(LocalDate monthYear) {
+        String dateKey = "";
+        if (monthYear.getMonthValue() > 9) {
+            dateKey = monthYear.getYear() + "-" + monthYear.getMonthValue();
+        } else {
+            dateKey = monthYear.getYear() + "-0" + monthYear.getMonthValue();
+        }
+        if (loadedLists.containsKey(dateKey)) {
+            return loadedLists.get(dateKey);
+        } else {
+            ObservableList<Budget> newList = FXCollections.observableArrayList();
+            String filename = dateKey + ".csv";
+            newList = this.returnReadCSV(filename);
+            loadedLists.put(dateKey, newList);
+            System.out.println("Loaded " + dateKey + ".csv");
+
+            return newList;
+        }
+    }
+
+   
+    // get categories from budgetlist of selected month
+    public ArrayList<String> getCategoryList() {
+        ArrayList<String> categoryList = new ArrayList<String>();
+        // creates list of unique categories
+        for (Budget budget : budgetList) {
+            if (!categoryList.contains(budget.getCategory())) {
+                categoryList.add(budget.getCategory());
+            }
+        }
+        return categoryList;
+    }
+
+
+
+    // getters
 
     public double getTotalSpent() {
         return totalSpent;
@@ -28,29 +111,20 @@ public class BudgetModel {
         return totalIncome;
     }
 
-    public ArrayList<String> getCategoryList() {
-        ArrayList<String> categoryList = new ArrayList<String>();
-        // creates list of unique categories
-        for (Budget budget : budgetList) {
-            if (!categoryList.contains(budget.getCategory())) {
-                categoryList.add(budget.getCategory());
-            }
-        }
-        return categoryList;
-    }
-
-    public ObservableList<Income> getIncomeList() {
-        return incomeList;
-    }
-
     public ObservableList<Budget> getBudgetList() {
         return budgetList;
     }
 
+    public void setBudgetList(ObservableList<Budget> budgetList) {
+        this.budgetList = budgetList;
+    }
+
+
+
+    // add methods
 
     public void addIncome(String source, double incomeAmount) {
         totalIncome += incomeAmount;
-        incomeList.add(new Income(source, incomeAmount));
     }
 
     public void addBudget(String category, double spent, double total) {
@@ -61,7 +135,6 @@ public class BudgetModel {
 
     public void deleteIncome(Income income) {
         totalIncome -= income.getAmount();
-        incomeList.remove(income);
     }
 
     public void deleteBudget(Budget budget) {
@@ -70,7 +143,9 @@ public class BudgetModel {
         budgetList.remove(budget);
     }
 
+
     
+    // edit methods
 
     public void editIncomeCategory(Income income, String newSource) {
         income.setSource(newSource);
@@ -93,69 +168,152 @@ public class BudgetModel {
     }
     
 
-    //Note that when you write to a file in the resources directory, the file will be overwritten each time you run the program. 
-    //If you want to persist the data across runs, you may want to consider writing the file to a separate directory such as the user's home directory.
-    public void writeCSV(String filename) {
+
+    // file I/O methods
+
+
+    public void saveAll(boolean confirm) {
+        String filename;
+        ObservableList<Budget> currList = this.getBudgetList();
+        for (String dateKey : loadedLists.keySet()) {
+            ObservableList<Budget> list = loadedLists.get(dateKey);
+            filename = dateKey + ".csv";
+ 
+            // set list to list of month
+            this.setBudgetList(list);
+            writeCSV(filename);
+        }
+        this.setBudgetList(currList);
+    }
+    
+
+    public boolean writeCSV(String filename) {
         try {
-            PrintStream writer = new PrintStream(new File(filename));
-            
+            // create writer of file
+            String projectRootPath = System.getProperty("user.dir") + "\\budgetdata";
+            File directory = new File(projectRootPath);
+            if (!directory.exists()) {
+                directory.mkdir();
+            }
+            File file = new File(projectRootPath + "\\" + filename);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            PrintStream writer = new PrintStream(file);
+
+            // print writer added
             writer.println("Category,Spent,Total");
             for (Budget budget : budgetList) {
-                // category, budget, current remainging
+                // category, total, spent
                 writer.println(budget.getCategory() + "," + budget.getTotal() + "," + budget.getSpent());
             }
             writer.close();
+            return true;
         } catch (IOException e) {
-            System.out.println("Error writing to file: " + filename);
-        } // end of catch
+            return false;
+        }
     } // end of writeCSV method
     
 
-    public void readCSV(String filename) { 
+    public boolean readCSV(String filename) { 
         try {
-            Scanner scanner = new Scanner(new File(filename));
-            scanner.nextLine(); // skip expense header row
-            
-            
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine(); 
+            // create reader of file
+            String projectRootPath = System.getProperty("user.dir") + "\\budgetdata";
+            File directory = new File(projectRootPath);
+            if (!directory.exists()) {
+                directory.mkdir();
+            }
+            File file = new File(projectRootPath + "\\" + filename);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+
+            // print reader added
+            String line = reader.readLine();
+            line = reader.readLine();
+            while (line != null) {
                 String[] fields = line.split(","); // create array of fields split by comma
+                // add fields to expense
+                String category = fields[0]; 
 
-                // add fields to budget
-                String category = fields[0].trim();
-                double total = Double.parseDouble(fields[1].trim());
-                double spent = Double.parseDouble(fields[2].trim());
+                // convert string to double
+                String amount = fields[1];
+                double amountDouble = Double.parseDouble(amount);
 
-                this.addBudget(category, spent, total); // add budget to list
-            }  // end of while loop
-            
-            scanner.close();
+                // convert string to double
+                String spent = fields[2];
+                double spentDouble = Double.parseDouble(spent);
+                
+                this.addBudget(category, spentDouble, amountDouble);
+                line = reader.readLine();
+            }
+            reader.close();
+            return true;
         } catch (IOException e) {
-            System.out.println("Error reading file: " + filename);
+            return false;
         }
     } // end of readCSV method 
+
+
+    public ObservableList<Budget> returnReadCSV(String filename) { 
+        ObservableList<Budget> budgetList = FXCollections.observableArrayList();
+
+        try {
+            // create reader of file
+            String projectRootPath = System.getProperty("user.dir") + "\\budgetdata";
+            File directory = new File(projectRootPath);
+            if (!directory.exists()) {
+                directory.mkdir();
+            }
+            File file = new File(projectRootPath + "\\" + filename);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+
+            // print reader added
+            String line = reader.readLine();
+            line = reader.readLine();
+            while (line != null) {
+                String[] fields = line.split(","); // create array of fields split by comma
+                // add fields to expense
+                String category = fields[0]; 
+
+                // convert string to double
+                String amount = fields[1];
+                double amountDouble = Double.parseDouble(amount);
+
+                // convert string to double
+                String spent = fields[2];
+                double spentDouble = Double.parseDouble(spent);
+
+                Budget budget = new Budget(category, spentDouble, amountDouble);
+                
+                budgetList.add(budget);
+                line = reader.readLine();
+            }
+            reader.close();
+        } catch (IOException e) {
+        }
+        return budgetList;
+    } // end of readCSV method 
     
+
     
-    
-    
-    
-    //for testing purposes
+    // testing methods
+
     public void print2() {
         System.out.println(totalSpent);
         System.out.println(totalIncome);
-        System.out.println(totalRemaining);
-        
-        
-    }
+        System.out.println(totalRemaining);  
+    } // end of print method
     
     public void print() {
         System.out.println(totalSpent);
         System.out.println(totalIncome);
-        for (Income income : incomeList) {
-            System.out.println(income.getSource() + " - amount: " + income.getAmount());
-        }
         for (Budget budget : budgetList) {
             System.out.println(budget.getCategory() + " - total: $" + budget.getTotal() + " - Spent: $" + budget.getSpent() + ", Remaining: $" + budget.getRemaining());
         }
-    }
-}
+    } // end of print method
+} // end of BudgetModel class
