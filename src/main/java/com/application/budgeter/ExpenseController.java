@@ -97,6 +97,9 @@ public class ExpenseController implements Initializable {
     Popup popup;
     Label totalPopupLabel;
 
+    // table formatting
+    HashMap<Button, String> headerButtons;
+
     // Expense & Budget data
     ObservableList<Expense> obsvExpenseList; // list of expenses to display in tableview
     BudgetModel budgetModel;
@@ -325,6 +328,10 @@ public class ExpenseController implements Initializable {
                             popup.hide();
                             expensePage.getScene().getRoot().setDisable(false);
 
+                            // reset sorting column buttons and tableview on changing data
+                            resetColumnButtons(headerButtons);
+                            expenseTable.setItems(obsvExpenseList);
+
                             sendAlert("Success", "Success", "Expense successfully edited", null);
                         }
                     }
@@ -359,6 +366,10 @@ public class ExpenseController implements Initializable {
             addDateField.clear();
             addCostField.clear();
             updateTotal();
+
+            // reset sorting column buttons and tableview on changing data
+            resetColumnButtons(headerButtons);
+            expenseTable.setItems(obsvExpenseList);
 
             sendAlert("Success", "Success", "Expense successfully added", null);
         }
@@ -508,7 +519,7 @@ public class ExpenseController implements Initializable {
         dateColumn.setSortable(false);
         amountColumn.setSortable(false);
 
-        HashMap<Button, String> headerButtons = new HashMap<>();
+        headerButtons = new HashMap<>();
         Button nameHeader = new Button("Name");
         nameColumn.setGraphic(nameHeader);
         nameHeader.setOnAction(event -> {
@@ -581,11 +592,13 @@ public class ExpenseController implements Initializable {
         }
     } // end of formatTableColumns method
 
+
     private void sort(TableView<Expense> tableView, Comparator<Expense> c) {
         ObservableList<Expense> list = FXCollections.observableArrayList(tableView.getItems());
         ListUtils.sort(list, c);
         tableView.setItems(list);
-    }
+    } // end of sort method
+
 
     public void resetColumnButtons (HashMap<Button, String> headerButtons) {
         for (Button b : headerButtons.keySet()) {
@@ -596,11 +609,14 @@ public class ExpenseController implements Initializable {
         sortedByCategory = false;
         sortedByDate = false;
         sortedByName = false;
-    }
+    } // end of resetColumnButtons method
+
+
 
         //*******************/
         // MenuButton Methods
         //*******************/
+
 
     //* give a menubutton an arraylist of items
     private void setMenuButton(MenuButton menuButton, ArrayList<String> items) {
