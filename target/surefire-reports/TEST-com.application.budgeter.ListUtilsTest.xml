@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.application.budgeter.ExpenseTest" time="0.027" tests="14" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.application.budgeter.ListUtilsTest" time="0.03" tests="4" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="17"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -58,18 +58,108 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="61.0"/>
   </properties>
-  <testcase name="testEquals_ExpensesNotEqual" classname="com.application.budgeter.ExpenseTest" time="0"/>
-  <testcase name="testLexicographicCategoryComparator" classname="com.application.budgeter.ExpenseTest" time="0"/>
-  <testcase name="testEquals_NotAnExpense" classname="com.application.budgeter.ExpenseTest" time="0"/>
-  <testcase name="testToString" classname="com.application.budgeter.ExpenseTest" time="0.008"/>
-  <testcase name="testDateComparator" classname="com.application.budgeter.ExpenseTest" time="0.001"/>
-  <testcase name="testGetName" classname="com.application.budgeter.ExpenseTest" time="0.001"/>
-  <testcase name="testGetLocalDate" classname="com.application.budgeter.ExpenseTest" time="0.001"/>
-  <testcase name="testEquals_ExpensesEqual" classname="com.application.budgeter.ExpenseTest" time="0"/>
-  <testcase name="testSetAmount_NegativeNumer" classname="com.application.budgeter.ExpenseTest" time="0"/>
-  <testcase name="testLexicographicNameComparator" classname="com.application.budgeter.ExpenseTest" time="0.002"/>
-  <testcase name="testGetAmount" classname="com.application.budgeter.ExpenseTest" time="0"/>
-  <testcase name="testGetCategory" classname="com.application.budgeter.ExpenseTest" time="0"/>
-  <testcase name="testConstructorAmount_NegativeNumber" classname="com.application.budgeter.ExpenseTest" time="0.001"/>
-  <testcase name="testAmountComparator" classname="com.application.budgeter.ExpenseTest" time="0.001"/>
+  <testcase name="testSortAmount" classname="com.application.budgeter.ListUtilsTest" time="0.009">
+    <system-out><![CDATA[Before:
+[groceries, food, 2001-06-28, 50.0]
+[hotdog, food, 2001-02-01, 10.0]
+[shoe, clothing, 2001-04-14, 80.0]
+[shoe, clothing, 2001-04-14, 40.0]
+[shoe, clothing, 2001-04-14, 60.0]
+[groceries, food, 2001-06-28, 70.0]
+[shoe, clothing, 2001-04-14, 20.0]
+[shoe, clothing, 2001-04-14, 100.0]
+[groceries, food, 2001-06-28, 30.0]
+[groceries, food, 2001-06-28, 90.0]
+
+After:
+[hotdog, food, 2001-02-01, 10.0]
+[shoe, clothing, 2001-04-14, 20.0]
+[groceries, food, 2001-06-28, 30.0]
+[shoe, clothing, 2001-04-14, 40.0]
+[groceries, food, 2001-06-28, 50.0]
+[shoe, clothing, 2001-04-14, 60.0]
+[groceries, food, 2001-06-28, 70.0]
+[shoe, clothing, 2001-04-14, 80.0]
+[groceries, food, 2001-06-28, 90.0]
+[shoe, clothing, 2001-04-14, 100.0]
+]]></system-out>
+  </testcase>
+  <testcase name="testSortDate" classname="com.application.budgeter.ListUtilsTest" time="0.005">
+    <system-out><![CDATA[Before:
+[apple, food, 2005-06-28, 10.0]
+[apple, food, 2001-02-01, 10.0]
+[apple, clothing, 2008-04-14, 10.0]
+[apple, clothing, 2004-04-14, 10.0]
+[apple, clothing, 2006-04-14, 10.0]
+[apple, food, 2007-06-28, 10.0]
+[apple, clothing, 2002-04-14, 10.0]
+[apple, clothing, 2010-04-14, 10.0]
+[apple, food, 2003-06-28, 10.0]
+[apple, food, 2009-06-28, 10.0]
+
+After:
+[apple, food, 2001-02-01, 10.0]
+[apple, clothing, 2002-04-14, 10.0]
+[apple, food, 2003-06-28, 10.0]
+[apple, clothing, 2004-04-14, 10.0]
+[apple, food, 2005-06-28, 10.0]
+[apple, clothing, 2006-04-14, 10.0]
+[apple, food, 2007-06-28, 10.0]
+[apple, clothing, 2008-04-14, 10.0]
+[apple, food, 2009-06-28, 10.0]
+[apple, clothing, 2010-04-14, 10.0]
+]]></system-out>
+  </testcase>
+  <testcase name="testSortName" classname="com.application.budgeter.ListUtilsTest" time="0.006">
+    <system-out><![CDATA[Before:
+[eggplant, food, 2001-06-28, 50.0]
+[apple, food, 2001-02-01, 10.0]
+[hat, clothing, 2001-04-14, 80.0]
+[dressshoes, clothing, 2001-04-14, 40.0]
+[fish, clothing, 2001-04-14, 60.0]
+[gas, food, 2001-06-28, 70.0]
+[banana, clothing, 2001-04-14, 20.0]
+[jeans, clothing, 2001-04-14, 100.0]
+[carrot, food, 2001-06-28, 30.0]
+[icecrean, food, 2001-06-28, 90.0]
+
+After:
+[apple, food, 2001-02-01, 10.0]
+[banana, clothing, 2001-04-14, 20.0]
+[carrot, food, 2001-06-28, 30.0]
+[dressshoes, clothing, 2001-04-14, 40.0]
+[eggplant, food, 2001-06-28, 50.0]
+[fish, clothing, 2001-04-14, 60.0]
+[gas, food, 2001-06-28, 70.0]
+[hat, clothing, 2001-04-14, 80.0]
+[icecrean, food, 2001-06-28, 90.0]
+[jeans, clothing, 2001-04-14, 100.0]
+]]></system-out>
+  </testcase>
+  <testcase name="testSortCaregory" classname="com.application.budgeter.ListUtilsTest" time="0.007">
+    <system-out><![CDATA[Before:
+[apple, eee, 2001-02-01, 10.0]
+[apple, aaa, 2001-02-01, 10.0]
+[apple, hhh, 2001-02-01, 10.0]
+[apple, ddd, 2001-02-01, 10.0]
+[apple, fff, 2001-02-01, 10.0]
+[apple, gggg, 2001-02-01, 10.0]
+[apple, bbb, 2001-02-01, 10.0]
+[apple, jjj, 2001-02-01, 10.0]
+[apple, cc, 2001-02-01, 10.0]
+[apple, iii, 2001-02-01, 10.0]
+
+After:
+[apple, aaa, 2001-02-01, 10.0]
+[apple, bbb, 2001-02-01, 10.0]
+[apple, cc, 2001-02-01, 10.0]
+[apple, ddd, 2001-02-01, 10.0]
+[apple, eee, 2001-02-01, 10.0]
+[apple, fff, 2001-02-01, 10.0]
+[apple, gggg, 2001-02-01, 10.0]
+[apple, hhh, 2001-02-01, 10.0]
+[apple, iii, 2001-02-01, 10.0]
+[apple, jjj, 2001-02-01, 10.0]
+]]></system-out>
+  </testcase>
 </testsuite>

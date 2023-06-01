@@ -1,4 +1,5 @@
 com\application\budgeter\ExpenseTest.class
+com\application\budgeter\ListUtilsTest.class
 com\application\budgeter\test.class
 com\application\budgeter\ExpenseListTest.class
 com\application\budgeter\ExpenseControllerTest.class

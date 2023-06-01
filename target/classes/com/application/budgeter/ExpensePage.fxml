@@ -32,10 +32,10 @@
     <!-- Expense Table -->
     <TableView fx:id="expenseTable" editable="true" VBox.vgrow="ALWAYS">
       <columns>
-        <TableColumn editable="false" minWidth="180.0" text="Name" fx:id="nameColumn" style="-fx-alignment: CENTER;" />
-        <TableColumn editable="false" minWidth="145.0" text="Category" fx:id="categoryColumn" style="-fx-alignment: CENTER;" />
-        <TableColumn editable="false" minWidth="116.0" text="Date" fx:id="dateColumn" style="-fx-alignment: CENTER;" />
-        <TableColumn editable="false" minWidth="103.0" text="Amount" fx:id="amountColumn" style="-fx-alignment: CENTER;" />
+        <TableColumn editable="false" minWidth="180.0" text="" fx:id="nameColumn" style="-fx-alignment: CENTER;" />
+        <TableColumn editable="false" minWidth="145.0" text="" fx:id="categoryColumn" style="-fx-alignment: CENTER;" />
+        <TableColumn editable="false" minWidth="116.0" text="" fx:id="dateColumn" style="-fx-alignment: CENTER;" />
+        <TableColumn editable="false" minWidth="103.0" text="" fx:id="amountColumn" style="-fx-alignment: CENTER;" />
       </columns>
     </TableView>
 
