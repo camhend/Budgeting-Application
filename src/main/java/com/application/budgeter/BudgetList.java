@@ -21,6 +21,9 @@ public class BudgetList {
     private LocalDate monthYear; // localdate of month and year of budgetlist
 
 
+    public BudgetList() {
+    } // end constructor
+
     public BudgetList(LocalDate monthYear) {
         this.monthYear = monthYear;
     } // end constructor
@@ -129,7 +132,7 @@ public class BudgetList {
             PrintStream writer = new PrintStream(file);
 
             // 2. print data 
-            writer.println("Category,Spent,Total");
+            writer.println("Category,Total,Spent");
             for (Budget budget : budgetList) {
                 // category, total, spent
                 writer.println(budget.getCategory() + "," + budget.getTotal() + "," + budget.getSpent());

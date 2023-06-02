@@ -8,7 +8,7 @@ import java.util.Map;
 
 
 public class BudgetModel {
-    
+
     private Map<String, BudgetList> loadedLists;
 
     public BudgetModel() {
@@ -60,7 +60,7 @@ public class BudgetModel {
             String filename = dateKey + ".csv";
             newList.readCSV(filename);
             loadedLists.put(dateKey, newList);
-            System.out.println("Loaded " + dateKey + ".csv");
+            System.out.println("Budget Loaded " + dateKey + ".csv");
 
             return newList;
         }

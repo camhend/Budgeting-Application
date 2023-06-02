@@ -53,7 +53,7 @@ public class ExpenseModel {
             String filename = dateKey + ".csv";
             newList.loadFromCSV(filename);
             loadedLists.put(dateKey, newList);
-            System.out.println("Loaded " + dateKey + ".csv");
+            System.out.println("Expense Loaded " + dateKey + ".csv");
 
             return newList;
         }

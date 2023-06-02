@@ -8,6 +8,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.control.Label;
 import java.time.LocalDate;
+import java.time.Year;
 import javafx.scene.Node;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
@@ -21,6 +22,9 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.event.ActionEvent;
+import java.time.YearMonth;
+import java.time.temporal.ChronoUnit;
+
 
 
 public class DashboardController implements Initializable {
@@ -78,17 +82,21 @@ public class DashboardController implements Initializable {
         budgetList = budgetModel.getBudgetList(date);
         monthMenu.setText(mostRecent); // set monthMenu text to most recent budgetlist
 
-        addPiechart();
-        addRecentTransactions();
-        formatTable();
-        addBarChart();
-        addBudgetData();
-        setAllMenuButtons();
-        setDefaultMonth();
+        
         monthMenu.setText(mostRecent); // set monthMenu text to most recent budgetlist
-
+        setDefaultMonth();
+        setMonthMenuButtons();
+        formatTable();
+        updateDataInfo();
     } // end of setModels method
 
+
+    private void updateDataInfo() {
+        addPiechart();
+        addRecentTransactions();
+        addBarChart();
+        addBudgetData();
+    } // end of updateDataInfo method
 
 
     @Override //* setup page when page is loaded
@@ -188,15 +196,44 @@ public class DashboardController implements Initializable {
         double percentAmount = (totalSpent / totalBudget) * 100;
         String percentAmountString = "$" + String.format("%.2f", percentAmount) + "%";
 
-        // calculate days left in month
-        LocalDate currentDate = LocalDate.now();
-        String daysLeft = Integer.toString(currentDate.lengthOfMonth() - currentDate.getDayOfMonth());
 
         // set labels
         flatAmountSpent.setText(spent + " / " + total + " Spent");
         percentAmountSpent.setText(percentAmountString + " Spent");
-        this.daysLeft.setText(daysLeft + " Days Left");
+
+        setDaysLeft();
     } // end of addBudgetData method
+
+
+    private void setDaysLeft() {
+        // calculate days left in month
+        String daysLeft = Integer.toString(calculateDaysLeft());
+
+        // set labels
+        this.daysLeft.setText(daysLeft + " Days Left");
+    } // end of setDaysLeft method
+
+
+    private int calculateDaysLeft() {
+        LocalDate today = LocalDate.now();
+
+        // get selected month
+        String date = monthMenu.getText(); 
+
+        // get last day of selected month 
+        String year = date.substring(0,4);
+        String month = date.substring(5);
+        YearMonth yearMonth = YearMonth.of(Integer.parseInt(year), Integer.parseInt(month));
+        int daysInMonth = yearMonth.lengthOfMonth();
+        
+        // last day of month
+        LocalDate lastDayOfMonth = LocalDate.of(Integer.parseInt(year), Integer.parseInt(month), daysInMonth);
+
+        // calculate days left with localdate
+        int daysLeft = (int) ChronoUnit.DAYS.between(today, lastDayOfMonth);
+
+        return daysLeft;
+    } // end of calculateDaysLeft method
 
 
 
@@ -289,21 +326,27 @@ public class DashboardController implements Initializable {
     } // end of formatTable method
 
 
-    //* give a menubutton an arraylist of items
-    private void setMenuButton(MenuButton menuButton, ArrayList<String> items) {
-        for (String item : items) {
-            MenuItem menuItem = new MenuItem(item);
-            menuButton.getItems().add(menuItem);
+    private void setMonthMenuButtons() {
+        // get list of dates from budgetModel
+        ArrayList<String> budgetDates = budgetModel.getDateList();
+        ArrayList<String> expenseDates = expenseModel.getDateList();
+        ArrayList<String> dates = new ArrayList<>();
+
+        // add dates that are in both budgetDates and expenseDates to dates
+        for (String date : budgetDates) {
+            if (expenseDates.contains(date)) {
+                dates.add(date);
+                System.out.println(date);
+            }
+        }
+
+        // create menuitems for each date
+        for (String date : dates) {
+            MenuItem menuItem = new MenuItem(date);
+            monthMenu.getItems().add(menuItem);
             menuItem.setOnAction(this::changeMenuButton);
         }
-    } // end of setMenuButton method
-
-
-    //* set menu items for month menu
-    private void setAllMenuButtons() {
-        ArrayList<String> dateList = expenseModel.getDateList();
-        setMenuButton(monthMenu, dateList);
-    } // end setMenuItems method
+    } // end setMonthMenuButtons method
 
 
     //* changes menu button text to selected menu item
@@ -311,11 +354,7 @@ public class DashboardController implements Initializable {
         MenuItem menuItem = (MenuItem) event.getSource();
         MenuButton menuButton = (MenuButton) menuItem.getParentPopup().getOwnerNode();
         menuButton.setText(menuItem.getText());
-
-        // update month if month menu button is changed
-        if (menuButton == monthMenu) {
-            updateMonth();
-        }
+        updateMonth();
     } // end changeMenuButton method
 
 
@@ -327,13 +366,10 @@ public class DashboardController implements Initializable {
         if (month.length() == 1) {month = "0" + month;}
         LocalDate date = LocalDate.parse(month + "/01/" + year, DateTimeFormatter.ofPattern("MM/dd/yyyy")); // create date object
         expenseList = expenseModel.getExpenseList(date); // get expense list for month
+        budgetList = budgetModel.getBudgetList(date); // get budget list for month
 
         addRecentTransactions();
-
-        // set month menu with dates of found files
-        ArrayList<String> dateList = expenseModel.getDateList();
-        monthMenu.getItems().clear();
-        setMenuButton(monthMenu, dateList);
+        updateDataInfo();
     } // end updateMonth method
 
 
@@ -348,6 +384,6 @@ public class DashboardController implements Initializable {
 
         // set month menu to newest date and update tableview
         monthMenu.setText(newestDate); 
-        monthMenu.getItems().clear();
+        updateMonth();
     } // end setDefaultMonth method
 } // end of DashboardController class

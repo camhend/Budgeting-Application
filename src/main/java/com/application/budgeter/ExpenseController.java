@@ -387,6 +387,7 @@ public class ExpenseController implements Initializable {
         if (month.length() == 1) {month = "0" + month;}
         LocalDate date = LocalDate.parse(month + "/01/" + year, DateTimeFormatter.ofPattern("MM/dd/yyyy")); // create date object
         expenseList = expenseModel.getExpenseList(date); // get expense list for month
+        budgetList = budgetModel.getBudgetList(date); // get budget list for month
 
         // clear and update observable list and tableview
         obsvExpenseList.clear(); 
@@ -453,6 +454,7 @@ public class ExpenseController implements Initializable {
         // if no month selected (no file saved) set expense list to empty
         if (monthMenu.getText().equals("Month")) { // if no month selected
             expenseList = new ExpenseList();
+            budgetList = new BudgetList();
         }
         else { // else get latest month expense list
             String year = monthMenu.getText().substring(0, 4); 
