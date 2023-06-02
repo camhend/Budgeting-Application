@@ -8,7 +8,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.control.Label;
 import java.time.LocalDate;
-import java.time.Year;
 import javafx.scene.Node;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
@@ -58,8 +57,8 @@ public class DashboardController implements Initializable {
     BudgetModel budgetModel = new BudgetModel();
     ExpenseModel expenseModel = new ExpenseModel();
 
-    ExpenseList expenseList;
-    BudgetList budgetList;
+    ExpenseList expenseList = new ExpenseList();
+    BudgetList budgetList = new BudgetList();
 
 
     //* pass models to controller & set setup elements that require models
@@ -67,26 +66,12 @@ public class DashboardController implements Initializable {
         this.expenseModel = expenseModel;
         this.budgetModel = budgetModel;
 
-        if(!expenseModel.getDateList().isEmpty()) 
-            expenseList = getLatestExpenselist();
-        else 
-            expenseList = new ExpenseList();
-
-        // budgetlist = most recent budgetlist
-        ArrayList<String> dates = budgetModel.getDateList();
-        String mostRecent = dates.get(dates.size() - 1);
-        String year = mostRecent.substring(0,4);
-        String month = mostRecent.substring(5);
-        if (month.length() == 1) {month = "0" + month;}
-        LocalDate date = LocalDate.parse(month + "/01/" + year, DateTimeFormatter.ofPattern("MM/dd/yyyy")); // create date object
-        budgetList = budgetModel.getBudgetList(date);
-        monthMenu.setText(mostRecent); // set monthMenu text to most recent budgetlist
-
-        
-        monthMenu.setText(mostRecent); // set monthMenu text to most recent budgetlist
+        // data setup
         setDefaultMonth();
         setMonthMenuButtons();
         formatTable();
+
+        // add data to info elements
         updateDataInfo();
     } // end of setModels method
 
@@ -103,23 +88,6 @@ public class DashboardController implements Initializable {
     public void initialize(java.net.URL arg0, java.util.ResourceBundle arg1) {
         setAnchorPaneContraints();
     } // end of initialize method
-
-
-    //* get latest filename and convert to local date and get expense list
-    private ExpenseList getLatestExpenselist() {
-        // get latest date from dateList
-        ArrayList<String> dateList = expenseModel.getDateList();
-        String date = dateList.get(dateList.size() - 1);
-
-        // convert date to LocalDate object
-        String year = date.substring(0, 4); 
-        String month = date.substring(5); 
-        if (month.length() == 1) {month = "0" + month;}
-        LocalDate newestDate = LocalDate.parse(month + "/01/" + year, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-
-        // return expense list for month
-        return expenseModel.getExpenseList(newestDate); 
-    } // end of getLatestExpenselist method
 
 
 
@@ -368,7 +336,6 @@ public class DashboardController implements Initializable {
         expenseList = expenseModel.getExpenseList(date); // get expense list for month
         budgetList = budgetModel.getBudgetList(date); // get budget list for month
 
-        addRecentTransactions();
         updateDataInfo();
     } // end updateMonth method
 
