@@ -524,11 +524,9 @@ public class ExpenseController implements Initializable {
         nameColumn.setGraphic(nameHeader);
         nameHeader.setOnAction(event -> {
             if (sortedByName) {
-                expenseTable.setItems(obsvExpenseList);
                 resetColumnButtons(headerButtons);
             } else {
                 sort(expenseTable, new LexicographicNameComparitor());
-                resetColumnButtons(headerButtons);
                 nameHeader.setText("Name ▼");
                 sortedByName = true;
             }   
@@ -539,11 +537,10 @@ public class ExpenseController implements Initializable {
         categoryColumn.setGraphic(categoryHeader);
         categoryHeader.setOnAction(event -> {
             if (sortedByCategory) {
-                expenseTable.setItems(obsvExpenseList);
                 resetColumnButtons(headerButtons);
             } else {
-                sort(expenseTable, new LexicographicCategoryComparitor());
                 resetColumnButtons(headerButtons);
+                sort(expenseTable, new LexicographicCategoryComparitor());
                 categoryHeader.setText("Category ▼");
                 sortedByCategory = true;
             }   
@@ -554,11 +551,10 @@ public class ExpenseController implements Initializable {
         dateColumn.setGraphic(dateHeader);
         dateHeader.setOnAction(event -> {
             if (sortedByDate) {
-                expenseTable.setItems(obsvExpenseList);
                 resetColumnButtons(headerButtons);
             } else {
-                sort(expenseTable, new DateComparitor());
                 resetColumnButtons(headerButtons);
+                sort(expenseTable, new DateComparitor());
                 dateHeader.setText("Date ▼");
                 sortedByDate = true;
             }   
@@ -569,11 +565,10 @@ public class ExpenseController implements Initializable {
         amountColumn.setGraphic(amountHeader);
         amountHeader.setOnAction(event -> {
             if (sortedByAmount) {
-                expenseTable.setItems(obsvExpenseList);
                 resetColumnButtons(headerButtons);
             } else {
-                sort(expenseTable, new AmountComparitor());
                 resetColumnButtons(headerButtons);
+                sort(expenseTable, new AmountComparitor());
                 amountHeader.setText("Amount ▼");
                 sortedByAmount = true;
             }   
@@ -604,6 +599,7 @@ public class ExpenseController implements Initializable {
         for (Button b : headerButtons.keySet()) {
             b.setText(headerButtons.get(b));
         }
+        expenseTable.setItems(obsvExpenseList);
 
         sortedByAmount = false;
         sortedByCategory = false;
