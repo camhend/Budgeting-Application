@@ -52,8 +52,10 @@ public class DashboardController implements Initializable {
 
     // data models 
     BudgetModel budgetModel = new BudgetModel();
-    ExpenseList expenseList;
     ExpenseModel expenseModel = new ExpenseModel();
+
+    ExpenseList expenseList;
+    BudgetList budgetList;
 
 
     //* pass models to controller & set setup elements that require models
@@ -66,6 +68,16 @@ public class DashboardController implements Initializable {
         else 
             expenseList = new ExpenseList();
 
+        // budgetlist = most recent budgetlist
+        ArrayList<String> dates = budgetModel.getDateList();
+        String mostRecent = dates.get(dates.size() - 1);
+        String year = mostRecent.substring(0,4);
+        String month = mostRecent.substring(5);
+        if (month.length() == 1) {month = "0" + month;}
+        LocalDate date = LocalDate.parse(month + "/01/" + year, DateTimeFormatter.ofPattern("MM/dd/yyyy")); // create date object
+        budgetList = budgetModel.getBudgetList(date);
+        monthMenu.setText(mostRecent); // set monthMenu text to most recent budgetlist
+
         addPiechart();
         addRecentTransactions();
         formatTable();
@@ -73,6 +85,8 @@ public class DashboardController implements Initializable {
         addBudgetData();
         setAllMenuButtons();
         setDefaultMonth();
+        monthMenu.setText(mostRecent); // set monthMenu text to most recent budgetlist
+
     } // end of setModels method
 
 
@@ -109,7 +123,7 @@ public class DashboardController implements Initializable {
     private void addPiechart() {
         // get observable list with category names and spent amounts from budget
         ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
-        for (Budget budget : budgetModel.getBudgetList()) {
+        for (Budget budget : budgetList.getBudgetList()) {
             pieChartData.add(new PieChart.Data(budget.getCategory(), budget.getSpent()));
         }
 
@@ -144,7 +158,7 @@ public class DashboardController implements Initializable {
 
         // add category and spent to series
         XYChart.Series<String, Double> series = new XYChart.Series<>();
-        for (Budget budget : budgetModel.getBudgetList()) 
+        for (Budget budget : budgetList.getBudgetList()) 
             series.getData().add(new XYChart.Data<>(budget.getCategory(), budget.getSpent()));
         barChartData.add(series);
 
@@ -161,7 +175,7 @@ public class DashboardController implements Initializable {
         // get total spent and total budget
         double totalSpent = 0;
         double totalBudget = 0;
-        for (Budget budget : budgetModel.getBudgetList()) {
+        for (Budget budget : budgetList.getBudgetList()) {
            totalSpent += budget.spent;
            totalBudget += budget.total;
         }

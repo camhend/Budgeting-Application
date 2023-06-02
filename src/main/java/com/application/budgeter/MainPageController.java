@@ -42,7 +42,7 @@ public class MainPageController implements Initializable {
         } catch (IOException e) {
             System.out.println("Error loading default page");
         }
-    }
+    } // end of setModels method
 
 
     //* apply page formatting when controller is created
@@ -55,7 +55,7 @@ public class MainPageController implements Initializable {
         addButtonImages();  // add images to menu buttons
         setAnchorConstraints(); // apply anchorpane constraints to page elements
         selectButton(dashboardNavButton); // select dashboard button by default
-    } 
+    } // end of initialize method
 
 
     //***********************/

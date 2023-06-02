@@ -3,6 +3,8 @@ package com.application.budgeter;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
+
+import javafx.beans.Observable;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -21,6 +23,9 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.collections.ObservableList;
+import java.util.ArrayList;
+import java.time.format.DateTimeFormatter;
 
 
 public class BudgetController implements Initializable {
@@ -53,8 +58,11 @@ public class BudgetController implements Initializable {
 
     // data models
     BudgetModel budgetModel = new BudgetModel();
-    ExpenseList expenseList;
     ExpenseModel expenseModel = new ExpenseModel();
+
+    ExpenseList expenseList;
+    BudgetList budgetList;
+    ObservableList<Budget> obsvBudgetList;
 
     //* set data models and setup elements that require data models
     public void setModels(ExpenseModel expenseModel, BudgetModel budgetModel) {
@@ -62,10 +70,22 @@ public class BudgetController implements Initializable {
         this.expenseModel = expenseModel;
         this.budgetModel = budgetModel;
 
+        // budgetlist = most recent budgetlist
+        ArrayList<String> dates = budgetModel.getDateList();
+        String mostRecent = dates.get(dates.size() - 1);
+        String year = mostRecent.substring(0,4);
+        String month = mostRecent.substring(5);
+        if (month.length() == 1) {month = "0" + month;}
+        LocalDate date = LocalDate.parse(month + "/01/" + year, DateTimeFormatter.ofPattern("MM/dd/yyyy")); // create date object
+        budgetList = budgetModel.getBudgetList(date);
+        monthMenu.setText(mostRecent); // set monthMenu text to most recent budgetlist
+
+        obsvBudgetList = budgetList.getBudgetList();
+
         LocalDate today = LocalDate.now();
         expenseList = expenseModel.getExpenseList(today); // get expenseList for current month
         
-        BudgetTable.setItems(budgetModel.getBudgetList());
+        BudgetTable.setItems(obsvBudgetList);
         updateSpending();
         setProgressBar();
 
@@ -91,7 +111,9 @@ public class BudgetController implements Initializable {
             String categoryName = categoryTextField.getText();
             double categoryLimit = Double.parseDouble(limitTextField.getText());
 
-            budgetModel.addBudget(categoryName, 0, categoryLimit);
+            Budget newBudget = new Budget(categoryName, 0, categoryLimit);
+
+            budgetList.add(newBudget);
 
             categoryTextField.clear();
             limitTextField.clear();
@@ -122,8 +144,7 @@ public class BudgetController implements Initializable {
             // get selected row
             Budget selectedBudget = BudgetTable.getSelectionModel().getSelectedItem();
             // remove selected row from the data
-            budgetModel.deleteBudget(selectedBudget);
-            
+            budgetList.remove(selectedBudget);
         });
     } // end deleteListener method
 
@@ -131,10 +152,13 @@ public class BudgetController implements Initializable {
     //* update spending for each category by reading expenseList
     private void updateSpending() {
         // for each category, check category spending in expenseList
-        for (Budget budget : budgetModel.getBudgetList()) {
+        for (Budget budget : budgetList.getBudgetList()) {
             double newSpent = expenseList.getCategorySpending(budget.category);
-            if (newSpent != -1) {
-                budgetModel.editBudgetSpent(budget, newSpent);
+            Budget oldBudget = budget;
+            Budget newBudget = new Budget(budget.category, newSpent, budget.total);
+
+            if (newSpent != -1) { // if category is in expenseList
+                budgetList.edit(oldBudget, newBudget);
             }
         }
     } // end updateSpending method
@@ -142,7 +166,7 @@ public class BudgetController implements Initializable {
 
     //* write budget to csv file
     public void saveBudget() {
-        budgetModel.writeCSV("budget.csv");
+        budgetModel.saveAll();
 
         Alert alert = new Alert(AlertType.INFORMATION);
         alert.setTitle("Saved");
@@ -156,7 +180,7 @@ public class BudgetController implements Initializable {
     private void setProgressBar() {
         double totalSpent = 0;
         double totalBudget = 0;
-        for (Budget budget : budgetModel.getBudgetList()) {
+        for (Budget budget : budgetList.getBudgetList()) {
            totalSpent += budget.spent;
            totalBudget += budget.total;
         }

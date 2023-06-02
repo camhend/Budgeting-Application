@@ -101,10 +101,13 @@ public class ExpenseController implements Initializable {
     HashMap<Button, String> headerButtons;
 
     // Expense & Budget data
-    ObservableList<Expense> obsvExpenseList; // list of expenses to display in tableview
     BudgetModel budgetModel;
-    ExpenseList expenseList; 
     ExpenseModel expenseModel;
+
+    BudgetList budgetList;
+    ExpenseList expenseList; 
+    ObservableList<Expense> obsvExpenseList; // list of expenses to display in tableview
+
 
 
     //* pass data models to controller & setup page elements that require data models
@@ -457,6 +460,7 @@ public class ExpenseController implements Initializable {
             if (month.length() == 1) {month = "0" + month;}
             LocalDate date = LocalDate.parse(month + "/01/" + year, DateTimeFormatter.ofPattern("MM/dd/yyyy")); // create date object
             expenseList = expenseModel.getExpenseList(date); // get expense list for month
+            budgetList = budgetModel.getBudgetList(date); // get budget list for month
         }
 
         // update observable list and set to tableview
@@ -636,7 +640,10 @@ public class ExpenseController implements Initializable {
         all.setOnAction(this::changeMenuButton);
         
         // set category buttons with categories from budgetmodel
-        ArrayList<String> categoryList = budgetModel.getCategoryList();
+        ArrayList<String> categoryList = budgetList.getCategoryList();
+        if (categoryList.size() == 0) {
+            categoryList.add("Budget not added for this month");
+        }
         setMenuButton(totalMenu, categoryList);
         setMenuButton(addCategoryField, categoryList);
         setMenuButton(categoryField, categoryList);
@@ -663,7 +670,7 @@ public class ExpenseController implements Initializable {
     } // end changeMenuButton method
 
 
-    //* set moth menu to newest month
+    //* set month menu to newest month
     private void setDefaultMonth() {
         if(expenseModel.getDateList().isEmpty()) {
             return;
