@@ -121,14 +121,7 @@ public class BudgetList {
         try {
             // 1. create writer of file
             String projectRootPath = System.getProperty("user.dir") + "\\budgetdata";
-            File directory = new File(projectRootPath);
-            if (!directory.exists()) {
-                directory.mkdir();
-            }
             File file = new File(projectRootPath + "\\" + filename);
-            if (!file.exists()) {
-                file.createNewFile();
-            }
             PrintStream writer = new PrintStream(file);
 
             // 2. print data 
@@ -153,14 +146,7 @@ public class BudgetList {
 
             // 2. create reader of file
             String projectRootPath = System.getProperty("user.dir") + "\\budgetdata";
-            File directory = new File(projectRootPath);
-            if (!directory.exists()) {
-                directory.mkdir();
-            }
             File file = new File(projectRootPath + "\\" + filename);
-            if (!file.exists()) {
-                file.createNewFile();
-            }
             BufferedReader reader = new BufferedReader(new FileReader(file));
 
             // 3. read data
