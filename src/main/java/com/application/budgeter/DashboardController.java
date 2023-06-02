@@ -103,6 +103,10 @@ public class DashboardController implements Initializable {
             pieChartData.add(new PieChart.Data(budget.getCategory(), budget.getSpent()));
         }
 
+        if (pieChartData.isEmpty()) {
+            pieChartData.add(new PieChart.Data("No Data", 1));
+        }
+
         // set pie chart data
         pieChart.setData(pieChartData);
         pieChart.setTitle("");
@@ -132,10 +136,15 @@ public class DashboardController implements Initializable {
         // get observable list from budgetmodel
         ObservableList<XYChart.Series<String, Double>> barChartData = FXCollections.observableArrayList();
 
+
         // add category and spent to series
         XYChart.Series<String, Double> series = new XYChart.Series<>();
         for (Budget budget : budgetList.getBudgetList()) 
             series.getData().add(new XYChart.Data<>(budget.getCategory(), budget.getSpent()));
+
+        if (series.getData().size() == 0)
+            series.getData().add(new XYChart.Data<>("No Budget Data", 0.0));
+
         barChartData.add(series);
 
         // set pie chart data
@@ -147,7 +156,6 @@ public class DashboardController implements Initializable {
 
     //* add budget data to central budget summary
     private void addBudgetData() {
-
         // get total spent and total budget
         double totalSpent = 0;
         double totalBudget = 0;
@@ -162,6 +170,8 @@ public class DashboardController implements Initializable {
 
         // calculate percent spent
         double percentAmount = (totalSpent / totalBudget) * 100;
+        if (Double.isNaN(percentAmount)) 
+            percentAmount = 0;
         String percentAmountString = "$" + String.format("%.2f", percentAmount) + "%";
 
 
