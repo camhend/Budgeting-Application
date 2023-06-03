@@ -530,25 +530,25 @@ public class ExpenseController implements Initializable {
         dateColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("localDate"));
         amountColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("amount"));
 
+        // disable JavaFX toble column sorting function
         nameColumn.setSortable(false);
         categoryColumn.setSortable(false);
         dateColumn.setSortable(false);
         amountColumn.setSortable(false);
 
-        headerButtons = new HashMap<>();
+        // Create column header buttons for sorting TableView expenseTable
         Button nameHeader = new Button("Name");
         nameColumn.setGraphic(nameHeader);
         nameHeader.setOnAction(event -> {
             if (sortedByName) {
                 resetColumnButtons(headerButtons);
             } else {
+                resetColumnButtons(headerButtons);
                 sort(expenseTable, new LexicographicNameComparitor());
                 nameHeader.setText("Name ▼");
                 sortedByName = true;
             }   
         });
-        headerButtons.put(nameHeader, nameHeader.getText());
-
         Button categoryHeader = new Button("Category");
         categoryColumn.setGraphic(categoryHeader);
         categoryHeader.setOnAction(event -> {
@@ -561,8 +561,6 @@ public class ExpenseController implements Initializable {
                 sortedByCategory = true;
             }   
         });
-        headerButtons.put(categoryHeader, categoryHeader.getText());
-
         Button dateHeader = new Button("Date");
         dateColumn.setGraphic(dateHeader);
         dateHeader.setOnAction(event -> {
@@ -575,8 +573,6 @@ public class ExpenseController implements Initializable {
                 sortedByDate = true;
             }   
         });
-        headerButtons.put(dateHeader, dateHeader.getText());
-
         Button amountHeader = new Button("Amount");
         amountColumn.setGraphic(amountHeader);
         amountHeader.setOnAction(event -> {
@@ -589,7 +585,13 @@ public class ExpenseController implements Initializable {
                 sortedByAmount = true;
             }   
         });
+        
+        // Map to store original text on column header buttons
+        headerButtons = new HashMap<>(); 
+        headerButtons.put(dateHeader, dateHeader.getText());
+        headerButtons.put(nameHeader, nameHeader.getText());
         headerButtons.put(amountHeader, amountHeader.getText());
+        headerButtons.put(categoryHeader, categoryHeader.getText());
 
 
         // set tableview resize policy to it will not resize columns past the width of the tableview
@@ -603,14 +605,14 @@ public class ExpenseController implements Initializable {
         }
     } // end of formatTableColumns method
 
-
+    // Sort Expenses in a given TableView by a given Expense Comparitor
     private void sort(TableView<Expense> tableView, Comparator<Expense> c) {
         ObservableList<Expense> list = FXCollections.observableArrayList(tableView.getItems());
         ListUtils.sort(list, c);
         tableView.setItems(list);
     } // end of sort method
 
-
+    // Revert expenseTable header buttons and sorting to default state
     public void resetColumnButtons (HashMap<Button, String> headerButtons) {
         for (Button b : headerButtons.keySet()) {
             b.setText(headerButtons.get(b));
