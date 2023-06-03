@@ -25,6 +25,8 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.collections.ObservableList;
 import java.util.ArrayList;
 import java.time.format.DateTimeFormatter;
+import java.text.DecimalFormat;
+
 
 
 public class BudgetController implements Initializable {
@@ -234,7 +236,13 @@ public class BudgetController implements Initializable {
         String spent =  String.format("%.2f", totalSpent);
         String total = String.format("%.2f", totalBudget);
 
-        progressTitle.setText("Spent: $" + spent + " / $" + total + " (" + (int)(totalSpent/totalBudget * 100) + "%)");
+        double percentSpent = (totalSpent / totalBudget) * 100;
+
+        // Round percentSpent to two decimal places
+        DecimalFormat decimalFormat = new DecimalFormat("#.00");
+        String formattedPercentSpent = decimalFormat.format(percentSpent);
+
+        progressTitle.setText("Spent: $" + spent + " / $" + total + " (" + formattedPercentSpent + "%)");
     } // end setProgressBar method
 
 
