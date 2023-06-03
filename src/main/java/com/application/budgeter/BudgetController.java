@@ -121,9 +121,27 @@ public class BudgetController implements Initializable {
 
  
 
+    //* return true if cost is a valid number (e.g. 10.00, 10, $10.00, $10)
+    public boolean isValidCost(String cost) {
+        // check if cost is an integer or double
+        try {
+            // if cost without $ sign is an integer
+            double newCost = Double.parseDouble(cost.replace("$", ""));
+            if (newCost < 0) { // if cost is negative
+                return false;
+            }
+        }
+        catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
+    } // end isValidCost method
+
+
+
     //* add budget to budgetlist 
     public void submit(ActionEvent event) {
-        try {
+        if (isValidCost(limitTextField.getText()) && !categoryTextField.getText().equals("")) {
             String categoryName = categoryTextField.getText();
             double categoryLimit = Double.parseDouble(limitTextField.getText());
 
@@ -134,9 +152,14 @@ public class BudgetController implements Initializable {
             categoryTextField.clear();
             limitTextField.clear();
         }
-        catch (Exception e) {
-            System.out.print(e);
+        else {
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Error");
+            alert.setHeaderText("Invalid input");
+            alert.setContentText("Please enter a valid Category Name and Dollar Cost limit");
+            alert.showAndWait();
         }
+        
     } // end submit method
 
 
