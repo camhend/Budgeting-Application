@@ -159,7 +159,6 @@ public class BudgetController implements Initializable {
             alert.setContentText("Please enter a valid Category Name and Dollar Cost limit");
             alert.showAndWait();
         }
-        
     } // end submit method
 
 

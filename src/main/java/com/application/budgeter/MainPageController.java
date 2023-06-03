@@ -11,6 +11,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.Label;
 import javafx.scene.Node;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.VBox;
 
 
 public class MainPageController implements Initializable {
@@ -42,16 +44,16 @@ public class MainPageController implements Initializable {
         } catch (IOException e) {
             System.out.println("Error loading default page");
         }
+
+        // stop splitpane divider from moving
+        mainPage.getDividers().get(0).positionProperty().addListener((obs, oldVal, newVal) -> {
+            mainPage.setDividerPositions(0.20);
+        });
     } // end of setModels method
 
 
     //* apply page formatting when controller is created
     public void initialize(java.net.URL arg0, java.util.ResourceBundle arg1) {
-        // maintain 20:80 split between menu and content listener
-        mainPage.getDividers().get(0).positionProperty().addListener((obs, oldVal, newVal) -> {
-            mainPage.setDividerPositions(0.20);
-        });
-
         addButtonImages();  // add images to menu buttons
         setAnchorConstraints(); // apply anchorpane constraints to page elements
         selectButton(dashboardNavButton); // select dashboard button by default
@@ -88,6 +90,11 @@ public class MainPageController implements Initializable {
             ExpenseController controller = loader.getController();
             controller.setModels(expenseModel, budgetModel);
         }
+
+        // stop splitpane divider from moving
+        mainPage.getDividers().get(0).positionProperty().addListener((obs, oldVal, newVal) -> {
+            mainPage.setDividerPositions(0.20);
+        });
     } // end of switchContentPage method
 
 
