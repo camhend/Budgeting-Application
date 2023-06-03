@@ -165,7 +165,13 @@ public class BudgetController implements Initializable {
     //* listener for deleting budget from budgetlist
     private void deleteListener(MenuItem deleteMenuItem) {
         deleteMenuItem.setOnAction((ActionEvent event) -> {
+
+            // get selected row
+            Budget selectedBudget = BudgetTable.getSelectionModel().getSelectedItem();
+
+            if (selectedBudget == null) { return; } // if no row is selected, return
             
+            // make sure category does not have expenses in expenseList
             if (expenseList != null) {
                 // if category is in expenseList, send alert and return
                 for (Expense expense : expenseList) {
@@ -179,8 +185,7 @@ public class BudgetController implements Initializable {
                     }
                 }
             }
-            // get selected row
-            Budget selectedBudget = BudgetTable.getSelectionModel().getSelectedItem();
+
             // remove selected row from the data
             budgetList.remove(selectedBudget);
         });
