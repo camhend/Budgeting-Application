@@ -224,9 +224,10 @@ public class BudgetController implements Initializable {
         double totalSpent = 0;
         double totalBudget = 0;
         for (Budget budget : budgetList.getBudgetList()) {
-           totalSpent += budget.spent;
            totalBudget += budget.total;
+           totalSpent += expenseList.getCategorySpending(budget.getCategory());
         }
+
         SpendingBar.setProgress(totalSpent/totalBudget);
 
         // format totalSpent and totalBudget to 2 decimal places 
