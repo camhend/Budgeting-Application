@@ -237,6 +237,9 @@ public class ExpenseController implements Initializable {
             public void handle(ActionEvent event) {
                 // remove selected row from list and obsv list
                 Expense selectedExpense = expenseTable.getSelectionModel().getSelectedItem();
+
+                if (selectedExpense == null) {return;}
+
                 expenseList.remove(selectedExpense);
                 obsvExpenseList.remove(selectedExpense);
 
@@ -256,6 +259,8 @@ public class ExpenseController implements Initializable {
             public void handle(ActionEvent event) {
                 // get selected row
                 Expense selectedExpense = expenseTable.getSelectionModel().getSelectedItem();
+
+                if (selectedExpense == null) {return;}
 
                 // create edit popup layout
                 AnchorPane layout = new AnchorPane();
