@@ -88,7 +88,7 @@ public class BudgetController implements Initializable {
 
 
 
-    public void setupDeleteMenu() {
+    private void setupDeleteMenu() {
         // delete menubutton context menu in BudgetTable
         ContextMenu contextMenu = new ContextMenu();
         BudgetTable.setContextMenu(contextMenu); // set context menu to tableview
@@ -100,7 +100,7 @@ public class BudgetController implements Initializable {
 
 
 
-    public void setToNewestLists() {
+    private void setToNewestLists() {
         // create MM/dd/yyyy date string from most recent date in budgetModel
         ArrayList<String> dates = budgetModel.getDateList();
         String mostRecent = dates.get(dates.size() - 1);
@@ -232,7 +232,7 @@ public class BudgetController implements Initializable {
     } // end changeMenuButton method
 
     
-    public void updateMonth() {
+    private void updateMonth() {
         // get date from menu button
         String date = monthMenu.getText();
         String year = date.substring(0,4);

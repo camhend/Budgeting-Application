@@ -68,17 +68,19 @@ public class BudgetModel {
 
 
     // update spending of each category for a month's budgetlist with the category spending from the expense list
-    public void updateSpentField(ExpenseModel expenseModel, LocalDate monthYear) {
-        // get budget list and expense list of selected month
-        BudgetList budgetList = this.getBudgetList(monthYear);
-        ExpenseList expenseList = expenseModel.getExpenseList(monthYear);
+    public void updateSpentField(ExpenseModel expenseModel) {
+        // for each loaded budget list
+        for (BudgetList budgetList : loadedLists.values()) {
+            // get its expense list counterpart
+            ExpenseList expenseList = expenseModel.getExpenseList(budgetList.getMonthYear());
 
-        // update spent field for each budget category with the category spending from the expense list
-        for (Budget budget : budgetList.getBudgetList()) {
-            double spent = expenseList.getCategorySpending(budget.getCategory());
-            if (spent == -1) { spent = 0; } // if category not found in expense list, set spent to 0
+            // update spent field of each budget in the budget list
+            for (Budget budget : budgetList.getBudgetList()) {
+                double spent = expenseList.getCategorySpending(budget.getCategory());
+                if (spent == -1) { spent = 0; } // if category not found in expense list, set spent to 0
 
-            budget.setSpent(spent);
+                budget.setSpent(spent);
+            }
         }
     } // end of updateSpentField method
 

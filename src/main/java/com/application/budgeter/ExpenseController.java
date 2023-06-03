@@ -405,7 +405,7 @@ public class ExpenseController implements Initializable {
 
 
     //* update total label with total of selected category
-    public void updateTotal() {
+    private void updateTotal() {
         // if total menu = all
         if (totalMenu.getText().equals("All")) {
             total.setText(String.format("$%.2f", expenseList.getTotalSpending()));
@@ -431,6 +431,11 @@ public class ExpenseController implements Initializable {
     public void saveExpenses() {
         expenseModel.saveAll(true);
         sendAlert("Save", "Save", "Saved All Expenses", null);
+
+        // update spending in budgetmodel
+        // save budgetmodel?
+        budgetModel.updateSpentField(expenseModel);
+        budgetModel.saveAll();
 
         // refresh monthMenu items
         ArrayList<String> dateList = expenseModel.getDateList();
