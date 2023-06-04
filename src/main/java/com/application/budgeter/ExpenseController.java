@@ -240,8 +240,13 @@ public class ExpenseController implements Initializable {
 
                 if (selectedExpense == null) {return;}
 
-                expenseList.remove(selectedExpense);
+                expenseModel.remove(selectedExpense);
                 obsvExpenseList.remove(selectedExpense);
+
+                // set month menu with dates of found files
+                ArrayList<String> dateList = expenseModel.getDateList();
+                monthMenu.getItems().clear();
+                setMenuButton(monthMenu, dateList);
 
                 // update tableview and total
                 expenseTable.setItems(obsvExpenseList);
@@ -340,6 +345,11 @@ public class ExpenseController implements Initializable {
                             resetColumnButtons(headerButtons);
                             expenseTable.setItems(obsvExpenseList);
 
+                            // set month menu with dates of found files
+                            ArrayList<String> dateList = expenseModel.getDateList();
+                            monthMenu.getItems().clear();
+                            setMenuButton(monthMenu, dateList);
+
                             sendAlert("Success", "Success", "Expense successfully edited", null);
                         }
                     }
@@ -374,6 +384,11 @@ public class ExpenseController implements Initializable {
             addDateField.clear();
             addCostField.clear();
             updateTotal();
+
+            // set month menu with dates of found files
+            ArrayList<String> dateList = expenseModel.getDateList();
+            monthMenu.getItems().clear();
+            setMenuButton(monthMenu, dateList);
 
             // reset sorting column buttons and tableview on changing data
             resetColumnButtons(headerButtons);

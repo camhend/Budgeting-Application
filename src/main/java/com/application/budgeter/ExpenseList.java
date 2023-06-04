@@ -440,8 +440,7 @@ public class ExpenseList implements Iterable<Expense> {
             copy.tail = copy.head;
             return copy;
         }
-
-        
+    
         ExpenseNode thisCurrent = this.head;
         ExpenseNode copyCurrent = copy.head;
         
@@ -505,7 +504,7 @@ public class ExpenseList implements Iterable<Expense> {
     }
 
 
-    // load from file in src/main/resources/com/application/budgeter/expensedata , return true if successful
+    // load from file in budgeter/expensedata , return true if successful
     // each line is an expense, each comma is a field (name, category, date, amount)
     public boolean loadFromCSV(String filename) {
         try {
@@ -516,7 +515,8 @@ public class ExpenseList implements Iterable<Expense> {
             }
             File file = new File(projectRootPath + "\\" + filename);
             if (!file.exists()) {
-                file.createNewFile();
+                System.out.println("ExpenseList loadFromCSV failed: File does not exist. Path:  " + file.toString());
+                return false;
             }
             BufferedReader reader = new BufferedReader(new FileReader(file));
             // print reader added
