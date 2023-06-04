@@ -147,7 +147,7 @@ public class ExpenseModel {
                 return false;
             }
         } else {
-            System.out.println("Error: File does not exist. Abstract pathname: " + filePath.toString());
+            System.out.println("Delete failed: File does not exist. Abstract pathname: " + filePath.toString());
             return false;
         }
     }
