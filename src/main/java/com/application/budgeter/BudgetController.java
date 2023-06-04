@@ -175,13 +175,18 @@ public class BudgetController implements Initializable {
             
             // make sure category does not have expenses in expenseList
             if (expenseList != null) {
+
+                ExpenseList fileExpenseList = new ExpenseList();
+                String filename = monthMenu.getText() + ".csv";
+                fileExpenseList.loadFromCSV(filename); // load expenseList from file
+
                 // if category is in expenseList, send alert and return
-                for (Expense expense : expenseList) {
+                for (Expense expense : fileExpenseList) {
                     if (expense.getCategory().equals(BudgetTable.getSelectionModel().getSelectedItem().category)) {
                         Alert alert = new Alert(AlertType.INFORMATION);
                         alert.setTitle("Error");
                         alert.setHeaderText("Cannot delete category that has expenses");
-                        alert.setContentText("Please delete expenses in this category first");
+                        alert.setContentText("Please delete expenses in this category first (And Save)");
                         alert.showAndWait();
                         return;
                     }
@@ -227,7 +232,7 @@ public class BudgetController implements Initializable {
         double totalBudget = 0;
         for (Budget budget : budgetList.getBudgetList()) {
            totalBudget += budget.total;
-           totalSpent += expenseList.getCategorySpending(budget.getCategory());
+           totalSpent += budget.spent;
         }
 
         SpendingBar.setProgress(totalSpent/totalBudget);
