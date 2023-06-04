@@ -281,6 +281,9 @@ public class BudgetController implements Initializable {
 
         // update table
         BudgetTable.setItems(budgetList.getBudgetList());
+
+        updateSpending();
+        setProgressBar();
     } // end updateMonth method
     
     
