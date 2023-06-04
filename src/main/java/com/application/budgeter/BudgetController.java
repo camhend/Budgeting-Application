@@ -25,6 +25,8 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.collections.ObservableList;
 import java.util.ArrayList;
 import java.time.format.DateTimeFormatter;
+import java.text.DecimalFormat;
+
 
 
 public class BudgetController implements Initializable {
@@ -165,22 +167,32 @@ public class BudgetController implements Initializable {
     //* listener for deleting budget from budgetlist
     private void deleteListener(MenuItem deleteMenuItem) {
         deleteMenuItem.setOnAction((ActionEvent event) -> {
+
+            // get selected row
+            Budget selectedBudget = BudgetTable.getSelectionModel().getSelectedItem();
+
+            if (selectedBudget == null) { return; } // if no row is selected, return
             
+            // make sure category does not have expenses in expenseList
             if (expenseList != null) {
+
+                ExpenseList fileExpenseList = new ExpenseList();
+                String filename = monthMenu.getText() + ".csv";
+                fileExpenseList.loadFromCSV(filename); // load expenseList from file
+
                 // if category is in expenseList, send alert and return
-                for (Expense expense : expenseList) {
+                for (Expense expense : fileExpenseList) {
                     if (expense.getCategory().equals(BudgetTable.getSelectionModel().getSelectedItem().category)) {
                         Alert alert = new Alert(AlertType.INFORMATION);
                         alert.setTitle("Error");
                         alert.setHeaderText("Cannot delete category that has expenses");
-                        alert.setContentText("Please delete expenses in this category first");
+                        alert.setContentText("Please delete expenses in this category first (And Save)");
                         alert.showAndWait();
                         return;
                     }
                 }
             }
-            // get selected row
-            Budget selectedBudget = BudgetTable.getSelectionModel().getSelectedItem();
+
             // remove selected row from the data
             budgetList.remove(selectedBudget);
         });
@@ -219,16 +231,23 @@ public class BudgetController implements Initializable {
         double totalSpent = 0;
         double totalBudget = 0;
         for (Budget budget : budgetList.getBudgetList()) {
-           totalSpent += budget.spent;
            totalBudget += budget.total;
+           totalSpent += budget.spent;
         }
+
         SpendingBar.setProgress(totalSpent/totalBudget);
 
         // format totalSpent and totalBudget to 2 decimal places 
         String spent =  String.format("%.2f", totalSpent);
         String total = String.format("%.2f", totalBudget);
 
-        progressTitle.setText("Spent: $" + spent + " / $" + total + " (" + (int)(totalSpent/totalBudget * 100) + "%)");
+        double percentSpent = (totalSpent / totalBudget) * 100;
+
+        // Round percentSpent to two decimal places
+        DecimalFormat decimalFormat = new DecimalFormat("#.00");
+        String formattedPercentSpent = decimalFormat.format(percentSpent);
+
+        progressTitle.setText("Spent: $" + spent + " / $" + total + " (" + formattedPercentSpent + "%)");
     } // end setProgressBar method
 
 
@@ -267,6 +286,9 @@ public class BudgetController implements Initializable {
 
         // update table
         BudgetTable.setItems(budgetList.getBudgetList());
+
+        updateSpending();
+        setProgressBar();
     } // end updateMonth method
     
     
