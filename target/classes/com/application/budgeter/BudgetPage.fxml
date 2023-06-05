@@ -56,6 +56,10 @@
       <!-- save button -->
       <Button mnemonicParsing="false" text="Save" fx:id="saveBudgetButton" onAction="#saveBudget"/>
 
+      <!-- Add Month button Section -->
+      <Label fx:id="addMonthTitle" text="Add Budget Month" alignment="CENTER" style="-fx-font-weight: bold;" />
+      <TextField fx:id="addMonthTextField" promptText="YYYY-MM"/>
+      <Button fx:id="addMonthButton" mnemonicParsing="false" text="Add"  onAction="#addMonth"/>
       
   </children>
 </AnchorPane>

@@ -57,6 +57,11 @@ public class BudgetController implements Initializable {
     // save budget button
     @FXML private Button saveBudgetButton;
 
+    // add month section
+    @FXML private Button addMonthButton;
+    @FXML private TextField addMonthTextField;
+    @FXML private Label addMonthTitle;
+
     // data models
     BudgetModel budgetModel = new BudgetModel();
     ExpenseModel expenseModel = new ExpenseModel();
@@ -138,6 +143,12 @@ public class BudgetController implements Initializable {
         }
         return true;
     } // end isValidCost method
+
+
+
+    public void addMonth(ActionEvent event) {
+
+    }
 
 
 
@@ -347,6 +358,10 @@ public class BudgetController implements Initializable {
 
             // save button at right 10% of window
             setWidthConstraints(saveBudgetButton, newVal, .8, .1);   
+
+            setWidthConstraints(addMonthTitle, newVal, .75, .1);
+            setWidthConstraints(addMonthButton, newVal, .85, .1);
+            setWidthConstraints(addMonthTextField, newVal, .75, .15);
         });
 
         // height property listener
@@ -362,7 +377,11 @@ public class BudgetController implements Initializable {
             AnchorPane.setTopAnchor(monthMenu, newVal.doubleValue() * .1);
             AnchorPane.setTopAnchor(monthTitle, newVal.doubleValue() * .075);
 
-            AnchorPane.setBottomAnchor(saveBudgetButton, newVal.doubleValue() * .72); 
+            AnchorPane.setTopAnchor(saveBudgetButton, newVal.doubleValue() * .3); 
+
+            AnchorPane.setTopAnchor(addMonthTitle, newVal.doubleValue() * .075);
+            AnchorPane.setTopAnchor(addMonthButton, newVal.doubleValue() * .1);
+            AnchorPane.setTopAnchor(addMonthTextField, newVal.doubleValue() * .1);
         });
     } // end setAnchorPaneConstraints method
 
