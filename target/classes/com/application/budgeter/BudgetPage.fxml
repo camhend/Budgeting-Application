@@ -55,5 +55,7 @@
 
       <!-- save button -->
       <Button mnemonicParsing="false" text="Save" fx:id="saveBudgetButton" onAction="#saveBudget"/>
+
+      
   </children>
 </AnchorPane>
