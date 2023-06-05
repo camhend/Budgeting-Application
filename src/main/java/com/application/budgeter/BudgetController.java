@@ -232,7 +232,9 @@ public class BudgetController implements Initializable {
         double totalBudget = 0;
         for (Budget budget : budgetList.getBudgetList()) {
            totalBudget += budget.total;
-           totalSpent += budget.spent;
+           double categorySpent = expenseList.getCategorySpending(budget.category);
+           if (categorySpent == -1) { categorySpent = 0; }
+           totalSpent += categorySpent;
         }
 
         SpendingBar.setProgress(totalSpent/totalBudget);
