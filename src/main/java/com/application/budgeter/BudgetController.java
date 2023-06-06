@@ -147,8 +147,53 @@ public class BudgetController implements Initializable {
 
 
     public void addMonth(ActionEvent event) {
+        // errpr checking addMonthTextField
+        // not empty, characters 1-4 are numbers, character 5 is a dash, characters 6-7 are numbers (01-12)
+        if (addMonthTextField.getText().equals("") || addMonthTextField.getText().length() != 7 || 
+            !Character.isDigit(addMonthTextField.getText().charAt(0)) || !Character.isDigit(addMonthTextField.getText().charAt(1)) ||
+            !Character.isDigit(addMonthTextField.getText().charAt(2)) || !Character.isDigit(addMonthTextField.getText().charAt(3)) ||
+            addMonthTextField.getText().charAt(4) != '-' ||
+            !Character.isDigit(addMonthTextField.getText().charAt(5)) || !Character.isDigit(addMonthTextField.getText().charAt(6)) ||
+            Integer.parseInt(addMonthTextField.getText().substring(5)) > 12 || Integer.parseInt(addMonthTextField.getText().substring(5)) < 1) {
+            
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Error");
+            alert.setHeaderText("Invalid input");
+            alert.setContentText("Please enter a valid YYYY-MM date (e.g. 2023-01)");
+            alert.showAndWait();
+            return;
+        }
+        
+        // get date from addMonthTextField
+        String year = addMonthTextField.getText().substring(0,4);
+        String month = addMonthTextField.getText().substring(5);
 
-    }
+        ArrayList<String> currentMonths = budgetModel.getDateList(); // get list of current months
+
+        if (currentMonths.contains(addMonthTextField.getText())) { // if month already exists
+
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Error");
+            alert.setHeaderText("Month already exists");
+            alert.setContentText("Please enter a month that does not already exist");
+            alert.showAndWait();
+            return;
+        }
+        
+        LocalDate date = LocalDate.parse(month + "/01/" + year, DateTimeFormatter.ofPattern("MM/dd/yyyy")); // create date object
+
+        budgetModel.getBudgetList(date); // get budgetList for date
+
+        
+        setMonthMenuButtons();
+
+        // alert month created
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Month Created");
+        alert.setHeaderText("Month Created");
+        alert.setContentText("Month " + addMonthTextField.getText() + " created");
+        alert.showAndWait();
+    } // end addMonth method
 
 
 
@@ -260,11 +305,17 @@ public class BudgetController implements Initializable {
         DecimalFormat decimalFormat = new DecimalFormat("#.00");
         String formattedPercentSpent = decimalFormat.format(percentSpent);
 
+        // prevent NaN error
+        if (totalBudget == 0) {formattedPercentSpent = "0";}
+
+
         progressTitle.setText("Spent: $" + spent + " / $" + total + " (" + formattedPercentSpent + "%)");
     } // end setProgressBar method
 
 
     private void setMonthMenuButtons() {
+        monthMenu.getItems().clear(); // clear menuitems
+
         // get list of dates from budgetModel
         ArrayList<String> dates = budgetModel.getDateList();
 

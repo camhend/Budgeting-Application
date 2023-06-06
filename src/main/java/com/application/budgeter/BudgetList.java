@@ -147,6 +147,10 @@ public class BudgetList {
             // 2. create reader of file
             String projectRootPath = System.getProperty("user.dir") + "\\budgetdata";
             File file = new File(projectRootPath + "\\" + filename);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
             BufferedReader reader = new BufferedReader(new FileReader(file));
 
             // 3. read data
