@@ -85,7 +85,6 @@ public class BudgetController implements Initializable {
     } // end of setModels method
 
 
-
     @Override //* formatting page elements
     public void initialize(URL arg0, ResourceBundle arg1) {
         formatBudgetTable();
@@ -94,41 +93,9 @@ public class BudgetController implements Initializable {
 
 
 
-    private void updateSpendings() {
-        // get budgetlist's according expenseList
-        expenseList = expenseModel.getExpenseList(budgetList.getMonthYear());
-
-        for (Budget budget : budgetList.getBudgetList()) {
-            // get total spent for each budget category
-            double totalSpent = expenseList.getCategorySpending(budget.getCategory());
-            if (totalSpent == -1) { totalSpent = 0;}
-
-            budget.setSpent(totalSpent);
-        }
-    } // end of updateSpendings method
-
-
-
-    private void setToNewestLists() {
-        // create MM/dd/yyyy date string from most recent date in budgetModel
-        ArrayList<String> dates = budgetModel.getDateList();
-        String mostRecent = dates.get(dates.size() - 1);
-        String year = mostRecent.substring(0,4);
-        String month = mostRecent.substring(5);
-        if (month.length() == 1) {month = "0" + month;}
-
-        // get most recent date
-        LocalDate date = LocalDate.parse(month + "/01/" + year, DateTimeFormatter.ofPattern("MM/dd/yyyy")); // create date object
-        
-        // set budgetList and expenseList to most recent dates'
-        budgetList = budgetModel.getBudgetList(date);
-        expenseList = expenseModel.getExpenseList(date); 
-
-        // set month title to most recent date
-        monthMenu.setText(mostRecent);
-    } // end of setMostRecentLists method
-
- 
+    //*************************/
+    // Data Validation methods
+    //*************************/
 
     //* return true if cost is a valid number (e.g. 10.00, 10, $10.00, $10)
     public boolean isValidCost(String cost) {
@@ -285,9 +252,45 @@ public class BudgetController implements Initializable {
     } // end updateMonth method
     
 
+    //* update spending list record based on expenses in expenselist
+    private void updateSpendings() {
+        // get budgetlist's according expenseList
+        expenseList = expenseModel.getExpenseList(budgetList.getMonthYear());
+
+        for (Budget budget : budgetList.getBudgetList()) {
+            // get total spent for each budget category
+            double totalSpent = expenseList.getCategorySpending(budget.getCategory());
+            if (totalSpent == -1) { totalSpent = 0;}
+
+            budget.setSpent(totalSpent);
+        }
+    } // end of updateSpendings method
+
+
+    //* set budgetlist and expenselist to newest set available
+    private void setToNewestLists() {
+        // create MM/dd/yyyy date string from most recent date in budgetModel
+        ArrayList<String> dates = budgetModel.getDateList();
+        String mostRecent = dates.get(dates.size() - 1);
+        String year = mostRecent.substring(0,4);
+        String month = mostRecent.substring(5);
+        if (month.length() == 1) {month = "0" + month;}
+
+        // get most recent date
+        LocalDate date = LocalDate.parse(month + "/01/" + year, DateTimeFormatter.ofPattern("MM/dd/yyyy")); // create date object
+        
+        // set budgetList and expenseList to most recent dates'
+        budgetList = budgetModel.getBudgetList(date);
+        expenseList = expenseModel.getExpenseList(date); 
+
+        // set month title to most recent date
+        monthMenu.setText(mostRecent);
+    } // end of setMostRecentLists method
+
+
 
     //***************/
-    // File IO method
+    // File I/O method
     //***************/
 
     //* write budget to csv file
@@ -315,6 +318,8 @@ public class BudgetController implements Initializable {
     //* apply formatting to table
     private void formatBudgetTable() {
         formatCurrencyColumns();
+
+        BudgetTable.setPlaceholder(new Label("No Categories Added"));
 
         BudgetTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 

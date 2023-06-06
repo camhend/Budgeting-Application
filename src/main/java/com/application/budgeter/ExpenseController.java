@@ -427,7 +427,7 @@ public class ExpenseController implements Initializable {
 
 
     //***************/
-    // File IO method
+    // File I/O method
     //***************/
 
     //* save all expenses to respective file
