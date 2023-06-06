@@ -94,17 +94,6 @@ public class BudgetController implements Initializable {
 
 
 
-    private void setupDeleteMenu() {
-        // delete menubutton context menu in BudgetTable
-        ContextMenu contextMenu = new ContextMenu();
-        BudgetTable.setContextMenu(contextMenu); // set context menu to tableview
-
-        MenuItem deleteMenuItem = new MenuItem("Delete");
-        contextMenu.getItems().addAll(deleteMenuItem);
-        deleteListener(deleteMenuItem); 
-    } // end of setupDeleteMenu method
-
-
     private void updateSpendings() {
         // get budgetlist's according expenseList
         expenseList = expenseModel.getExpenseList(budgetList.getMonthYear());
@@ -159,6 +148,11 @@ public class BudgetController implements Initializable {
 
 
 
+    //*************************/
+    // Data Manipulation methods
+    //*************************/
+
+    //* add new month file
     public void addMonth(ActionEvent event) {
         // errpr checking addMonthTextField
         // not empty, characters 1-4 are numbers, character 5 is a dash, characters 6-7 are numbers (01-12)
@@ -200,6 +194,11 @@ public class BudgetController implements Initializable {
         
         setMonthMenuButtons();
 
+        monthMenu.setText(addMonthTextField.getText()); // set monthMenu text to new month
+        updateMonth();
+
+        addMonthTextField.clear(); // clear addMonthTextField
+
         // alert month created
         Alert alert = new Alert(AlertType.INFORMATION);
         alert.setTitle("Month Created");
@@ -207,7 +206,6 @@ public class BudgetController implements Initializable {
         alert.setContentText("Month " + addMonthTextField.getText() + " created");
         alert.showAndWait();
     } // end addMonth method
-
 
 
     //* add budget to budgetlist 
@@ -267,74 +265,7 @@ public class BudgetController implements Initializable {
         });
     } // end deleteListener method
 
-
-    //* write budget to csv file
-    public void saveBudget() {
-        budgetModel.saveAll();
-
-        Alert alert = new Alert(AlertType.INFORMATION);
-        alert.setTitle("Saved");
-        alert.setHeaderText("Budget saved");
-        alert.setContentText("Your budget has been saved");
-        alert.showAndWait();
-    } // end saveBudget method
-
-
-    //* set progress bar and title to percentage of budget spent
-    private void setProgressBar() {
-        double totalSpent = 0;
-        double totalBudget = 0;
-        for (Budget budget : budgetList.getBudgetList()) {
-           totalBudget += budget.total;
-           double categorySpent = expenseList.getCategorySpending(budget.category);
-           if (categorySpent == -1) { categorySpent = 0; }
-           totalSpent += categorySpent;
-        }
-
-        SpendingBar.setProgress(totalSpent/totalBudget);
-
-        // format totalSpent and totalBudget to 2 decimal places 
-        String spent =  String.format("%.2f", totalSpent);
-        String total = String.format("%.2f", totalBudget);
-
-        double percentSpent = (totalSpent / totalBudget) * 100;
-
-        // Round percentSpent to two decimal places
-        DecimalFormat decimalFormat = new DecimalFormat("#.00");
-        String formattedPercentSpent = decimalFormat.format(percentSpent);
-
-        // prevent NaN error
-        if (totalBudget == 0) {formattedPercentSpent = "0";}
-
-
-        progressTitle.setText("Spent: $" + spent + " / $" + total + " (" + formattedPercentSpent + "%)");
-    } // end setProgressBar method
-
-
-    private void setMonthMenuButtons() {
-        monthMenu.getItems().clear(); // clear menuitems
-
-        // get list of dates from budgetModel
-        ArrayList<String> dates = budgetModel.getDateList();
-
-        // create menuitems for each date
-        for (String date : dates) {
-            MenuItem menuItem = new MenuItem(date);
-            monthMenu.getItems().add(menuItem);
-            menuItem.setOnAction(this::changeMonthMenuButton);
-        }
-    } // end setMonthMenuButtons method
-
-
-    //* changes menu button text to selected menu item
-    public void changeMonthMenuButton(ActionEvent event) {
-        MenuItem menuItem = (MenuItem) event.getSource();
-        MenuButton menuButton = (MenuButton) menuItem.getParentPopup().getOwnerNode();
-        menuButton.setText(menuItem.getText());
-        updateMonth();
-    } // end changeMenuButton method
-
-    
+    //* update data when month is changed
     private void updateMonth() {
         // get date from menu button
         String date = monthMenu.getText();
@@ -353,7 +284,34 @@ public class BudgetController implements Initializable {
         setProgressBar();
     } // end updateMonth method
     
+
+
+    //***************/
+    // File IO method
+    //***************/
+
+    //* write budget to csv file
+    public void saveBudget() {
+        budgetModel.saveAll();
+
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Saved");
+        alert.setHeaderText("Budget saved");
+        alert.setContentText("Your budget has been saved");
+        alert.showAndWait();
+    } // end saveBudget method
+
     
+
+    //*********************/
+    // Page Design Methods
+    //*********************/
+
+
+        //******************/
+        // Tableview Methods
+        //******************/
+
     //* apply formatting to table
     private void formatBudgetTable() {
         formatCurrencyColumns();
@@ -389,6 +347,38 @@ public class BudgetController implements Initializable {
         });
     } // end formatCurrencyColumn method
 
+
+        //******************/
+        // MenuButton Methods
+        //******************/
+
+    private void setMonthMenuButtons() {
+        monthMenu.getItems().clear(); // clear menuitems
+
+        // get list of dates from budgetModel
+        ArrayList<String> dates = budgetModel.getDateList();
+
+        // create menuitems for each date
+        for (String date : dates) {
+            MenuItem menuItem = new MenuItem(date);
+            monthMenu.getItems().add(menuItem);
+            menuItem.setOnAction(this::changeMonthMenuButton);
+        }
+    } // end setMonthMenuButtons method
+
+
+    //* changes menu button text to selected menu item
+    public void changeMonthMenuButton(ActionEvent event) {
+        MenuItem menuItem = (MenuItem) event.getSource();
+        MenuButton menuButton = (MenuButton) menuItem.getParentPopup().getOwnerNode();
+        menuButton.setText(menuItem.getText());
+        updateMonth();
+    } // end changeMenuButton method
+
+
+        //******************/
+        // Anchorpane Methods
+        //******************/
 
     //* set anchorpane constraints for all elements when window is resized
     private void setAnchorPaneConstraints() {
@@ -447,4 +437,50 @@ public class BudgetController implements Initializable {
         AnchorPane.setTopAnchor(element, newVal.doubleValue() * top);
         AnchorPane.setBottomAnchor(element, newVal.doubleValue() * bottom);
     } // end setHeightConstraints method
+
+    
+        //***************/
+        // Other Methods
+        //***************/
+
+    //* set progress bar and title to percentage of budget spent
+    private void setProgressBar() {
+        double totalSpent = 0;
+        double totalBudget = 0;
+        for (Budget budget : budgetList.getBudgetList()) {
+           totalBudget += budget.total;
+           double categorySpent = expenseList.getCategorySpending(budget.category);
+           if (categorySpent == -1) { categorySpent = 0; }
+           totalSpent += categorySpent;
+        }
+
+        SpendingBar.setProgress(totalSpent/totalBudget);
+
+        // format totalSpent and totalBudget to 2 decimal places 
+        String spent =  String.format("%.2f", totalSpent);
+        String total = String.format("%.2f", totalBudget);
+
+        double percentSpent = (totalSpent / totalBudget) * 100;
+
+        // Round percentSpent to two decimal places
+        DecimalFormat decimalFormat = new DecimalFormat("#.00");
+        String formattedPercentSpent = decimalFormat.format(percentSpent);
+
+        // prevent NaN error
+        if (totalBudget == 0) {formattedPercentSpent = "0";}
+
+
+        progressTitle.setText("Spent: $" + spent + " / $" + total + " (" + formattedPercentSpent + "%)");
+    } // end setProgressBar method
+
+
+    private void setupDeleteMenu() {
+        // delete menubutton context menu in BudgetTable
+        ContextMenu contextMenu = new ContextMenu();
+        BudgetTable.setContextMenu(contextMenu); // set context menu to tableview
+
+        MenuItem deleteMenuItem = new MenuItem("Delete");
+        contextMenu.getItems().addAll(deleteMenuItem);
+        deleteListener(deleteMenuItem); 
+    } // end of setupDeleteMenu method
 } // end of budget controller class
