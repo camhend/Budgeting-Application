@@ -402,10 +402,8 @@ public class ExpenseController implements Initializable {
         expenseTable.refresh();
         updateTotal();
 
-        // set month menu with dates of found files
-        ArrayList<String> dateList = expenseModel.getDateList();
-        monthMenu.getItems().clear();
-        setMenuButton(monthMenu, dateList);
+        // update menubuttons with new month's data
+        setAllMenuButtons();
     } // end updateMonth method
 
 
@@ -648,10 +646,12 @@ public class ExpenseController implements Initializable {
         all.setOnAction(this::changeMenuButton);
         
         // set category buttons with categories from budgetmodel
+        totalMenu.getItems().clear();
+        addCategoryField.getItems().clear();
+        categoryField.getItems().clear();
+
         ArrayList<String> categoryList = budgetList.getCategoryList();
-        if (categoryList.size() == 0) {
-            categoryList.add("Budget not added for this month");
-        }
+
         setMenuButton(totalMenu, categoryList);
         setMenuButton(addCategoryField, categoryList);
         setMenuButton(categoryField, categoryList);

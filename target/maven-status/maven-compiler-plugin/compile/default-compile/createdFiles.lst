@@ -6,12 +6,12 @@ com\application\budgeter\ExpenseController$4.class
 com\application\budgeter\ExpenseController$3.class
 com\application\budgeter\ExpenseController$2$1.class
 com\application\budgeter\ExpenseController.class
-com\application\budgeter\Maintest.class
 module-info.class
 com\application\budgeter\ExpenseModel.class
 com\application\budgeter\ExpenseController$8.class
 com\application\budgeter\MainPageController.class
 com\application\budgeter\BudgetController.class
+com\application\budgeter\BudgetList.class
 com\application\budgeter\DashboardController.class
 com\application\budgeter\LexicographicCategoryComparitor.class
 com\application\budgeter\LexicographicNameComparitor.class

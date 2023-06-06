@@ -79,7 +79,7 @@ public class BudgetController implements Initializable {
 
         BudgetTable.setItems(budgetList.getBudgetList()); // set tableview items to budgetList
 
-        updateSpending();
+        updateSpendings();
         setProgressBar();
         setupDeleteMenu();
         setMonthMenuButtons();
@@ -104,6 +104,20 @@ public class BudgetController implements Initializable {
         contextMenu.getItems().addAll(deleteMenuItem);
         deleteListener(deleteMenuItem); 
     } // end of setupDeleteMenu method
+
+
+    private void updateSpendings() {
+        // get budgetlist's according expenseList
+        expenseList = expenseModel.getExpenseList(budgetList.getMonthYear());
+
+        for (Budget budget : budgetList.getBudgetList()) {
+            // get total spent for each budget category
+            double totalSpent = expenseList.getCategorySpending(budget.getCategory());
+            if (totalSpent == -1) { totalSpent = 0;}
+
+            budget.setSpent(totalSpent);
+        }
+    } // end of updateSpendings method
 
 
 
@@ -255,21 +269,6 @@ public class BudgetController implements Initializable {
     } // end deleteListener method
 
 
-    //* update spending for each category by reading expenseList
-    private void updateSpending() {
-        // for each category, check category spending in expenseList
-        for (Budget budget : budgetList.getBudgetList()) {
-            double newSpent = expenseList.getCategorySpending(budget.category);
-            Budget oldBudget = budget;
-            Budget newBudget = new Budget(budget.category, newSpent, budget.total);
-
-            if (newSpent != -1) { // if category is in expenseList
-                budgetList.edit(oldBudget, newBudget);
-            }
-        }
-    } // end updateSpending method
-
-
     //* write budget to csv file
     public void saveBudget() {
         budgetModel.saveAll();
@@ -351,7 +350,7 @@ public class BudgetController implements Initializable {
         // update table
         BudgetTable.setItems(budgetList.getBudgetList());
 
-        updateSpending();
+        updateSpendings();
         setProgressBar();
     } // end updateMonth method
     
