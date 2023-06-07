@@ -441,7 +441,7 @@ public class ExpenseController implements Initializable {
         budgetModel.saveAll();
 
         // refresh monthMenu items
-        ArrayList<String> dateList = expenseModel.getDateList();
+        ArrayList<String> dateList = budgetModel.getDateList();
         monthMenu.getItems().clear();
         setMenuButton(monthMenu, dateList);
     } // end saveExpenses method
@@ -660,7 +660,7 @@ public class ExpenseController implements Initializable {
 
         // set month menu with dates of found files
         monthMenu.getItems().clear();
-        ArrayList<String> dateList = expenseModel.getDateList();
+        ArrayList<String> dateList = budgetModel.getDateList();
         setMenuButton(monthMenu, dateList);
     } // end setMenuItems method
 
@@ -682,11 +682,11 @@ public class ExpenseController implements Initializable {
 
     //* set month menu to newest month
     private void setDefaultMonth() {
-        if(expenseModel.getDateList().isEmpty()) {
+        if(budgetModel.getDateList().isEmpty()) {
             return;
         }
         // get newest date
-        ArrayList<String> dates = expenseModel.getDateList();
+        ArrayList<String> dates = budgetModel.getDateList();
         String newestDate = dates.get(dates.size() - 1);
 
         // set month menu to newest date and update tableview
