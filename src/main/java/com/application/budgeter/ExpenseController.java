@@ -402,6 +402,9 @@ public class ExpenseController implements Initializable {
         expenseTable.refresh();
         updateTotal();
 
+        // clear addCategoryField menu button to default text
+        addCategoryField.setText("Category...");
+
         // update menubuttons with new month's data
         setAllMenuButtons();
     } // end updateMonth method
