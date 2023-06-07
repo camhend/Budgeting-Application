@@ -158,7 +158,7 @@ public class ExpenseController implements Initializable {
         // check if date is in mm/dd/yyyy format
         LocalDate parsedDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
         String formattedDate = parsedDate.format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-        
+
         // check if text field date is equal to parsed date 
         // LocalDate.format automatically readjusts fake dates (e.g. 02/30/2020) to real dates (e.g. 02/29/2020)
         if (!(date.equals(formattedDate))) {
@@ -166,6 +166,12 @@ public class ExpenseController implements Initializable {
         }
         return true;
     } // end isValidDate method
+
+    public boolean isSameMonthYear (String date, String monthYear) {
+        LocalDate parsedDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+        String parsedMonthYear = parsedDate.format(DateTimeFormatter.ofPattern("yyyy-MM"));
+        return parsedMonthYear.equals(monthYear);
+    }
 
 
     //* return true if cost is a valid number (e.g. 10.00, 10, $10.00, $10)
@@ -197,6 +203,7 @@ public class ExpenseController implements Initializable {
 
     //* return true if expense fields are valid
     public boolean areValidAddExpenses(String name, String category, String date, String amount, Popup owner) {
+        
         // if any fields are empty
         if (fieldsAreEmpty(name, category, date, amount)) {
             sendAlert("Error", "Error", "Please fill out all fields", owner);
@@ -209,6 +216,9 @@ public class ExpenseController implements Initializable {
         else if (!isValidDate(date)) {
             sendAlert("Error", "Error", "Please enter a valid date (mm/dd/yyyy)", owner);
             return false;
+        } else if (!isSameMonthYear(date, expenseList.getMonthYear())) {
+            sendAlert("Error", "Error", "Please enter a date in this month and year.", owner);
+            return false;     
         }
         // contains comams
         else if (name.contains(",") || category.contains(",")) {
@@ -341,6 +351,12 @@ public class ExpenseController implements Initializable {
                             expenseTable.setItems(obsvExpenseList);
 
                             sendAlert("Success", "Success", "Expense successfully edited", null);
+                        } else {
+                            // if !validFields, then reset fields to original values
+                            nameField.setText(selectedExpense.getName());
+                            categoryField.setText(selectedExpense.getCategory());
+                            dateField.setText(selectedExpense.getLocalDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
+                            costField.setText(String.format("$%.2f", selectedExpense.getAmount()));
                         }
                     }
                 }); // end finishEditButton listener
@@ -380,6 +396,8 @@ public class ExpenseController implements Initializable {
             expenseTable.setItems(obsvExpenseList);
 
             sendAlert("Success", "Success", "Expense successfully added", null);
+        } else {
+            addDateField.setText("");
         }
     } // end addExpense method
 
@@ -402,6 +420,10 @@ public class ExpenseController implements Initializable {
         expenseTable.refresh();
         updateTotal();
 
+        // set Date Field to autopopulate with this expenseList month and year 
+        addDateField.setText("");
+        setTextFieldDefault(addDateField, month + "/dd/" + year);
+
         // clear addCategoryField menu button to default text
         addCategoryField.setText("Category...");
 
@@ -409,6 +431,22 @@ public class ExpenseController implements Initializable {
         setAllMenuButtons();
     } // end updateMonth method
 
+    public void setTextFieldDefault(TextField textField, String def) {
+        textField.setOnMouseEntered(event -> {
+            if (textField.getText().equals("")) {
+                textField.setText(def);
+            }
+        });
+
+        textField.setOnKeyReleased(event -> {
+            if (event.getCode() == KeyCode.TAB) {
+                if (textField.isFocused()) {   
+                    textField.setText(def);
+                }
+           }
+        });
+        
+    }
 
     //* update total label with total of selected category
     private void updateTotal() {
