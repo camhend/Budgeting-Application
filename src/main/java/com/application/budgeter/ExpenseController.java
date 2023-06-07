@@ -167,12 +167,12 @@ public class ExpenseController implements Initializable {
         return true;
     } // end isValidDate method
 
-    public boolean isSameMonthYear (String date, String monthYear) {
+    public boolean isSameMonthYear (String date, LocalDate other) {
         LocalDate parsedDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-        String parsedMonthYear = parsedDate.format(DateTimeFormatter.ofPattern("yyyy-MM"));
-        return parsedMonthYear.equals(monthYear);
+        String dateMnthYr = parsedDate.format(DateTimeFormatter.ofPattern("yyyy-MM"));
+        String otherMnthYr = other.format(DateTimeFormatter.ofPattern("yyyy-MM"));
+        return dateMnthYr.equals(otherMnthYr);
     }
-
 
     //* return true if cost is a valid number (e.g. 10.00, 10, $10.00, $10)
     public boolean isValidCost(String cost) {
@@ -216,7 +216,7 @@ public class ExpenseController implements Initializable {
         else if (!isValidDate(date)) {
             sendAlert("Error", "Error", "Please enter a valid date (mm/dd/yyyy)", owner);
             return false;
-        } else if (!isSameMonthYear(date, expenseList.getMonthYear())) {
+        } else if (!isSameMonthYear(date, budgetList.getMonthYear())) {
             sendAlert("Error", "Error", "Please enter a date in this month and year.", owner);
             return false;     
         }
@@ -396,9 +396,7 @@ public class ExpenseController implements Initializable {
             expenseTable.setItems(obsvExpenseList);
 
             sendAlert("Success", "Success", "Expense successfully added", null);
-        } else {
-            addDateField.setText("");
-        }
+        } 
     } // end addExpense method
 
 
@@ -421,8 +419,7 @@ public class ExpenseController implements Initializable {
         updateTotal();
 
         // set Date Field to autopopulate with this expenseList month and year 
-        addDateField.setText("");
-        setTextFieldDefault(addDateField, month + "/dd/" + year);
+        addDateField.setText(month + "/dd/" + year);
 
         // clear addCategoryField menu button to default text
         addCategoryField.setText("Category...");
