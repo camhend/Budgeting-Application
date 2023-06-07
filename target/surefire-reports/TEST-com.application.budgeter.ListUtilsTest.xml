@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.application.budgeter.ListUtilsTest" time="0.03" tests="4" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.application.budgeter.ListUtilsTest" time="0.026" tests="4" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="17"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -15,7 +15,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="US"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Eclipse Adoptium\jdk-17.0.7.7-hotspot\bin"/>
-    <property name="sun.java.command" value="org.apache.maven.surefire.booter.ForkedBooter C:\Users\sukhnain\AppData\Local\Temp\surefire12704245180737524810 2023-06-01T06-54-23_423-jvmRun1 surefire12123447554814338466tmp surefire_06951123820609200662tmp"/>
+    <property name="sun.java.command" value="org.apache.maven.surefire.booter.ForkedBooter C:\Users\sukhnain\AppData\Local\Temp\surefire3192074746136181296 2023-06-05T18-59-21_361-jvmRun1 surefire8970408483351238934tmp surefire_07992610460900538330tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="C:\Users\sukhnain\Documents\GitHub\Budgeter\target\test-classes;C:\Users\sukhnain\.m2\repository\org\openjfx\javafx-controls\19\javafx-controls-19.jar;C:\Users\sukhnain\.m2\repository\org\openjfx\javafx-graphics\19\javafx-graphics-19.jar;C:\Users\sukhnain\.m2\repository\org\openjfx\javafx-base\19\javafx-base-19.jar;C:\Users\sukhnain\.m2\repository\org\openjfx\javafx-fxml\19\javafx-fxml-19.jar;C:\Users\sukhnain\.m2\repository\junit\junit\4.12\junit-4.12.jar;C:\Users\sukhnain\.m2\repository\org\hamcrest\hamcrest-core\1.3\hamcrest-core-1.3.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -84,7 +84,7 @@ After:
 [shoe, clothing, 2001-04-14, 100.0]
 ]]></system-out>
   </testcase>
-  <testcase name="testSortDate" classname="com.application.budgeter.ListUtilsTest" time="0.005">
+  <testcase name="testSortDate" classname="com.application.budgeter.ListUtilsTest" time="0.006">
     <system-out><![CDATA[Before:
 [apple, food, 2005-06-28, 10.0]
 [apple, food, 2001-02-01, 10.0]
@@ -110,7 +110,7 @@ After:
 [apple, clothing, 2010-04-14, 10.0]
 ]]></system-out>
   </testcase>
-  <testcase name="testSortName" classname="com.application.budgeter.ListUtilsTest" time="0.006">
+  <testcase name="testSortName" classname="com.application.budgeter.ListUtilsTest" time="0.005">
     <system-out><![CDATA[Before:
 [eggplant, food, 2001-06-28, 50.0]
 [apple, food, 2001-02-01, 10.0]
@@ -136,7 +136,7 @@ After:
 [jeans, clothing, 2001-04-14, 100.0]
 ]]></system-out>
   </testcase>
-  <testcase name="testSortCaregory" classname="com.application.budgeter.ListUtilsTest" time="0.007">
+  <testcase name="testSortCaregory" classname="com.application.budgeter.ListUtilsTest" time="0.006">
     <system-out><![CDATA[Before:
 [apple, eee, 2001-02-01, 10.0]
 [apple, aaa, 2001-02-01, 10.0]

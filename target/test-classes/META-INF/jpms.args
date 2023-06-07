@@ -1,4 +1,0 @@
---patch-module
-com.application.budgeter=_
---add-reads
-com.application.budgeter=ALL-UNNAMED

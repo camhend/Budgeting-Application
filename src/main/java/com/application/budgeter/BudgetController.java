@@ -22,7 +22,6 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.collections.ObservableList;
 import java.util.ArrayList;
 import java.time.format.DateTimeFormatter;
 import java.text.DecimalFormat;
@@ -57,6 +56,11 @@ public class BudgetController implements Initializable {
     // save budget button
     @FXML private Button saveBudgetButton;
 
+    // add month section
+    @FXML private Button addMonthButton;
+    @FXML private TextField addMonthTextField;
+    @FXML private Label addMonthTitle;
+
     // data models
     BudgetModel budgetModel = new BudgetModel();
     ExpenseModel expenseModel = new ExpenseModel();
@@ -74,12 +78,11 @@ public class BudgetController implements Initializable {
 
         BudgetTable.setItems(budgetList.getBudgetList()); // set tableview items to budgetList
 
-        updateSpending();
+        updateSpendings();
         setProgressBar();
         setupDeleteMenu();
         setMonthMenuButtons();
     } // end of setModels method
-
 
 
     @Override //* formatting page elements
@@ -90,38 +93,9 @@ public class BudgetController implements Initializable {
 
 
 
-    private void setupDeleteMenu() {
-        // delete menubutton context menu in BudgetTable
-        ContextMenu contextMenu = new ContextMenu();
-        BudgetTable.setContextMenu(contextMenu); // set context menu to tableview
-
-        MenuItem deleteMenuItem = new MenuItem("Delete");
-        contextMenu.getItems().addAll(deleteMenuItem);
-        deleteListener(deleteMenuItem); 
-    } // end of setupDeleteMenu method
-
-
-
-    private void setToNewestLists() {
-        // create MM/dd/yyyy date string from most recent date in budgetModel
-        ArrayList<String> dates = budgetModel.getDateList();
-        String mostRecent = dates.get(dates.size() - 1);
-        String year = mostRecent.substring(0,4);
-        String month = mostRecent.substring(5);
-        if (month.length() == 1) {month = "0" + month;}
-
-        // get most recent date
-        LocalDate date = LocalDate.parse(month + "/01/" + year, DateTimeFormatter.ofPattern("MM/dd/yyyy")); // create date object
-        
-        // set budgetList and expenseList to most recent dates'
-        budgetList = budgetModel.getBudgetList(date);
-        expenseList = expenseModel.getExpenseList(date); 
-
-        // set month title to most recent date
-        monthMenu.setText(mostRecent);
-    } // end of setMostRecentLists method
-
- 
+    //*************************/
+    // Data Validation methods
+    //*************************/
 
     //* return true if cost is a valid number (e.g. 10.00, 10, $10.00, $10)
     public boolean isValidCost(String cost) {
@@ -139,6 +113,66 @@ public class BudgetController implements Initializable {
         return true;
     } // end isValidCost method
 
+
+
+    //*************************/
+    // Data Manipulation methods
+    //*************************/
+
+    //* add new month file
+    public void addMonth(ActionEvent event) {
+        // errpr checking addMonthTextField
+        // not empty, characters 1-4 are numbers, character 5 is a dash, characters 6-7 are numbers (01-12)
+        if (addMonthTextField.getText().equals("") || addMonthTextField.getText().length() != 7 || 
+            !Character.isDigit(addMonthTextField.getText().charAt(0)) || !Character.isDigit(addMonthTextField.getText().charAt(1)) ||
+            !Character.isDigit(addMonthTextField.getText().charAt(2)) || !Character.isDigit(addMonthTextField.getText().charAt(3)) ||
+            addMonthTextField.getText().charAt(4) != '-' ||
+            !Character.isDigit(addMonthTextField.getText().charAt(5)) || !Character.isDigit(addMonthTextField.getText().charAt(6)) ||
+            Integer.parseInt(addMonthTextField.getText().substring(5)) > 12 || Integer.parseInt(addMonthTextField.getText().substring(5)) < 1) {
+            
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Error");
+            alert.setHeaderText("Invalid input");
+            alert.setContentText("Please enter a valid YYYY-MM date (e.g. 2023-01)");
+            alert.showAndWait();
+            return;
+        }
+        
+        // get date from addMonthTextField
+        String year = addMonthTextField.getText().substring(0,4);
+        String month = addMonthTextField.getText().substring(5);
+
+        ArrayList<String> currentMonths = budgetModel.getDateList(); // get list of current months
+
+        if (currentMonths.contains(addMonthTextField.getText())) { // if month already exists
+
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Error");
+            alert.setHeaderText("Month already exists");
+            alert.setContentText("Please enter a month that does not already exist");
+            alert.showAndWait();
+            return;
+        }
+        
+        LocalDate date = LocalDate.parse(month + "/01/" + year, DateTimeFormatter.ofPattern("MM/dd/yyyy")); // create date object
+
+        budgetModel.getBudgetList(date); // get budgetList for date
+
+        
+        setMonthMenuButtons();
+
+        monthMenu.setText(addMonthTextField.getText()); // set monthMenu text to new month
+        updateMonth();
+
+        addMonthTextField.clear(); // clear addMonthTextField
+
+        // alert month created
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Month Created");
+        alert.setHeaderText("Month Created");
+        alert.setContentText("Month " + addMonthTextField.getText() + " created");
+        alert.showAndWait();
+    } // end addMonth method
 
 
     //* add budget to budgetlist 
@@ -198,81 +232,7 @@ public class BudgetController implements Initializable {
         });
     } // end deleteListener method
 
-
-    //* update spending for each category by reading expenseList
-    private void updateSpending() {
-        // for each category, check category spending in expenseList
-        for (Budget budget : budgetList.getBudgetList()) {
-            double newSpent = expenseList.getCategorySpending(budget.category);
-            Budget oldBudget = budget;
-            Budget newBudget = new Budget(budget.category, newSpent, budget.total);
-
-            if (newSpent != -1) { // if category is in expenseList
-                budgetList.edit(oldBudget, newBudget);
-            }
-        }
-    } // end updateSpending method
-
-
-    //* write budget to csv file
-    public void saveBudget() {
-        budgetModel.saveAll();
-
-        Alert alert = new Alert(AlertType.INFORMATION);
-        alert.setTitle("Saved");
-        alert.setHeaderText("Budget saved");
-        alert.setContentText("Your budget has been saved");
-        alert.showAndWait();
-    } // end saveBudget method
-
-
-    //* set progress bar and title to percentage of budget spent
-    private void setProgressBar() {
-        double totalSpent = 0;
-        double totalBudget = 0;
-        for (Budget budget : budgetList.getBudgetList()) {
-           totalBudget += budget.total;
-           totalSpent += budget.spent;
-        }
-
-        SpendingBar.setProgress(totalSpent/totalBudget);
-
-        // format totalSpent and totalBudget to 2 decimal places 
-        String spent =  String.format("%.2f", totalSpent);
-        String total = String.format("%.2f", totalBudget);
-
-        double percentSpent = (totalSpent / totalBudget) * 100;
-
-        // Round percentSpent to two decimal places
-        DecimalFormat decimalFormat = new DecimalFormat("#.00");
-        String formattedPercentSpent = decimalFormat.format(percentSpent);
-
-        progressTitle.setText("Spent: $" + spent + " / $" + total + " (" + formattedPercentSpent + "%)");
-    } // end setProgressBar method
-
-
-    private void setMonthMenuButtons() {
-        // get list of dates from budgetModel
-        ArrayList<String> dates = budgetModel.getDateList();
-
-        // create menuitems for each date
-        for (String date : dates) {
-            MenuItem menuItem = new MenuItem(date);
-            monthMenu.getItems().add(menuItem);
-            menuItem.setOnAction(this::changeMonthMenuButton);
-        }
-    } // end setMonthMenuButtons method
-
-
-    //* changes menu button text to selected menu item
-    public void changeMonthMenuButton(ActionEvent event) {
-        MenuItem menuItem = (MenuItem) event.getSource();
-        MenuButton menuButton = (MenuButton) menuItem.getParentPopup().getOwnerNode();
-        menuButton.setText(menuItem.getText());
-        updateMonth();
-    } // end changeMenuButton method
-
-    
+    //* update data when month is changed
     private void updateMonth() {
         // get date from menu button
         String date = monthMenu.getText();
@@ -287,14 +247,79 @@ public class BudgetController implements Initializable {
         // update table
         BudgetTable.setItems(budgetList.getBudgetList());
 
-        updateSpending();
+        updateSpendings();
         setProgressBar();
     } // end updateMonth method
     
+
+    //* update spending list record based on expenses in expenselist
+    private void updateSpendings() {
+        // get budgetlist's according expenseList
+        expenseList = expenseModel.getExpenseList(budgetList.getMonthYear());
+
+        for (Budget budget : budgetList.getBudgetList()) {
+            // get total spent for each budget category
+            double totalSpent = expenseList.getCategorySpending(budget.getCategory());
+            if (totalSpent == -1) { totalSpent = 0;}
+
+            budget.setSpent(totalSpent);
+        }
+    } // end of updateSpendings method
+
+
+    //* set budgetlist and expenselist to newest set available
+    private void setToNewestLists() {
+        // create MM/dd/yyyy date string from most recent date in budgetModel
+        ArrayList<String> dates = budgetModel.getDateList();
+        String mostRecent = dates.get(dates.size() - 1);
+        String year = mostRecent.substring(0,4);
+        String month = mostRecent.substring(5);
+        if (month.length() == 1) {month = "0" + month;}
+
+        // get most recent date
+        LocalDate date = LocalDate.parse(month + "/01/" + year, DateTimeFormatter.ofPattern("MM/dd/yyyy")); // create date object
+        
+        // set budgetList and expenseList to most recent dates'
+        budgetList = budgetModel.getBudgetList(date);
+        expenseList = expenseModel.getExpenseList(date); 
+
+        // set month title to most recent date
+        monthMenu.setText(mostRecent);
+    } // end of setMostRecentLists method
+
+
+
+    //***************/
+    // File I/O method
+    //***************/
+
+    //* write budget to csv file
+    public void saveBudget() {
+        budgetModel.saveAll();
+
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Saved");
+        alert.setHeaderText("Budget saved");
+        alert.setContentText("Your budget has been saved");
+        alert.showAndWait();
+    } // end saveBudget method
+
     
+
+    //*********************/
+    // Page Design Methods
+    //*********************/
+
+
+        //******************/
+        // Tableview Methods
+        //******************/
+
     //* apply formatting to table
     private void formatBudgetTable() {
         formatCurrencyColumns();
+
+        BudgetTable.setPlaceholder(new Label("No Categories Added"));
 
         BudgetTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
@@ -328,6 +353,38 @@ public class BudgetController implements Initializable {
     } // end formatCurrencyColumn method
 
 
+        //******************/
+        // MenuButton Methods
+        //******************/
+
+    private void setMonthMenuButtons() {
+        monthMenu.getItems().clear(); // clear menuitems
+
+        // get list of dates from budgetModel
+        ArrayList<String> dates = budgetModel.getDateList();
+
+        // create menuitems for each date
+        for (String date : dates) {
+            MenuItem menuItem = new MenuItem(date);
+            monthMenu.getItems().add(menuItem);
+            menuItem.setOnAction(this::changeMonthMenuButton);
+        }
+    } // end setMonthMenuButtons method
+
+
+    //* changes menu button text to selected menu item
+    public void changeMonthMenuButton(ActionEvent event) {
+        MenuItem menuItem = (MenuItem) event.getSource();
+        MenuButton menuButton = (MenuButton) menuItem.getParentPopup().getOwnerNode();
+        menuButton.setText(menuItem.getText());
+        updateMonth();
+    } // end changeMenuButton method
+
+
+        //******************/
+        // Anchorpane Methods
+        //******************/
+
     //* set anchorpane constraints for all elements when window is resized
     private void setAnchorPaneConstraints() {
         // width property listener
@@ -345,6 +402,10 @@ public class BudgetController implements Initializable {
 
             // save button at right 10% of window
             setWidthConstraints(saveBudgetButton, newVal, .8, .1);   
+
+            setWidthConstraints(addMonthTitle, newVal, .75, .1);
+            setWidthConstraints(addMonthButton, newVal, .85, .1);
+            setWidthConstraints(addMonthTextField, newVal, .75, .15);
         });
 
         // height property listener
@@ -360,7 +421,11 @@ public class BudgetController implements Initializable {
             AnchorPane.setTopAnchor(monthMenu, newVal.doubleValue() * .1);
             AnchorPane.setTopAnchor(monthTitle, newVal.doubleValue() * .075);
 
-            AnchorPane.setBottomAnchor(saveBudgetButton, newVal.doubleValue() * .72); 
+            AnchorPane.setTopAnchor(saveBudgetButton, newVal.doubleValue() * .3); 
+
+            AnchorPane.setTopAnchor(addMonthTitle, newVal.doubleValue() * .075);
+            AnchorPane.setTopAnchor(addMonthButton, newVal.doubleValue() * .1);
+            AnchorPane.setTopAnchor(addMonthTextField, newVal.doubleValue() * .1);
         });
     } // end setAnchorPaneConstraints method
 
@@ -377,4 +442,50 @@ public class BudgetController implements Initializable {
         AnchorPane.setTopAnchor(element, newVal.doubleValue() * top);
         AnchorPane.setBottomAnchor(element, newVal.doubleValue() * bottom);
     } // end setHeightConstraints method
+
+    
+        //***************/
+        // Other Methods
+        //***************/
+
+    //* set progress bar and title to percentage of budget spent
+    private void setProgressBar() {
+        double totalSpent = 0;
+        double totalBudget = 0;
+        for (Budget budget : budgetList.getBudgetList()) {
+           totalBudget += budget.total;
+           double categorySpent = expenseList.getCategorySpending(budget.category);
+           if (categorySpent == -1) { categorySpent = 0; }
+           totalSpent += categorySpent;
+        }
+
+        SpendingBar.setProgress(totalSpent/totalBudget);
+
+        // format totalSpent and totalBudget to 2 decimal places 
+        String spent =  String.format("%.2f", totalSpent);
+        String total = String.format("%.2f", totalBudget);
+
+        double percentSpent = (totalSpent / totalBudget) * 100;
+
+        // Round percentSpent to two decimal places
+        DecimalFormat decimalFormat = new DecimalFormat("#.00");
+        String formattedPercentSpent = decimalFormat.format(percentSpent);
+
+        // prevent NaN error
+        if (totalBudget == 0) {formattedPercentSpent = "0";}
+
+
+        progressTitle.setText("Spent: $" + spent + " / $" + total + " (" + formattedPercentSpent + "%)");
+    } // end setProgressBar method
+
+
+    private void setupDeleteMenu() {
+        // delete menubutton context menu in BudgetTable
+        ContextMenu contextMenu = new ContextMenu();
+        BudgetTable.setContextMenu(contextMenu); // set context menu to tableview
+
+        MenuItem deleteMenuItem = new MenuItem("Delete");
+        contextMenu.getItems().addAll(deleteMenuItem);
+        deleteListener(deleteMenuItem); 
+    } // end of setupDeleteMenu method
 } // end of budget controller class
