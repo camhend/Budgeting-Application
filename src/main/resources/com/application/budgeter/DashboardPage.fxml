@@ -29,9 +29,9 @@
 
       <!-- Center Section for current spending summary-->
       
-      <Label text="\$1000/$3000 Spent" fx:id="flatAmountSpent" style="-fx-alignment: CENTER; -fx-background-color: #a3c78e; -fx-font-weight: bold; -fx-font-size: 10;" />
-      <Label text="33% spent" fx:id="percentAmountSpent" style="-fx-alignment: CENTER; -fx-background-color: #a3c78e; -fx-font-weight: bold; -fx-font-size: 10;" />
-      <Label text="22 days left (60%)" fx:id="daysLeft" style="-fx-alignment: CENTER; -fx-background-color: #a3c78e; -fx-font-weight: bold; -fx-font-size: 10;" />
+      <Label text="\$1000/$3000 Spent" fx:id="flatAmountSpent" style="-fx-alignment: CENTER; -fx-background-color: #a3c78e; -fx-font-weight: bold; -fx-font-size: 12;" />
+      <Label text="33% spent" fx:id="percentAmountSpent" style="-fx-alignment: CENTER; -fx-background-color: #a3c78e; -fx-font-weight: bold; -fx-font-size: 12;" />
+      <Label text="22 days left (60%)" fx:id="daysLeft" style="-fx-alignment: CENTER; -fx-background-color: #a3c78e; -fx-font-weight: bold; -fx-font-size: 12;" />
       <Label text="Recent Transactions" fx:id="transactionsTableTitle" style="-fx-alignment: CENTER;" >
          <font>
                <Font size="15.0" />
