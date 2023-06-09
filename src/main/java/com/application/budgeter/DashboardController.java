@@ -237,6 +237,8 @@ public class DashboardController implements Initializable {
 
             setWidthConstraints(monthMenu, newVal, .1, .79); // month menu left 11% of page
             setWidthConstraints(monthTitle, newVal, .1, .79); // month title left 11% of page
+
+            
         });
 
         // height constraints
@@ -252,6 +254,9 @@ public class DashboardController implements Initializable {
 
             AnchorPane.setTopAnchor(monthMenu, newVal.doubleValue() * .1); // month menu top 10% of page
             AnchorPane.setTopAnchor(monthTitle, newVal.doubleValue() * .075); // month title above month menu
+
+            // increase font size of dashboard title when window is resized
+            dashboardTitle.setStyle("-fx-font-size: " + (newVal.doubleValue() / 50 + 3) + "px;");
         });
     } // end of setAnchorPaneContraints method
 
