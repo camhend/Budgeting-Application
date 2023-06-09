@@ -240,12 +240,6 @@ public class DashboardController implements Initializable {
 
         // height constraints
         dashboardPage.heightProperty().addListener((obs, oldVal, newVal) -> {
-            dashboardTitle.setStyle("-fx-font-size: " + (newVal.doubleValue() / 50 + 3) + "px; -fx-alignment: CENTER;");
-            
-            flatAmountSpent.setStyle("-fx-font-size: " + (newVal.doubleValue() / 100 + 3) + "px;-fx-alignment: CENTER; -fx-background-color: #a3c78e; -fx-font-weight: bold;");
-            percentAmountSpent.setStyle("-fx-font-size: " + (newVal.doubleValue() / 100 + 3) + "px;-fx-alignment: CENTER; -fx-background-color: #a3c78e; -fx-font-weight: bold;");
-            daysLeft.setStyle("-fx-font-size: " + (newVal.doubleValue() / 100 + 3) + "px;-fx-alignment: CENTER; -fx-background-color: #a3c78e; -fx-font-weight: bold;");
-            
             setHeightConstraints(dashboardTitle, newVal, .03, .92); // dashboard title top 5% of page
             setHeightConstraints(pieChart, newVal, .1, .55); // pie chart top 35% of page
             setHeightConstraints(barChart, newVal, .5, .05); // bar chart bottom 45% of page

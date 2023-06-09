@@ -190,8 +190,6 @@ public class MainPageController implements Initializable {
             setHeightConstraints(dashboardNavButton, newVal, .175, .625); 
             setHeightConstraints(expenseNavButton, newVal, .45, .35);
             setHeightConstraints(budgetNavButton, newVal, .725, .075);
-
-            menuTitle.setStyle("-fx-font-size: " + (newVal.doubleValue() / 50 + 3) + "px; -fx-alignment: CENTER;");
         });
     } // end setWidthAnchorConstraints
 
