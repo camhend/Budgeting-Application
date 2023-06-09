@@ -39,6 +39,7 @@ public class App extends Application {
 
         // set stage
         stage.setScene(scene);
+        scene.getStylesheets().add(getClass().getResource("stylesheet.css").toExternalForm());
         stage.show();
 
         // print working directory (last dir should be \Budgeter)
