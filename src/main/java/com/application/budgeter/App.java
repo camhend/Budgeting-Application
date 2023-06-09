@@ -39,7 +39,11 @@ public class App extends Application {
 
         // set stage
         stage.setScene(scene);
-        scene.getStylesheets().add(getClass().getResource("stylesheet.css").toExternalForm());
+
+        // load stylesheet
+        String styleSheetPath = System.getProperty("user.dir") + "\\src\\main\\java\\com\\application\\budgeter\\stylesheet.css";        
+        scene.getStylesheets().add("file:///" + styleSheetPath.replace("\\", "/"));
+
         stage.show();
 
         // print working directory (last dir should be \Budgeter)

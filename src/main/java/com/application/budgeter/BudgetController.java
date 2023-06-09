@@ -392,7 +392,7 @@ public class BudgetController implements Initializable {
             setWidthConstraints(budgetTitle, newVal, 0.40, 0.40); 
             setWidthConstraints(BudgetTable, newVal, 0.10, 0.10); 
             setWidthConstraints(SpendingBar, newVal, 0.30, 0.30); 
-            setWidthConstraints(progressTitle, newVal, 0.40, 0.40); 
+            setWidthConstraints(progressTitle, newVal, 0.30, 0.30); 
             setWidthConstraints(categoryTextField, newVal, 0.275, 0.55);  
             setWidthConstraints(limitTextField, newVal, 0.475, 0.35); 
             setWidthConstraints(categoryButton, newVal, 0.675, 0.275);
