@@ -829,18 +829,11 @@ public class ExpenseController implements Initializable {
             setWidthConstraints(monthMenu, newVal, .1, .79);
             setWidthConstraints(monthTitle, newVal, .1, .79);
             setWidthConstraints(total, newVal, .8, .1);
-            total.setPrefWidth(newVal.doubleValue() * .1);
+            setWidthConstraints(totalTitle, newVal, .8, .1);
+            setWidthConstraints(totalMenu, newVal, .69, .2);
+            setWidthConstraints(totalMenuTitle, newVal, .69, .2);
 
-            // runs after total is resized
-            Platform.runLater(() -> {
-                setWidthConstraints(totalTitle, newVal, .8, .1);
-                totalTitle.setPrefWidth(newVal.doubleValue() * .1);
-
-                // set totalMenu next to total label
-                AnchorPane.setRightAnchor(totalMenu, total.getWidth() + newVal.doubleValue() * .1);  // total menu next to total label
-                // set totalMenuTitle on top of totalMenu (centered)
-                AnchorPane.setRightAnchor(totalMenuTitle, total.getWidth()+totalMenuTitle.getWidth()/2 + newVal.doubleValue() * .1);
-            });
+        
 
             setWidthConstraints(expenseTable, newVal, .1, .1);
 
