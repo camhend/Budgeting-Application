@@ -60,10 +60,11 @@
 
 
     <!-- text fields for adding expenses -->
-    <TextField promptText="Expense..." fx:id="addExpenseField"/>
+    <Label fx:id="addExpenseTitle" style="-fx-font-weight: bold;" alignment="CENTER" text="Add Expense" />
+    <TextField promptText="Name..." fx:id="addExpenseField"/>
     <MenuButton text="Category..." fx:id="addCategoryField"/>
     <TextField promptText="Date..." fx:id="addDateField"/>
-    <TextField promptText="Cost..." fx:id="addCostField"/>
+    <TextField promptText="Amount..." fx:id="addCostField"/>
 
     <!-- choosing month to see expense data for -->
     <Label fx:id="monthTitle" style="-fx-font-weight: bold;" alignment="CENTER" text="Month" />

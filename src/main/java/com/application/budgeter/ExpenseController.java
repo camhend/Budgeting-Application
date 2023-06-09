@@ -57,6 +57,7 @@ public class ExpenseController implements Initializable {
     @FXML private Label totalMenuTitle;
 
     // add expense section
+    @FXML private Label addExpenseTitle;
     @FXML private Button addExpenseButton; 
     @FXML private TextField addExpenseField;
     @FXML private MenuButton addCategoryField;
@@ -852,6 +853,8 @@ public class ExpenseController implements Initializable {
 
             // save button at right 10% of window
             setWidthConstraints(saveExpenseButton, newVal, .8, .1);   
+
+            setWidthConstraints(addExpenseTitle, newVal, .1, .46);
         });
 
         // listener for adjusting elements' height when window is resized
@@ -875,6 +878,8 @@ public class ExpenseController implements Initializable {
             AnchorPane.setBottomAnchor(addExpenseButton, newVal.doubleValue() * .72);
 
             AnchorPane.setBottomAnchor(saveExpenseButton, newVal.doubleValue() * .72);
+
+            AnchorPane.setBottomAnchor(addExpenseTitle, newVal.doubleValue() * .76);
         });
     } // end setAnchorPaneConstraints method
 
