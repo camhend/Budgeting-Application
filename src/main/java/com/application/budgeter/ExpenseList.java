@@ -224,7 +224,7 @@ public class ExpenseList implements Iterable<Expense> {
             return false; 
         }
         node.expense = updated;
-        totalSpending -= old.getAmount() + updated.getAmount();;
+        totalSpending += (updated.getAmount() - old.getAmount());
         // Remove old Expense from categorySpending map
         categorySpending.replace(old.getCategory(), 
             categorySpending.get(old.getCategory()) - old.getAmount());

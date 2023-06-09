@@ -214,8 +214,20 @@ public class BudgetController implements Initializable {
                 String filename = monthMenu.getText() + ".csv";
                 fileExpenseList.loadFromCSV(filename); // load expenseList from file
 
-                // if category is in expenseList, send alert and return
+                // if category is in file expenseList, send alert and return
                 for (Expense expense : fileExpenseList) {
+                    if (expense.getCategory().equals(BudgetTable.getSelectionModel().getSelectedItem().category)) {
+                        Alert alert = new Alert(AlertType.INFORMATION);
+                        alert.setTitle("Error");
+                        alert.setHeaderText("Cannot delete category that has expenses");
+                        alert.setContentText("Please delete expenses in this category first (And Save)");
+                        alert.showAndWait();
+                        return;
+                    }
+                }
+
+                // if category is in current expenseList, send alert and return
+                for (Expense expense : expenseList) {
                     if (expense.getCategory().equals(BudgetTable.getSelectionModel().getSelectedItem().category)) {
                         Alert alert = new Alert(AlertType.INFORMATION);
                         alert.setTitle("Error");
