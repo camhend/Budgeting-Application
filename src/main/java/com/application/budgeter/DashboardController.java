@@ -213,6 +213,9 @@ public class DashboardController implements Initializable {
         // calculate days left with localdate
         int daysLeft = (int) ChronoUnit.DAYS.between(today, lastDayOfMonth);
 
+        if (daysLeft < 0)
+            daysLeft = 0;
+
         return daysLeft;
     } // end of calculateDaysLeft method
 
