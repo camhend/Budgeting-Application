@@ -315,19 +315,9 @@ public class DashboardController implements Initializable {
     private void setMonthMenuButtons() {
         // get list of dates from budgetModel
         ArrayList<String> budgetDates = budgetModel.getDateList();
-        ArrayList<String> expenseDates = expenseModel.getDateList();
-        ArrayList<String> dates = new ArrayList<>();
-
-        // add dates that are in both budgetDates and expenseDates to dates
-        for (String date : budgetDates) {
-            if (expenseDates.contains(date)) {
-                dates.add(date);
-                System.out.println(date);
-            }
-        }
 
         // create menuitems for each date
-        for (String date : dates) {
+        for (String date : budgetDates) {
             MenuItem menuItem = new MenuItem(date);
             monthMenu.getItems().add(menuItem);
             menuItem.setOnAction(this::changeMenuButton);
@@ -360,11 +350,11 @@ public class DashboardController implements Initializable {
 
     //* set month to default month (newest month)
     private void setDefaultMonth() {
-        if(expenseModel.getDateList().isEmpty()) {
+        if(budgetModel.getDateList().isEmpty()) {
             return;
         }
         // get newest date
-        ArrayList<String> dates = expenseModel.getDateList();
+        ArrayList<String> dates = budgetModel.getDateList();
         String newestDate = dates.get(dates.size() - 1);
 
         // set month menu to newest date and update tableview
