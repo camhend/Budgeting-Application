@@ -29,3 +29,17 @@
 .default-color12.chart-pie { -fx-pie-color: #8a3800; }
 .default-color13.chart-pie { -fx-pie-color: #a56eff; }
 
+.table-view {
+    background-color: -fx-background;
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header {
+    background-color: -fx-backgtround;
+    -fx-background-color: #a3c78e;
+}
+
+.table-view .table-cell {
+    background-color: -fx-backgtround;
+    -fx-background-color: #dfe9da;
+}
