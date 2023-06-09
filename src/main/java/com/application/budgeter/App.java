@@ -4,6 +4,8 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import java.io.File;
 import java.io.IOException;
 import javafx.scene.image.Image;
 import java.io.File;
@@ -38,13 +40,13 @@ public class App extends Application {
         stage.setMinHeight(800);
 
         // set stage
-        stage.setScene(scene);
+        stage.setScene(scene);  
 
-        // load stylesheet
-        String styleSheetPath = System.getProperty("user.dir") + "\\src\\main\\java\\com\\application\\budgeter\\stylesheet.css";   
-        styleSheetPath = styleSheetPath.replace(" ", "%20"); 
-        System.out.println("Stylesheet loaded: " + styleSheetPath);
-        scene.getStylesheets().add("file:///" + styleSheetPath.replace("\\", "/"));
+        // add stylesheet
+        String styleSheetPath = System.getProperty("user.dir") + "\\src\\main\\java\\com\\application\\budgeter\\stylesheet.css";
+        styleSheetPath = styleSheetPath.replace(" ", "%20");
+        styleSheetPath = styleSheetPath.replace("\\", "/");
+        scene.getStylesheets().add("file:///" + styleSheetPath);
 
         stage.show();
 

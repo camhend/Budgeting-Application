@@ -23,7 +23,7 @@
 
         <!-- loading font used in Menu and Main Content-->
         <fx:define>
-            <Font fx:id="x1" size="18.0" />
+            <Font fx:id="x1" />
         </fx:define>
         
         

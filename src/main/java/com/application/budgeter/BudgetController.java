@@ -40,7 +40,7 @@ public class BudgetController implements Initializable {
     // Budget Table
     @FXML TableView<Budget> BudgetTable;
     @FXML private TableColumn<Budget, String> category;
-    @FXML private TableColumn<Budget,Double> total;
+    @FXML private TableColumn<Budget,Double> budgetTotal;
     @FXML private TableColumn<Budget,Double> spent;
     @FXML private TableColumn<Budget,Double> remaining;
 
@@ -336,7 +336,7 @@ public class BudgetController implements Initializable {
         BudgetTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         category.setCellValueFactory(new PropertyValueFactory<Budget, String>("category"));
-        total.setCellValueFactory(new PropertyValueFactory<Budget, Double>("total"));
+        budgetTotal.setCellValueFactory(new PropertyValueFactory<Budget, Double>("total"));
         spent.setCellValueFactory(new PropertyValueFactory<Budget, Double>("spent"));
         remaining.setCellValueFactory(new PropertyValueFactory<Budget, Double>("remaining"));
     } // end formatBudgetTable
@@ -346,7 +346,7 @@ public class BudgetController implements Initializable {
     private void formatCurrencyColumns() {
         formatCurrencyColumn(remaining);
         formatCurrencyColumn(spent);
-        formatCurrencyColumn(total);
+        formatCurrencyColumn(budgetTotal);
     } // end formatCurrencyColumns method
 
 

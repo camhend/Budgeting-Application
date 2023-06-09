@@ -867,7 +867,7 @@ public class ExpenseController implements Initializable {
 
             AnchorPane.setBottomAnchor(saveExpenseButton, newVal.doubleValue() * .72);
 
-            AnchorPane.setBottomAnchor(addExpenseTitle, newVal.doubleValue() * .76);
+            AnchorPane.setBottomAnchor(addExpenseTitle, newVal.doubleValue() * .765);
         });
     } // end setAnchorPaneConstraints method
 
