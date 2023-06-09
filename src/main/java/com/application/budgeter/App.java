@@ -41,7 +41,9 @@ public class App extends Application {
         stage.setScene(scene);
 
         // load stylesheet
-        String styleSheetPath = System.getProperty("user.dir") + "\\src\\main\\java\\com\\application\\budgeter\\stylesheet.css";        
+        String styleSheetPath = System.getProperty("user.dir") + "\\src\\main\\java\\com\\application\\budgeter\\stylesheet.css";   
+        styleSheetPath = styleSheetPath.replace(" ", "%20"); 
+        System.out.println("Stylesheet loaded: " + styleSheetPath);
         scene.getStylesheets().add("file:///" + styleSheetPath.replace("\\", "/"));
 
         stage.show();
