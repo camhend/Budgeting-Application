@@ -680,16 +680,18 @@ public class ExpenseController implements Initializable {
 
     //* set menu items for all menus
     private void setAllMenuButtons() {
+        // clear all buttons
+        totalMenu.getItems().clear();
+        addCategoryField.getItems().clear();
+        categoryField.getItems().clear();
+        monthMenu.getItems().clear();
+
         // add all as default option for totalmenu
         MenuItem all = new MenuItem("All");
         totalMenu.getItems().add(all);
         all.setOnAction(this::changeMenuButton);
         
         // set category buttons with categories from budgetmodel
-        totalMenu.getItems().clear();
-        addCategoryField.getItems().clear();
-        categoryField.getItems().clear();
-
         ArrayList<String> categoryList = budgetList.getCategoryList();
 
         setMenuButton(totalMenu, categoryList);
@@ -697,7 +699,6 @@ public class ExpenseController implements Initializable {
         setMenuButton(categoryField, categoryList);
 
         // set month menu with dates of found files
-        monthMenu.getItems().clear();
         ArrayList<String> dateList = budgetModel.getDateList();
         setMenuButton(monthMenu, dateList);
     } // end setMenuItems method
