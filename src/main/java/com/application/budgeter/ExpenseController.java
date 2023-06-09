@@ -834,15 +834,15 @@ public class ExpenseController implements Initializable {
 
             // add buttons above tableview 10% of window each
             setWidthConstraints(addExpenseField, newVal, .1, .8); 
-            setWidthConstraints(addCategoryField, newVal, .2, .7);
-            setWidthConstraints(addDateField, newVal, .3, .6);
-            setWidthConstraints(addCostField, newVal, .4, .5);
-            setWidthConstraints(addExpenseButton, newVal, .5, .46);
+            setWidthConstraints(addCategoryField, newVal, .2, .65);
+            setWidthConstraints(addDateField, newVal, .35, .55);
+            setWidthConstraints(addCostField, newVal, .45, .45);
+            setWidthConstraints(addExpenseButton, newVal, .55, .41);
 
             // save button at right 10% of window
             setWidthConstraints(saveExpenseButton, newVal, .8, .1);   
 
-            setWidthConstraints(addExpenseTitle, newVal, .1, .46);
+            setWidthConstraints(addExpenseTitle, newVal, .1, .41);
         });
 
         // listener for adjusting elements' height when window is resized
