@@ -24,7 +24,7 @@
 <AnchorPane fx:id="budgetPage" minHeight="600.0" minWidth="680.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.application.budgeter.BudgetController"> 
   <children>
     <!-- Title of page-->
-    <Label fx:id="budgetTitle" alignment="CENTER" style="&#10;" text="Budget Planner" textAlignment="CENTER" textFill="#726d6d" >
+    <Label fx:id="budgetTitle" text="Budget Planner" style="-fx-alignment: CENTER;" textFill="#726d6d" >
       <font>
         <Font size="18.0" fx:id="x1" />                
       </font>

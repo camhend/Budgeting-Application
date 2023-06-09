@@ -31,7 +31,7 @@
         <AnchorPane minHeight="600.0" minWidth="220.0"  fx:id="menuPage" style="-fx-background-color: #a3c78e;">
             <children>
                 <!-- Title (Menu) -->
-                <Label fx:id="menuTitle" alignment="CENTER" style="&#10;" text="Menu" textAlignment="CENTER" textFill="#726d6d" wrapText="false">
+                <Label fx:id="menuTitle" text="Menu" style="-fx-alignment: CENTER;" textFill="#726d6d" >
                     <font>
                         <Font size="18.0" />
                     </font>

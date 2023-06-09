@@ -873,7 +873,9 @@ public class ExpenseController implements Initializable {
             AnchorPane.setBottomAnchor(addCostField, newVal.doubleValue() * .72);
             AnchorPane.setBottomAnchor(addExpenseButton, newVal.doubleValue() * .72);
 
-            AnchorPane.setBottomAnchor(saveExpenseButton, newVal.doubleValue() * .72); 
+            AnchorPane.setBottomAnchor(saveExpenseButton, newVal.doubleValue() * .72);
+            
+            expenseTitle.setStyle("-fx-font-size: " + (newVal.doubleValue() / 50 + 3) + "px; -fx-alignment: CENTER;");
         });
     } // end setAnchorPaneConstraints method
 

@@ -21,7 +21,7 @@
    <children>
       <PieChart labelLineLength="2.0" title="Pie Chart" fx:id="pieChart"/>
 
-      <Label text="Dashboard" fx:id="dashboardTitle" style="-fx-alignment: CENTER;">
+      <Label text="Dashboard" fx:id="dashboardTitle" style="-fx-alignment: CENTER;" textFill="#726d6d" >
          <font>
             <Font size="18.0" />
          </font>
@@ -33,8 +33,8 @@
       <Label text="33% spent" fx:id="percentAmountSpent" style="-fx-alignment: CENTER; -fx-background-color: #a3c78e; -fx-font-weight: bold; -fx-font-size: 10;" />
       <Label text="22 days left (60%)" fx:id="daysLeft" style="-fx-alignment: CENTER; -fx-background-color: #a3c78e; -fx-font-weight: bold; -fx-font-size: 10;" />
       <Label text="Recent Transactions" fx:id="transactionsTableTitle" style="-fx-alignment: CENTER;" >
-      <font>
-            <Font size="15.0" />
+         <font>
+               <Font size="15.0" />
          </font>
       </Label>
 

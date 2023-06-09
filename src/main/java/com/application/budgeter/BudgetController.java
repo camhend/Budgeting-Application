@@ -426,6 +426,8 @@ public class BudgetController implements Initializable {
             AnchorPane.setTopAnchor(addMonthTitle, newVal.doubleValue() * .075);
             AnchorPane.setTopAnchor(addMonthButton, newVal.doubleValue() * .1);
             AnchorPane.setTopAnchor(addMonthTextField, newVal.doubleValue() * .1);
+
+            budgetTitle.setStyle("-fx-font-size: " + (newVal.doubleValue() / 50 + 3) + "px; -fx-alignment: CENTER;");
         });
     } // end setAnchorPaneConstraints method
 

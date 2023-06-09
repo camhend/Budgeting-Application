@@ -175,7 +175,7 @@ public class DashboardController implements Initializable {
         double percentAmount = (totalSpent / totalBudget) * 100;
         if (Double.isNaN(percentAmount)) 
             percentAmount = 0;
-        String percentAmountString = "$" + String.format("%.2f", percentAmount) + "%";
+        String percentAmountString = String.format("%.2f", percentAmount) + "%";
 
 
         // set labels
@@ -232,17 +232,20 @@ public class DashboardController implements Initializable {
             setWidthConstraints(flatAmountSpent, newVal, .4, .4); // flat amount spent center 20% of page
             setWidthConstraints(percentAmountSpent, newVal, .4, .4); // percent amount spent center 20% of page
             setWidthConstraints(daysLeft, newVal, .4, .4); // days left center 20% of page
-                setWidthConstraints(transactionsTableTitle, newVal, .65, .05); // transactions table title left 30% of page
+            setWidthConstraints(transactionsTableTitle, newVal, .65, .05); // transactions table title left 30% of page
             setWidthConstraints(transactionsTable, newVal, .65, .05); // transactions table left 30% of page
-
             setWidthConstraints(monthMenu, newVal, .1, .79); // month menu left 11% of page
-            setWidthConstraints(monthTitle, newVal, .1, .79); // month title left 11% of page
-
-            
+            setWidthConstraints(monthTitle, newVal, .1, .79); // month title left 11% of page 
         });
 
         // height constraints
         dashboardPage.heightProperty().addListener((obs, oldVal, newVal) -> {
+            dashboardTitle.setStyle("-fx-font-size: " + (newVal.doubleValue() / 50 + 3) + "px; -fx-alignment: CENTER;");
+            
+            flatAmountSpent.setStyle("-fx-font-size: " + (newVal.doubleValue() / 100 + 3) + "px;-fx-alignment: CENTER; -fx-background-color: #a3c78e; -fx-font-weight: bold;");
+            percentAmountSpent.setStyle("-fx-font-size: " + (newVal.doubleValue() / 100 + 3) + "px;-fx-alignment: CENTER; -fx-background-color: #a3c78e; -fx-font-weight: bold;");
+            daysLeft.setStyle("-fx-font-size: " + (newVal.doubleValue() / 100 + 3) + "px;-fx-alignment: CENTER; -fx-background-color: #a3c78e; -fx-font-weight: bold;");
+            
             setHeightConstraints(dashboardTitle, newVal, .03, .92); // dashboard title top 5% of page
             setHeightConstraints(pieChart, newVal, .1, .55); // pie chart top 35% of page
             setHeightConstraints(barChart, newVal, .5, .05); // bar chart bottom 45% of page
@@ -256,7 +259,7 @@ public class DashboardController implements Initializable {
             AnchorPane.setTopAnchor(monthTitle, newVal.doubleValue() * .075); // month title above month menu
 
             // increase font size of dashboard title when window is resized
-            dashboardTitle.setStyle("-fx-font-size: " + (newVal.doubleValue() / 50 + 3) + "px;");
+            
         });
     } // end of setAnchorPaneContraints method
 

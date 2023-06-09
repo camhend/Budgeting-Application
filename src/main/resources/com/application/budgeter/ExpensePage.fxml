@@ -22,7 +22,7 @@
 <!-- Expense Tracker Section-->
 <AnchorPane fx:id="expensePage" prefHeight="600.0" prefWidth="680.0" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml" fx:controller="com.application.budgeter.ExpenseController">
   <children>
-    <Label fx:id="expenseTitle" alignment="CENTER" style="&#10;" text="Expense Tracker" textAlignment="CENTER" textFill="#726d6d" >
+    <Label fx:id="expenseTitle"  text="Expense Tracker" style="-fx-alignment: CENTER;" textFill="#726d6d" >
       <font>
         <Font fx:id="x1" size="18.0" />                
       </font>
