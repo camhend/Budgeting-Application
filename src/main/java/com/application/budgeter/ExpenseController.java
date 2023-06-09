@@ -421,6 +421,7 @@ public class ExpenseController implements Initializable {
 
         // set Date Field to autopopulate with this expenseList month and year 
         addDateField.setText(month + "/dd/" + year);
+        setTextFieldDefault(addDateField, month + "/dd/" + year);
 
         // clear addCategoryField menu button to default text
         addCategoryField.setText("Category...");
