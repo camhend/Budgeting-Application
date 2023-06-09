@@ -34,7 +34,7 @@
       <TableView fx:id="BudgetTable">
         <columns>
           <TableColumn fx:id="category" text="Category" style="-fx-alignment: CENTER;"  />
-          <TableColumn fx:id="total" text="Budget" style="-fx-alignment: CENTER;"  />
+          <TableColumn fx:id="budgetTotal" text="Budget" style="-fx-alignment: CENTER;"  />
           <TableColumn fx:id="spent" text="Current" style="-fx-alignment: CENTER;"  />
           <TableColumn fx:id="remaining" text="Remaining" style="-fx-alignment: CENTER;"  />
         </columns>

@@ -4,6 +4,8 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import java.io.File;
 import java.io.IOException;
 import javafx.scene.image.Image;
 
@@ -33,8 +35,11 @@ public class App extends Application {
         stage.setMinHeight(800);
 
         // set stage
-        stage.setScene(scene);
-        scene.getStylesheets().add(getClass().getResource("stylesheet.css").toExternalForm());
+        stage.setScene(scene);       
+        String styleSheetPath = System.getProperty("user.dir") + "\\src\\main\\java\\com\\application\\budgeter\\stylesheet.css";
+        styleSheetPath = styleSheetPath.replace(" ", "%20");
+        styleSheetPath = styleSheetPath.replace("\\", "/");
+        scene.getStylesheets().add("file:///" + styleSheetPath);
         stage.show();
 
         // print working directory (last dir should be \Budgeter)

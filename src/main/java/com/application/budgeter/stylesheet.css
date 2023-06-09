@@ -35,11 +35,31 @@
 }
 
 .table-view .column-header {
-    background-color: -fx-backgtround;
+    background-color: -fx-background;
     -fx-background-color: #a3c78e;
 }
 
 .table-view .table-cell {
-    background-color: -fx-backgtround;
+    background-color: -fx-background;
     -fx-background-color: #dfe9da;
 }
+
+/* Base font size */
+.root { font-size: 0; -fx-font-size: 12px;}
+.table-cell { font-size: 0; -fx-font-size: 1.2em}
+.text-field { font-size: 0; -fx-font-size: 1.2em}
+.menu-button { font-size: 0; -fx-font-size: 1.2em}
+.button { font-size: 0; -fx-font-size: 1.2em}
+
+/* Main page side bar */
+#menuTitle { font-size: 0; -fx-font-size: 2.5em}
+
+/* dashboard page elements */
+#transactionsTableTitle { font-size: 0; -fx-font-size: 1.7em}
+#categoryAxis { font-size: 0;  -fx-tick-label-font-size: 1em} /*bar chart X-axis" */
+#flatAmountSpent { font-size: 0; -fx-font-size: 1.3em; -fx-text-alignment: CENTER; -fx-wrap-text: true; }
+#percentAmountSpent { font-size: 0; -fx-font-size: 1.3em; -fx-text-alignment: CENTER; -fx-wrap-text: true; }
+#daysLeft { font-size: 0; -fx-font-size: 1.3em; -fx-text-alignment: CENTER; -fx-wrap-text: true; }
+
+/* expense page elements */
+#total { font-size: 0; -fx-font-size: 1.8em}
