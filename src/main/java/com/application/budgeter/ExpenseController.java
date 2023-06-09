@@ -352,13 +352,7 @@ public class ExpenseController implements Initializable {
                             expenseTable.setItems(obsvExpenseList);
 
                             sendAlert("Success", "Success", "Expense successfully edited", null);
-                        } else {
-                            // if !validFields, then reset fields to original values
-                            nameField.setText(selectedExpense.getName());
-                            categoryField.setText(selectedExpense.getCategory());
-                            dateField.setText(selectedExpense.getLocalDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
-                            costField.setText(String.format("$%.2f", selectedExpense.getAmount()));
-                        }
+                        } 
                     }
                 }); // end finishEditButton listener
             } // end handle method
