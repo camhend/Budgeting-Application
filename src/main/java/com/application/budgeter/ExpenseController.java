@@ -470,7 +470,6 @@ public class ExpenseController implements Initializable {
         sendAlert("Save", "Save", "Saved All Expenses", null);
 
         // update spending in budgetmodel
-        // save budgetmodel?
         budgetModel.updateSpentField(expenseModel);
         budgetModel.saveAll();
 
