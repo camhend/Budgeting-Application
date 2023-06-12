@@ -114,6 +114,19 @@ public class BudgetController implements Initializable {
     } // end isValidCost method
 
 
+    // returns true if input is YYYY-MM format and a real date
+    public boolean isValidDateFormat() {
+        if (addMonthTextField.getText().equals("") || addMonthTextField.getText().length() != 7 || 
+        !Character.isDigit(addMonthTextField.getText().charAt(0)) || !Character.isDigit(addMonthTextField.getText().charAt(1)) ||
+        !Character.isDigit(addMonthTextField.getText().charAt(2)) || !Character.isDigit(addMonthTextField.getText().charAt(3)) ||
+        addMonthTextField.getText().charAt(4) != '-' ||
+        !Character.isDigit(addMonthTextField.getText().charAt(5)) || !Character.isDigit(addMonthTextField.getText().charAt(6)) ||
+        Integer.parseInt(addMonthTextField.getText().substring(5)) > 12 || Integer.parseInt(addMonthTextField.getText().substring(5)) < 1)
+            return false;
+        return true;
+    } // end isValidDateFormat method
+
+
 
     //*************************/
     // Data Manipulation methods
@@ -121,15 +134,7 @@ public class BudgetController implements Initializable {
 
     //* add new month file
     public void addMonth(ActionEvent event) {
-        // errpr checking addMonthTextField
-        // not empty, characters 1-4 are numbers, character 5 is a dash, characters 6-7 are numbers (01-12)
-        if (addMonthTextField.getText().equals("") || addMonthTextField.getText().length() != 7 || 
-            !Character.isDigit(addMonthTextField.getText().charAt(0)) || !Character.isDigit(addMonthTextField.getText().charAt(1)) ||
-            !Character.isDigit(addMonthTextField.getText().charAt(2)) || !Character.isDigit(addMonthTextField.getText().charAt(3)) ||
-            addMonthTextField.getText().charAt(4) != '-' ||
-            !Character.isDigit(addMonthTextField.getText().charAt(5)) || !Character.isDigit(addMonthTextField.getText().charAt(6)) ||
-            Integer.parseInt(addMonthTextField.getText().substring(5)) > 12 || Integer.parseInt(addMonthTextField.getText().substring(5)) < 1) {
-            
+        if (!isValidDateFormat()) {
             Alert alert = new Alert(AlertType.INFORMATION);
             alert.setTitle("Error");
             alert.setHeaderText("Invalid input");
@@ -145,7 +150,6 @@ public class BudgetController implements Initializable {
         ArrayList<String> currentMonths = budgetModel.getDateList(); // get list of current months
 
         if (currentMonths.contains(addMonthTextField.getText())) { // if month already exists
-
             Alert alert = new Alert(AlertType.INFORMATION);
             alert.setTitle("Error");
             alert.setHeaderText("Month already exists");
@@ -154,16 +158,13 @@ public class BudgetController implements Initializable {
             return;
         }
         
-        LocalDate date = LocalDate.parse(month + "/01/" + year, DateTimeFormatter.ofPattern("MM/dd/yyyy")); // create date object
-
-        budgetModel.getBudgetList(date); // get budgetList for date
-
+        // get budgetlist for new month
+        LocalDate date = LocalDate.parse(month + "/01/" + year, DateTimeFormatter.ofPattern("MM/dd/yyyy")); 
+        budgetModel.getBudgetList(date); 
         
-        setMonthMenuButtons();
-
+        setMonthMenuButtons(); // update monthMenu buttons
         monthMenu.setText(addMonthTextField.getText()); // set monthMenu text to new month
-        updateMonth();
-
+        updateMonth(); 
         addMonthTextField.clear(); // clear addMonthTextField
 
         // alert month created
