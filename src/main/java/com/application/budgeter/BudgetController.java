@@ -248,6 +248,7 @@ public class BudgetController implements Initializable {
         });
     } // end deleteListener method
 
+    
     //* update data when month is changed
     private void updateMonth() {
         // get date from menu button
