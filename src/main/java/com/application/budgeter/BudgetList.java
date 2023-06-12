@@ -127,8 +127,11 @@ public class BudgetList {
             // 2. print data 
             writer.println("Category,Total,Spent");
             for (Budget budget : budgetList) {
-                // category, total, spent
-                writer.println(budget.getCategory() + "," + budget.getTotal() + "," + budget.getSpent());
+                // writecategory, total, spent
+                String category = budget.getCategory();
+                String total = String.format("%.2f", budget.getTotal());
+                String spent = String.format("%.2f", budget.getSpent());
+                writer.println(category + "," + total + "," + spent);
             }
             writer.close();
             return true;
