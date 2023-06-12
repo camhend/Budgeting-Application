@@ -188,6 +188,9 @@ public class BudgetController implements Initializable {
 
             categoryTextField.clear();
             limitTextField.clear();
+
+            updateSpendings();
+            setProgressBar();
         }
         else {
             Alert alert = new Alert(AlertType.INFORMATION);
