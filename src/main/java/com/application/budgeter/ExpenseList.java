@@ -10,16 +10,6 @@ import java.io.*;
 import java.io.FileWriter;
 import java.time.format.DateTimeFormatter;
 
-// TODO: make CSV reader / writer
-    // consider: how many expense to load? 
-    // how far back to go?
-    // How to add newly added expenses to CSV log? 
-    // What if a really old date is added? How will the newly added date be added to the CSV in a sorted manner?
-
-// TODO: what happens if an expense is edited to have a very old date?
-
-// TODO: what happens if an expense is edited to have a very old date?
-
 // This class defines a LinkedList used for storing
 // Expense objects. Oldest items are at the head, newest at the tail.
 public class ExpenseList implements Iterable<Expense> {
@@ -29,7 +19,6 @@ public class ExpenseList implements Iterable<Expense> {
     private int size;
     private Map<String, Double> categorySpending;
     private ExpenseList copy; // copy of current list used for reverting changes
-    //private final LocalDate monthYear;
 
     // ExpenseList constructor
     public ExpenseList () {
@@ -275,7 +264,7 @@ public class ExpenseList implements Iterable<Expense> {
                     node.next = head; // node's next is the old head
                     node.prev = null; // node's prev is null
                     head.prev = node; // old head's prev is the node
-                    head = node; // node is the new head
+                    head = node;      // node is the new head
                 // else traverse for the correct position
                 } else {
                     ExpenseNode current = node.prev; // start at the node before the updated node
@@ -333,6 +322,8 @@ public class ExpenseList implements Iterable<Expense> {
         return false;
     }
 
+    // Get the idex of the given Expense in this list.
+    // If the Expense is not found, return -1
     public int getIndex( Expense expense ) {
         ExpenseNode current = head;
         int index = 0;
@@ -346,7 +337,6 @@ public class ExpenseList implements Iterable<Expense> {
         }
         return -1;
     }
-
 
     // clear the list of all elements
     public void clear () {
@@ -441,6 +431,7 @@ public class ExpenseList implements Iterable<Expense> {
             return copy;
         }
     
+        // this ExpenseList has more than one node
         ExpenseNode thisCurrent = this.head;
         ExpenseNode copyCurrent = copy.head;
         
@@ -453,6 +444,8 @@ public class ExpenseList implements Iterable<Expense> {
         return copy;
     }
 
+    // If true, and changes were made to this ExpenseList, then save to given file.
+    // Else, revert to state before changes were made. 
     public void confirmSave (boolean confirmed, String filename) { 
         // no copy was made so no changes were made. No changes to save, so don't save, and return instead
         if (copy == null) {
