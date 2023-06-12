@@ -1,36 +1,23 @@
 Name,Category,Date,Amount
 Rent,Rent,05/01/2023,1200.00
-Utiilies,Utilities,05/01/2023,200.00
-Internet,Internet,05/01/2023,100.00
-Insurance,Insurance,05/01/2023,300.00
-Groceries,Groceries,05/02/2023,100.00
-Dinner at Restaurant,Entertainment,05/03/2023,60.00
-Car Maintenance,Transportation,05/04/2023,150.00
-Haircut,Personal care,05/05/2023,30.00
-Clothing Shopping,Clothing,05/06/2023,90.00
-Gas,Transportation,05/07/2023,50.00
-Groceries,Groceries,05/08/2023,120.00
-Movie Tickets,Entertainment,05/09/2023,40.00
-Gym Membership,Entertainment,05/10/2023,50.00
-Dining Out with Friends,Entertainment,05/11/2023,70.00
-Lunch at Cafe,Entertainment,05/12/2023,20.00
-Pet Grooming,Personal care,05/13/2023,50.00
-Clothing Shopping,Clothing,05/14/2023,70.00
-Gas,Transportation,05/15/2023,40.00
-Dinner at Restaurant,Entertainment,05/16/2023,75.00
-Haircut,Personal care,05/17/2023,30.00
-Clothing Shopping,Clothing,05/18/2023,70.00
-Gas,Transportation,05/19/2023,40.00
-Dinner at Restaurant,Entertainment,05/20/2023,75.00
-Haircut,Personal care,05/21/2023,30.00
-Clothing Shopping,Clothing,05/22/2023,70.00
-Gas,Transportation,05/23/2023,40.00
-Dinner at Restaurant,Entertainment,05/24/2023,75.00
-Groceries,Groceries,05/25/2023,90.00
-Movie Night,Entertainment,05/26/2023,30.00
-Gas,Transportation,05/27/2023,40.00
-Groceries,Groceries,05/28/2023,85.00
-Groceries,Groceries,05/29/2023,75.00
-Groceries,Groceries,05/30/2023,80.00
-Groceries,Groceries,05/31/2023,95.00
-Dresser,Miscellaneous,05/31/2023,500.00
+W/S/G,Utilities,05/01/2023,100.00
+Groceries,Groceries,05/02/2023,110.99
+Gardening supplies,Miscellaneous,05/02/2023,35.75
+Dinner out,Restaurants,05/03/2023,65.00
+Car Maintenance,Transportation,05/04/2023,156.12
+Gas,Transportation,05/07/2023,43.01
+Drinks,Restaurants,05/08/2023,23.00
+Concert tickets,Entertainment,05/09/2023,123.35
+Lunch at Cafe,Entertainment,05/12/2023,26.78
+Video Game,Entertainment,05/12/2023,65.25
+Dog food,Groceries,05/12/2023,42.29
+Toiletries,Miscellaneous,05/12/2023,15.09
+Haircut,Personal care,05/17/2023,32.87
+Clothing Shopping,Clothing,05/18/2023,72.55
+Gas,Transportation,05/19/2023,42.00
+Home decor,Miscellaneous,05/19/2023,54.73
+Clothing Shopping,Clothing,05/22/2023,71.99
+Dinner out,Restaurants,05/24/2023,75.00
+Groceries,Groceries,05/25/2023,99.91
+Movie Night,Entertainment,05/26/2023,32.00
+Drs appointment,Personal care,05/27/2023,50.00
