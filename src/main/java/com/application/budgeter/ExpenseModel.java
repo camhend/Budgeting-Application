@@ -78,6 +78,7 @@ public class ExpenseModel {
         }
     }
 
+    // Add new expense to ExpenseList of the correct month
     public void add( Expense newExpense ) {
         ExpenseList list = getExpenseList(newExpense.getLocalDate());
         list.add(newExpense);
@@ -95,6 +96,7 @@ public class ExpenseModel {
         }
     }
 
+    // Add new expense to ExpenseList of the correct month
     public void add ( String name, String category, LocalDate localDate, double amount) { 
         Expense newExpense = new Expense(name, category, localDate, amount);
         ExpenseList list = getExpenseList(newExpense.getLocalDate());
@@ -113,7 +115,8 @@ public class ExpenseModel {
         }
     }
 
-    // bugged for edit if date same
+    // Take an Expense, find it, then replace it with another Expense.
+    // If the Expense is successfully replaced, return true.
     public boolean edit( Expense old, Expense updated) {
         boolean foundOldExpense;
         if (old.getLocalDate().getMonthValue() == updated.getLocalDate().getMonthValue() &&
@@ -129,6 +132,7 @@ public class ExpenseModel {
         return foundOldExpense;
     }
 
+    // Remove the given Expense from the month ExpenseList given by the Expense's date.
     public boolean remove( Expense expense ) {
         ExpenseList list = getExpenseList(expense.getLocalDate());
         return list.remove(expense); 

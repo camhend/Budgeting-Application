@@ -33,16 +33,13 @@ public class ListUtilsTest {
         list.add(exp3);
         list.add(exp9);
 
-        System.out.println("Before:");
-        for (Expense e : list) {
-            System.out.println(e);
-        }
-
-        System.out.println();
-        System.out.println("After:");
         ListUtils.sort(list, new AmountComparitor());
+       
+        Expense[] expected = {exp1, exp2, exp3, exp4, exp5, exp6, exp7, exp8, exp9, exp10};
+        int index = 0;
         for (Expense e : list) {
-            System.out.println(e);
+            assertTrue(e.equals(expected[index]));
+            index++;
         }
 
     }
@@ -73,16 +70,13 @@ public class ListUtilsTest {
         list.add(exp3);
         list.add(exp9);
 
-        System.out.println("Before:");
-        for (Expense e : list) {
-            System.out.println(e);
-        }
-
-        System.out.println();
-        System.out.println("After:");
         ListUtils.sort(list, new LexicographicCategoryComparitor());
+        
+        Expense[] expected = {exp1, exp2, exp3, exp4, exp5, exp6, exp7, exp8, exp9, exp10};
+        int index = 0;
         for (Expense e : list) {
-            System.out.println(e);
+            assertTrue(e.equals(expected[index]));
+            index++;
         }
 
     }
@@ -113,16 +107,13 @@ public class ListUtilsTest {
         list.add(exp3);
         list.add(exp9);
 
-        System.out.println("Before:");
-        for (Expense e : list) {
-            System.out.println(e);
-        }
-
-        System.out.println();
-        System.out.println("After:");
         ListUtils.sort(list, new DateComparitor());
+
+        Expense[] expected = {exp1, exp2, exp3, exp4, exp5, exp6, exp7, exp8, exp9, exp10};
+        int index = 0;
         for (Expense e : list) {
-            System.out.println(e);
+            assertTrue(e.equals(expected[index]));
+            index++;
         }
 
     }
@@ -153,16 +144,13 @@ public class ListUtilsTest {
         list.add(exp3);
         list.add(exp9);
 
-        System.out.println("Before:");
-        for (Expense e : list) {
-            System.out.println(e);
-        }
-
-        System.out.println();
-        System.out.println("After:");
         ListUtils.sort(list, new AmountComparitor());
+        
+        Expense[] expected = {exp1, exp2, exp3, exp4, exp5, exp6, exp7, exp8, exp9, exp10};
+        int index = 0;
         for (Expense e : list) {
-            System.out.println(e);
+            assertTrue(e.equals(expected[index]));
+            index++;
         }
 
     }
