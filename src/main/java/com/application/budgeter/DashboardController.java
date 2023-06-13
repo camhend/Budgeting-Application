@@ -138,20 +138,31 @@ public class DashboardController implements Initializable {
     private void addBarChart() {
         // get observable list from budgetmodel
         ObservableList<XYChart.Series<String, Double>> barChartData = FXCollections.observableArrayList();
-
-
+    
         // add category and spent to series
         XYChart.Series<String, Double> series = new XYChart.Series<>();
-        for (Budget budget : budgetList.getBudgetList()) 
+        for (Budget budget : budgetList.getBudgetList()) {
             series.getData().add(new XYChart.Data<>(budget.getCategory(), budget.getSpent()));
-
+        }
+    
         if (series.getData().size() == 0)
             series.getData().add(new XYChart.Data<>("No Budget Data", 0.0));
-
+    
         barChartData.add(series);
-
+    
         // set pie chart data
         barChart.setData(barChartData);
+    
+        // Set the categories for the categoryAxis
+        ObservableList<String> categories = FXCollections.observableArrayList();
+        for (XYChart.Data<String, Double> data : series.getData()) {
+            categories.add(data.getXValue());
+        }
+        categoryAxis.setCategories(categories);
+        if (categories.size() > 5) {
+        categoryAxis.setTickLabelRotation(90);
+        }
+
         barChart.setLegendVisible(false);
         barChart.setTitle("Spendings");
     } // end of addBarChart method
@@ -254,9 +265,6 @@ public class DashboardController implements Initializable {
 
             AnchorPane.setTopAnchor(monthMenu, newVal.doubleValue() * .1); // month menu top 10% of page
             AnchorPane.setTopAnchor(monthTitle, newVal.doubleValue() * .075); // month title above month menu
-
-            // increase font size of dashboard title when window is resized
-            
         });
     } // end of setAnchorPaneContraints method
 
