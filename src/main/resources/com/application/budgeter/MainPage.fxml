@@ -50,7 +50,7 @@
         </AnchorPane>
 
         <!-- Main Content Section (always starts with dashboard)-->
-        <fx:include source="DashboardPage.fxml" fx:id="contentPage"/>
+        <fx:include source="StartPage.fxml" fx:id="contentPage"/>
 
     </items>
 </SplitPane>

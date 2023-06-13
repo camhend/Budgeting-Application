@@ -35,13 +35,9 @@ public class MainPageController implements Initializable {
         this.expenseModel = expenseModel;
         this.budgetModel = budgetModel;
 
-        // temporary fix to dashboard not getting models on startup
-        try {
-            switchContentPage("BudgetPage");
-            switchContentPage("DashboardPage"); // set default page to dashboard
-        } catch (IOException e) {
-            System.out.println("Error loading default page");
-        }
+        // load dashboard page by default
+        try {switchContentPage("DashboardPage");}
+        catch (IOException e) {e.printStackTrace();}
 
         // stop splitpane divider from moving
         mainPage.getDividers().get(0).positionProperty().addListener((obs, oldVal, newVal) -> {
