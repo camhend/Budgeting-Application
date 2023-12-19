@@ -11,6 +11,10 @@ import javafx.scene.image.Image;
 import java.io.File;
 import java.time.LocalDate;
 
+/*  Authors: Sukhnain Deol, Cameron Henderson, Theodore Ingberman, and Kristopher McFarland
+ *  Date: 06/2023
+ *  Description: Main entry point for application. At launch, performs all necessary setup.
+ */
 
 public class App extends Application {
 

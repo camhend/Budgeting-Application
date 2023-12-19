@@ -3,7 +3,11 @@ package com.application.budgeter;
 import java.time.*;
 import java.util.Comparator;
 
-// This class defines an object that holds information about an expense entry
+/*  Authors: Sukhnain Deol, Cameron Henderson, Theodore Ingberman, and Kristopher McFarland
+ *  Date: 06/2023
+ *  Description: This class stores information about a single purchase.
+ * 
+ */
 public class Expense {
     private String name;
     private LocalDate localDate;

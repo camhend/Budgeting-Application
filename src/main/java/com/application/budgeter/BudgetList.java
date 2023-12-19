@@ -10,7 +10,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.File;
 
-
+/*  Authors: Sukhnain Deol, Cameron Henderson, Theodore Ingberman, and Kristopher McFarland
+ *  Date: 06/2023
+ *  Description: This class represents the budget data for a single month.
+ */
 public class BudgetList {
     
     private ObservableList<Budget> budgetList = FXCollections.observableArrayList();

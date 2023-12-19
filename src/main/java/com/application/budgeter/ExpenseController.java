@@ -37,6 +37,11 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.*;
 
+/*  Authors: Sukhnain Deol, Cameron Henderson, Theodore Ingberman, and Kristopher McFarland
+ *  Date: 06/2023
+ *  Description: Controller for the Expense page. The main Model for this is BudgetList. Data is pulled from ExpenseList 
+ *      for a given month, then displayed to the JavaFX view. Listens for changes and writes changes to ExpenseList.
+ */
 
 public class ExpenseController implements Initializable {
     // page elements

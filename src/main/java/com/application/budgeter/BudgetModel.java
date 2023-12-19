@@ -6,7 +6,10 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
-
+/*  Authors: Sukhnain Deol, Cameron Henderson, Theodore Ingberman, and Kristopher McFarland
+ *  Date: 06/2023
+ *  Description: This class manages saving and loading of all BudgetLists for each month.
+ */
 public class BudgetModel {
 
     private Map<String, BudgetList> loadedLists;

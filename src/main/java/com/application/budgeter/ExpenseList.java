@@ -10,8 +10,13 @@ import java.io.*;
 import java.io.FileWriter;
 import java.time.format.DateTimeFormatter;
 
-// This class defines a LinkedList used for storing
-// Expense objects. Oldest items are at the head, newest at the tail.
+/*  Authors: Sukhnain Deol, Cameron Henderson, Theodore Ingberman, and Kristopher McFarland
+ *  Date: 06/2023
+ *  Description: Sorted Linked List implementation that stores all Expenses for a single month. 
+ *      Expense are sorted by date on each add of a new expense. Supports saving and loading of this list 
+ *      to/from CSV file.
+ * 
+ */
 public class ExpenseList implements Iterable<Expense> {
     private ExpenseNode head;
     private ExpenseNode tail;

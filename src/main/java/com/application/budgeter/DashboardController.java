@@ -24,7 +24,11 @@ import javafx.event.ActionEvent;
 import java.time.YearMonth;
 import java.time.temporal.ChronoUnit;
 
-
+/*  Authors: Sukhnain Deol, Cameron Henderson, Theodore Ingberman, and Kristopher McFarland
+ *  Date: 06/2023
+ *  Description: Controls the elements displayed on the Dashboard Page.
+ * 
+ */
 
 public class DashboardController implements Initializable {
     // page elements

@@ -1,5 +1,12 @@
 package com.application.budgeter;
 
+/*  Authors: Sukhnain Deol, Cameron Henderson, Theodore Ingberman, and Kristopher McFarland
+ *  Date: 06/2023
+ *  Description: This class defines a single Budget category with name, spending limit, and current spending.
+ *   
+ */
+
+
 public class Budget {
     String category;
     double spent;

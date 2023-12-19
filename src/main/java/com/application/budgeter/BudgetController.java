@@ -26,7 +26,11 @@ import java.util.ArrayList;
 import java.time.format.DateTimeFormatter;
 import java.text.DecimalFormat;
 
-
+/*  Authors: Sukhnain Deol, Cameron Henderson, Theodore Ingberman, and Kristopher McFarland
+ *  Date: 06/2023
+ *  Description: Controller for the Budget page. The main Model for this is BudgetList. Data is pulled from BudgetList 
+ *      for a given month, then displayed to the JavaFX view. Listens for changes and writes changes to BudgetList.
+ */
 
 public class BudgetController implements Initializable {
     

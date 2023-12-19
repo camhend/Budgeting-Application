@@ -11,7 +11,12 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.Label;
 import javafx.scene.Node;
-
+/*  Authors: Sukhnain Deol, Cameron Henderson, Theodore Ingberman, and Kristopher McFarland
+ *  Date: 06/2023
+ *  Description: This class controls the main page base layer of the application, 
+ *      and swapping to new pages. Pages that are navigated to are layered on top of the main page. 
+ * 
+ */
 
 public class MainPageController implements Initializable {
 

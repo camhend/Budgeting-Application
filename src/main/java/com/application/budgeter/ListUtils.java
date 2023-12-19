@@ -1,6 +1,11 @@
 package com.application.budgeter;
 
 import java.util.*;
+/*  Authors: Sukhnain Deol, Cameron Henderson, Theodore Ingberman, and Kristopher McFarland
+ *  Date: 06/2023
+ *  Description: This class support additional operations on Expense Lists.
+ * 
+ */
 
 public class ListUtils {
     

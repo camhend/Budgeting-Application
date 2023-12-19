@@ -2,16 +2,15 @@
 
 CS 240 Project Budgeting Application
 
+Authors: Sukhnain Deol, Cameron Henderson, Theodore Ingberman, and Kristopher McFarland
+Date: 06/2023
 
-JDK version
-  - openjdk 17.0.7 2023-04-18 (can install from within VSCode, make sure to check environment variables)
- 
- Maven version
-  - apache-maven-3.9.1 (https://maven.apache.org/download.cgi)
-    - make sure to add to path
+This is a desktop budgeting application. The user can set monthly budgets using the Budget tab, add expenses with the Expense tab, and view some analytical data on the dashboard tab. Each tab allows switching between currently available months. In order to add a new month to start budgeting, navigate to the Budget tab to add a new month, then expenses can be tracked for the new month. On the Expenses and Budget page, click Save to save the edited information. Budget and Expense data will be saved in CSV format in data files.
 
-TO DO:
-  - add a branch for each team member to work on 
-  - add Junit 5 to maven dependancies (testing framework)
-    - add maven surefire plugin (helps with finding and running tests)
-  - (see App.java for development TODO list)
+This project was build using Maven in and Model, View, Controller Design Pattern. Expenses and Budget information is managed by separate models, then display for each tab page is managed by a separate controller, with views created through JavaFX.
+
+JDK version - openjdk 17.0.7 2023-04-18 
+Java FX - version 19
+Maven version - apache-maven-3.9.1 (https://maven.apache.org/download.cgi)
+
+

@@ -3,7 +3,12 @@ package com.application.budgeter;
 import java.time.*;
 import java.util.*;
 import java.io.*;
-
+/*  Authors: Sukhnain Deol, Cameron Henderson, Theodore Ingberman, and Kristopher McFarland
+ *  Date: 06/2023
+ *  Description: Manages ExpenseLists for all months. Loads lists from CSV files as needed, 
+ *      and saves changes to CSV storage. Add, edit, and remove methods ensure operations
+ *      are performed on the correct ExpenseList of the correct month.
+ */
 public class ExpenseModel {
     private Map<String, ExpenseList> loadedLists;
     private String projectRootPath;
