@@ -9,6 +9,8 @@ This is a desktop budgeting application. The user can set monthly budgets using 
 
 This project was build using Maven in and Model, View, Controller Design Pattern. Expenses and Budget information is managed by separate models, then display for each tab page is managed by a separate controller, with views created through JavaFX.
 
+Included in this repository is some sample data to illustrate typical usage.
+
 JDK version - openjdk 17.0.7 2023-04-18 
 Java FX - version 19
 Maven version - apache-maven-3.9.1 (https://maven.apache.org/download.cgi)
